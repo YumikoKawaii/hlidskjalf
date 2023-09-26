@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package hlidskjalf.tracking;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/tracking";
+
+service TrackingService {
+
+  rpc TrackingEndpoint(TrackingRequest) returns (ServerResponse) {
+    option (google.api.http) = {
+      post: "/api/hlidskjalf/tracking"
+      body: "*"
+    };
+  }
+
+}
+
+message TrackingRequest {}
+
+message ServerResponse {
+  uint32 code = 1;
+  string message = 2;
+}
