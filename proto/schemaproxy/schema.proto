@@ -1,8 +1,90 @@
 syntax = "proto3";
 
-package hlidskjalf.tracking;
+package hlidskjalf.schemaproxy;
 
 import "google/api/annotations.proto";
+import "gogoproto/gogo.proto";
+import "schemaproxy/dto.proto";
 import "validate/validate.proto";
 
-option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/schemaregistry";
+option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/schemaproxy";
+
+service SchemaProxyService {
+
+  rpc UpdateSchema(UpdateSchemaRequest) returns (RegistryResponse) {
+    option (google.api.http) = {
+      post: "/api/hlidskjalf/schema"
+      body: "*"
+    };
+  }
+
+  rpc DeleteSubject(DeleteSubjectRequest) returns (DeleteSubjectResponse) {
+    option (google.api.http) = {
+      post: "/api/hlidskjalf/subject/delete"
+      body: "*"
+    };
+  }
+
+  rpc CheckSchemasCompatibility(CheckSchemasCompatibilityRequest) returns (CheckSchemasCompatibilityResponse) {
+    option (google.api.http) = {
+      post: "/api/hlidskjalf/schemas/compatibility"
+      body: "*"
+    };
+  }
+
+  rpc GetSubjectVersions(GetSubjectVersionsRequest) returns (GetSubjectVersionsResponse) {
+    option (google.api.http) = {
+      get: "/api/hlidskjalf/subject-versions"
+    };
+  }
+
+  rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse) {
+    option (google.api.http) = {
+      get: "/api/hlidskjalf/schemas"
+    };
+  }
+
+  rpc UpdateCompatibility(UpdateCompatibilityRequest) returns (UpdateCompatibilityResponse) {
+    option (google.api.http) = {
+      put: "/api/hlidskjalf/schemas/compatibility"
+      body: "*"
+    };
+  }
+}
+
+message DeleteSubjectRequest {
+  string subject = 1 [(validate.rules).string.min_len = 1];
+}
+
+message DeleteSubjectResponse {}
+
+message CheckSchemasCompatibilityRequest {
+  repeated UpdateSchemaRequest requests = 1 [(validate.rules).repeated.min_items = 1];
+}
+
+message CheckSchemasCompatibilityResponse {}
+
+message GetSubjectVersionsRequest {
+  string subject = 1 [(validate.rules).string.min_len = 1];
+}
+
+message GetSubjectVersionsResponse {
+  SubjectVersionInfo info = 1;
+}
+
+message GetSchemasRequest {
+  SubjectVersionInfo subject_version = 1 [json_name = "subjectVersion", (gogoproto.jsontag) = "subjectVersion"];
+}
+
+message GetSchemasResponse {
+  repeated RegistrySchema schemas = 1 [(gogoproto.moretags) = "response_field:\"data\""];
+}
+
+message UpdateCompatibilityRequest {
+  string compatibility = 1;
+}
+
+message UpdateCompatibilityResponse {
+  uint32 code = 1;
+  string message = 2;
+}

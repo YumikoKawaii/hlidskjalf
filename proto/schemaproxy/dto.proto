@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package hlidskjalf.schemaproxy;
+
+import "gogoproto/gogo.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/schemaproxy";
+
+message UpdateSchemaRequest {
+  string schema = 1;
+  string schema_type = 2 [(validate.rules).string = {
+    pattern: "^(AVRO|JSON|PROTOBUF)$"
+  },
+    json_name = "schemaType",
+    (gogoproto.jsontag) = "schemaType"
+  ];
+  repeated RegistryReference references = 3;
+}
+
+message RegistryReference {
+  string name = 1 [(validate.rules).string.min_len = 1];
+  string subject = 2;
+  int32 version = 3;
+}
+
+message RegistryResponse {
+  int32 id = 1;
+  string subject = 2;
+  int32 version = 3;
+  bool is_registered = 4 [json_name = "isRegistered", (gogoproto.jsontag) = "isRegistered"];
+}
+
+message SchemaVersionInfo {
+  int32 schema_id = 1;
+  string subject = 2 [(validate.rules).string.min_len = 1];
+  int32 subject_version = 3 [json_name = "subjectVersion", (gogoproto.jsontag) = "subjectVersion"];
+}
+
+message SubjectVersionInfo {
+  string subject = 1;
+  int32 version = 2;
+}
+
+message RegistrySchema {
+  string subject = 1;
+  int32 version = 2;
+  int32 id = 3;
+  string schema_type = 4 [json_name = "schemaType", (gogoproto.jsontag) = "schemaType"];
+  string schema = 5;
+  repeated RegistryReference references = 6;
+}
