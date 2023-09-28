@@ -7,7 +7,7 @@ import "validate/validate.proto";
 
 option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/schemaproxy";
 
-message UpdateSchemaRequest {
+message RegisterSchemaRequest {
   string schema = 1;
   string schema_type = 2 [(validate.rules).string = {
     pattern: "^(AVRO|JSON|PROTOBUF)$"
@@ -16,6 +16,7 @@ message UpdateSchemaRequest {
     (gogoproto.jsontag) = "schemaType"
   ];
   repeated RegistryReference references = 3;
+  string subject = 4;
 }
 
 message RegistryReference {

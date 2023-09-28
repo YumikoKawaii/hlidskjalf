@@ -3,15 +3,18 @@ package schemaproxy
 import (
 	"YumikoKawaii/hlidskjalf/golang/common/schemaregistry"
 	pb "YumikoKawaii/hlidskjalf/golang/protobuf/schemaproxy"
+	"context"
+	"errors"
+	"google.golang.org/appengine/log"
 )
 
 type Service interface {
-	UpdateSchema(*pb.UpdateSchemaRequest) (*pb.RegistryResponse, error)
-	DeleteSubject(*pb.DeleteSubjectRequest) (*pb.DeleteSubjectResponse, error)
-	CheckSchemasCompatibility(*pb.CheckSchemasCompatibilityRequest) (*pb.CheckSchemasCompatibilityResponse, error)
-	GetSubjectVersions(*pb.GetSubjectVersionsRequest) (*pb.GetSubjectVersionsResponse, error)
-	GetSchemas(*pb.GetSchemasRequest) (*pb.GetSchemasResponse, error)
-	UpdateCompatibility(*pb.UpdateCompatibilityRequest) (*pb.UpdateCompatibilityResponse, error)
+	RegisterSchema(string, *schemaregistry.SchemaRequest) (*schemaregistry.SchemaResponse, error)
+	DeleteSubject(string) error
+	CheckSchemaCompatibility(string, *schemaregistry.SchemaRequest, int) (bool, error)
+	GetSubjectVersions(string) ([]uint32, error)
+	GetSchemaBySubjectVersion(*schemaregistry.SubjectVersion) (*schemaregistry.SchemaResponse, error)
+	UpdateCompatibility(*pb.UpdateCompatibilityRequest) error
 }
 
 type serviceImpl struct {
@@ -24,26 +27,60 @@ func NewService() Service {
 	}
 }
 
-func (s *serviceImpl) UpdateSchema(request *pb.UpdateSchemaRequest) (*pb.RegistryResponse, error) {
-	return nil, nil
+func (s *serviceImpl) RegisterSchema(subject string, request *schemaregistry.SchemaRequest) (*schemaregistry.SchemaResponse, error) {
+
+	isRegistered, schemaResponse, err := s.schemaRegistryClient.IsSchemaRegistered(subject, request)
+	if err != nil {
+		var subjectNotFoundErr schemaregistry.SubjectNotFoundError
+		if errors.As(err, &subjectNotFoundErr) {
+			log.Infof(context.Background(), "subject %s haven't registered yet", subject)
+		} else {
+			log.Errorf(context.Background(), "error while checking schema registry: %+v", err)
+			return nil, err
+		}
+	}
+
+	if isRegistered {
+		return schemaResponse, nil
+	}
+
+	schemaResponse, err = s.schemaRegistryClient.RegisterSchema(subject, request)
+
+	if err != nil {
+		log.Errorf(context.Background(), "error while updating: %+v", err)
+		return nil, err
+	}
+
+	return schemaResponse, err
 }
 
-func (s *serviceImpl) DeleteSubject(request *pb.DeleteSubjectRequest) (*pb.DeleteSubjectResponse, error) {
-	return nil, nil
+func (s *serviceImpl) DeleteSubject(subject string) error {
+
+	schemaIds, err := s.schemaRegistryClient.SoftDeleteSubject(subject)
+	if err == nil {
+		log.Infof(context.Background(), "soft delete schemas: %+v", schemaIds)
+	}
+	return err
 }
 
-func (s *serviceImpl) CheckSchemasCompatibility(request *pb.CheckSchemasCompatibilityRequest) (*pb.CheckSchemasCompatibilityResponse, error) {
-	return nil, nil
+func (s *serviceImpl) CheckSchemaCompatibility(subject string, request *schemaregistry.SchemaRequest, versionID int) (bool, error) {
+
+	isCompatible, err := s.schemaRegistryClient.IsSchemaCompatible(subject, request, versionID)
+	if err != nil {
+		return false, err
+	}
+	return isCompatible, nil
 }
 
-func (s *serviceImpl) GetSubjectVersions(request *pb.GetSubjectVersionsRequest) (*pb.GetSubjectVersionsResponse, error) {
-	return nil, nil
+func (s *serviceImpl) GetSubjectVersions(subject string) ([]uint32, error) {
+
+	return s.schemaRegistryClient.GetVersions(subject)
 }
 
-func (s *serviceImpl) GetSchemas(request *pb.GetSchemasRequest) (*pb.GetSchemasResponse, error) {
-	return nil, nil
+func (s *serviceImpl) GetSchemaBySubjectVersion(version *schemaregistry.SubjectVersion) (*schemaregistry.SchemaResponse, error) {
+	return s.schemaRegistryClient.GetSchemaBySubject(version)
 }
 
-func (s *serviceImpl) UpdateCompatibility(request *pb.UpdateCompatibilityRequest) (*pb.UpdateCompatibilityResponse, error) {
-	return nil, nil
+func (s *serviceImpl) UpdateCompatibility(request *pb.UpdateCompatibilityRequest) error {
+	return s.schemaRegistryClient.UpdateCompatibility(request)
 }

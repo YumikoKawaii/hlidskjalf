@@ -11,7 +11,7 @@ option go_package = "github.com/YumikoKawaii/hlidskjalf/golang/protobuf/schemapr
 
 service SchemaProxyService {
 
-  rpc UpdateSchema(UpdateSchemaRequest) returns (RegistryResponse) {
+  rpc RegisterSchema(RegisterSchemaRequest) returns (RegistryResponse) {
     option (google.api.http) = {
       post: "/api/hlidskjalf/schema"
       body: "*"
@@ -25,7 +25,7 @@ service SchemaProxyService {
     };
   }
 
-  rpc CheckSchemasCompatibility(CheckSchemasCompatibilityRequest) returns (CheckSchemasCompatibilityResponse) {
+  rpc CheckSchemaCompatibility(CheckSchemaCompatibilityRequest) returns (CheckSchemaCompatibilityResponse) {
     option (google.api.http) = {
       post: "/api/hlidskjalf/schemas/compatibility"
       body: "*"
@@ -56,20 +56,26 @@ message DeleteSubjectRequest {
   string subject = 1 [(validate.rules).string.min_len = 1];
 }
 
-message DeleteSubjectResponse {}
-
-message CheckSchemasCompatibilityRequest {
-  repeated UpdateSchemaRequest requests = 1 [(validate.rules).repeated.min_items = 1];
+message DeleteSubjectResponse {
+  uint32 code = 1;
+  string message = 2;
 }
 
-message CheckSchemasCompatibilityResponse {}
+message CheckSchemaCompatibilityRequest {
+  RegisterSchemaRequest request = 1;
+}
+
+message CheckSchemaCompatibilityResponse {
+  uint32 code = 1;
+  string message = 2;
+}
 
 message GetSubjectVersionsRequest {
   string subject = 1 [(validate.rules).string.min_len = 1];
 }
 
 message GetSubjectVersionsResponse {
-  SubjectVersionInfo info = 1;
+  repeated uint32 versions = 1;
 }
 
 message GetSchemasRequest {
