@@ -1,0 +1,67 @@
+version: 1.2
+server:
+  hostname: 127.0.0.1
+  http_port: 1080
+  https_port: 443
+  max_job_workers: 10
+
+  database:
+    type: postgresql
+    host: harbor-db
+    port: 5432
+    name: harbor
+    username: harbor
+    password: harbor_password
+    # Database SSL mode (e.g., disable, require, verify-ca, verify-full)
+    # If not set, defaults to "disable"
+    #sslmode: disable
+
+registry:
+  storage:
+    type: filesystem
+    filesystem:
+      rootdirectory: /data/registry
+  token:
+  # Token signing key
+  # If not set, Harbor generates a random key on startup
+  #key: ""
+
+auth:
+  mode: db_auth
+
+#  # LDAP authentication settings (if ldap_auth mode is used)
+#  ldap_auth:
+#    # LDAP server URL
+#    url: ldap://ldap.example.com
+#
+#    # LDAP search base
+#    base_dn: ou=users,dc=example,dc=com
+#
+#    # LDAP filter
+#    filter: (objectClass=user)
+#
+#    # LDAP username attribute
+#    username: cn
+#
+#    # LDAP email attribute
+#    email: mail
+
+#  # OIDC authentication settings (if oidc_auth mode is used)
+#  oidc_auth:
+#    # OIDC issuer URL
+#    issuer: https://oidc.example.com
+#
+#    # OIDC client ID
+#    client_id: harbor-client
+#
+#    # OIDC client secret
+#    client_secret: secret
+#
+#    # OIDC username claim
+#    username_claim: sub
+#
+#    # OIDC email claim
+#    email_claim: email
+#
+#    # OIDC groups claim
+#    groups_claim: groups
