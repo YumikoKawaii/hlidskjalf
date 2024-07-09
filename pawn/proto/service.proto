@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package bff.cdpbff.api.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "pawn.com/api";
+
+// PawnService ...
+service PawnService {
+
+  rpc Greet(GreetRequest) returns (GreetResponse) {
+    option (google.api.http) = {
+      get: "/v1/lead-form-event/form-session"
+    };
+  }
+
+}
+
+// GreetRequest ...
+message GreetRequest{}
+
+// GreetResponse ...
+message GreetResponse{
+  int32 code = 1;
+
+  string message = 2;
+}
