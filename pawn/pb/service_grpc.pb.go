@@ -30,7 +30,7 @@ func NewPawnServiceClient(cc grpc.ClientConnInterface) PawnServiceClient {
 
 func (c *pawnServiceClient) Greet(ctx context.Context, in *GreetRequest, opts ...grpc.CallOption) (*GreetResponse, error) {
 	out := new(GreetResponse)
-	err := c.cc.Invoke(ctx, "/bff.cdpbff.api.v1.PawnService/Greet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pawn.api.PawnService/Greet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _PawnService_Greet_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/bff.cdpbff.api.v1.PawnService/Greet",
+		FullMethod: "/pawn.api.PawnService/Greet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PawnServiceServer).Greet(ctx, req.(*GreetRequest))
@@ -84,7 +84,7 @@ func _PawnService_Greet_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 var _PawnService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "bff.cdpbff.api.v1.PawnService",
+	ServiceName: "pawn.api.PawnService",
 	HandlerType: (*PawnServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

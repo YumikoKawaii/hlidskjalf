@@ -1,18 +1,18 @@
 syntax = "proto3";
 
-package bff.cdpbff.api.v1;
+package pawn.api;
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";
 
-option go_package = "pawn.com/api";
+option go_package = "pawn.com/api;api";
 
 // PawnService ...
 service PawnService {
 
   rpc Greet(GreetRequest) returns (GreetResponse) {
     option (google.api.http) = {
-      get: "/v1/lead-form-event/form-session"
+      get: "/api/v1/greet"
     };
   }
 
