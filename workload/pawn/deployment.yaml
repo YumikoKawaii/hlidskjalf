@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pawn
+  namespace: pawn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pawn
+  template:
+    metadata:
+      labels:
+        app: pawn
+    spec:
+      containers:
+      - name: pawn
+        image: yumikokawaii/pawn:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 8080
