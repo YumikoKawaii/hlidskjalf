@@ -1,0 +1,87 @@
+version: "3.7"
+
+services:
+  zk:
+    image: zookeeper:3.4.9
+    hostname: zk
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=footprint-zoo:2888:3888
+    volumes:
+      - '../../../hlidskjalf-volumes/zoo/data:/data'
+      - '../../../hlidskjalf-volumes/zoo/datalog:/datalog'
+    networks:
+      - hlidskjalf
+
+  ch-0-0:
+    image: bitnami/clickhouse:24
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_ADMIN_USER: yumiko
+      CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
+      #ALLOW_EMPTY_PASSWORD: true
+    volumes:
+      - '../../../hlidskjalf-volumes/ch_0_0:/bitnami/clickhouse'
+      - './configs/ch-0-0.xml:/etc/clickhouse-server/config.d/config.xml'
+    ulimits:
+      nofile: 262144
+    ports:
+      - '8123:8123'
+    networks:
+      - hlidskjalf
+
+  ch-0-1:
+    image: bitnami/clickhouse:24
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_ADMIN_USER: yumiko
+      CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
+      #ALLOW_EMPTY_PASSWORD: yes
+    volumes:
+      - '../../../hlidskjalf-volumes/ch_0_1:/bitnami/clickhouse'
+      - './configs/ch-0-1.xml:/etc/clickhouse-server/config.d/config.xml'
+    ulimits:
+      nofile: 262144
+    ports:
+      - '9001:9000'
+    networks:
+      - hlidskjalf
+
+  ch-1-0:
+    image: bitnami/clickhouse:24
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_ADMIN_USER: yumiko
+      CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
+      #ALLOW_EMPTY_PASSWORD: yes
+    volumes:
+      - '../../../hlidskjalf-volumes/ch_1_0:/bitnami/clickhouse'
+      - './configs/ch-1-0.xml:/etc/clickhouse-server/config.d/config.xml'
+    ports:
+      - '9002:9000'
+    ulimits:
+      nofile: 262144
+    networks:
+      - hlidskjalf
+
+#  ch-1-1:
+#    image: bitnami/clickhouse:24
+#    restart: unless-stopped
+#    environment:
+#      CLICKHOUSE_ADMIN_USER: yumiko
+#      CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
+#    volumes:
+#      - '../../../hlidskjalf-volumes/ch_1_1:/bitnami/clickhouse'
+#      - './config.xml:/etc/clickhouse-server/config.d/config.xml'
+#    ulimits:
+#      nofile: 262144
+#    networks:
+#      - hlidskjalf
+
+networks:
+  hlidskjalf:
+    driver: bridge

@@ -1,0 +1,52 @@
+<clickhouse>
+
+    <remote_servers>
+        <hlidskjalf>
+            <shard>
+                <replica>
+                    <host>ch-0-0</host>
+                    <port>9000</port>
+                    <user>yumiko</user>
+                    <password>Yumiko1@</password>
+                </replica>
+            </shard>
+            <shard>
+                <replica>
+                    <host>ch-0-1</host>
+                    <port>9000</port>
+                    <user>yumiko</user>
+                    <password>Yumiko1@</password>
+                </replica>
+            </shard>
+            <shard>
+                <replica>
+                    <host>ch-1-0</host>
+                    <port>9000</port>
+                    <user>yumiko</user>
+                    <password>Yumiko1@</password>
+                </replica>
+            </shard>
+        </hlidskjalf>
+    </remote_servers>
+
+    <macros>
+        <cluster>hlidskjalf</cluster>
+        <shard>${SHARD}</shard>
+<!--        <replica>${REPLICA}</replica>-->
+<!--        <shard from_env="CLICKHOUSE_SHARD_ID"></shard>-->
+<!--        <replica from_env="CLICKHOUSE_REPLICA_ID"></replica>-->
+
+    </macros>
+
+    <zookeeper>
+        <node index="1">
+            <host>zk</host>
+            <port>2181</port>
+        </node>
+    </zookeeper>
+
+    <distributed_ddl>
+        <path>/clickhouse/task_queue/ddl</path>
+    </distributed_ddl>
+
+</clickhouse>
