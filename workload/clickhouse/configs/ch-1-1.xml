@@ -4,7 +4,13 @@
         <hlidskjalf>
             <shard>
                 <replica>
-                    <host>ch-0-0</host>
+                    <host>ch-1-1</host>
+                    <port>9000</port>
+                    <user>yumiko</user>
+                    <password>Yumiko1@</password>
+                </replica>
+                <replica>
+                    <host>ch-1-2</host>
                     <port>9000</port>
                     <user>yumiko</user>
                     <password>Yumiko1@</password>
@@ -12,15 +18,13 @@
             </shard>
             <shard>
                 <replica>
-                    <host>ch-0-1</host>
+                    <host>ch-2-1</host>
                     <port>9000</port>
                     <user>yumiko</user>
                     <password>Yumiko1@</password>
                 </replica>
-            </shard>
-            <shard>
                 <replica>
-                    <host>ch-1-0</host>
+                    <host>ch-2-2</host>
                     <port>9000</port>
                     <user>yumiko</user>
                     <password>Yumiko1@</password>
@@ -31,11 +35,8 @@
 
     <macros>
         <cluster>hlidskjalf</cluster>
-        <shard>${SHARD}</shard>
-<!--        <replica>${REPLICA}</replica>-->
-<!--        <shard from_env="CLICKHOUSE_SHARD_ID"></shard>-->
-<!--        <replica from_env="CLICKHOUSE_REPLICA_ID"></replica>-->
-
+        <shard>01</shard>
+        <replica>01</replica>
     </macros>
 
     <zookeeper>
