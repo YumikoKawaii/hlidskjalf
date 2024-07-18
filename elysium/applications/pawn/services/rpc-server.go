@@ -70,9 +70,20 @@ func NewServer(cfg Config, opt ...grpc.ServerOption) *Server {
 func (s *Server) Register(grpcServer ...interface{}) error {
 	for _, srv := range grpcServer {
 		switch _srv := srv.(type) {
-		case pb.PawnServiceServer:
-			pb.RegisterPawnServiceServer(s.gRPC, _srv)
-			if err := pb.RegisterPawnServiceHandlerFromEndpoint(context.Background(), s.mux, s.cfg.GRPC.String(), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}); err != nil {
+		case pb.GreetServiceServer:
+			pb.RegisterGreetServiceServer(s.gRPC, _srv)
+			if err := pb.RegisterGreetServiceHandlerFromEndpoint(
+				context.Background(), s.mux, s.cfg.GRPC.String(),
+				[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())},
+			); err != nil {
+				return err
+			}
+		case pb.PerformanceServiceServer:
+			pb.RegisterPerformanceServiceServer(s.gRPC, _srv)
+			if err := pb.RegisterGreetServiceHandlerFromEndpoint(
+				context.Background(), s.mux, s.cfg.GRPC.String(),
+				[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())},
+			); err != nil {
 				return err
 			}
 		default:

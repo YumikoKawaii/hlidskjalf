@@ -169,3 +169,238 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GreetResponseValidationError{}
+
+// Validate checks the field values on GetStudentsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetStudentsRequest) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	return nil
+}
+
+// GetStudentsRequestValidationError is the validation error returned by
+// GetStudentsRequest.Validate if the designated constraints aren't met.
+type GetStudentsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetStudentsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetStudentsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetStudentsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetStudentsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetStudentsRequestValidationError) ErrorName() string {
+	return "GetStudentsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetStudentsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetStudentsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetStudentsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetStudentsRequestValidationError{}
+
+// Validate checks the field values on GetStudentsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetStudentsResponse) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	for idx, item := range m.GetStudents() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetStudentsResponseValidationError{
+					field:  fmt.Sprintf("Students[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// GetStudentsResponseValidationError is the validation error returned by
+// GetStudentsResponse.Validate if the designated constraints aren't met.
+type GetStudentsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetStudentsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetStudentsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetStudentsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetStudentsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetStudentsResponseValidationError) ErrorName() string {
+	return "GetStudentsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetStudentsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetStudentsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetStudentsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetStudentsResponseValidationError{}
+
+// Validate checks the field values on Student with the rules defined in the
+// proto definition for this message. If any rules are violated, an error is returned.
+func (m *Student) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Id
+
+	// no validation rules for FullName
+
+	// no validation rules for Age
+
+	// no validation rules for Sex
+
+	// no validation rules for Major
+
+	// no validation rules for Year
+
+	// no validation rules for Gpa
+
+	// no validation rules for Country
+
+	// no validation rules for Province
+
+	return nil
+}
+
+// StudentValidationError is the validation error returned by Student.Validate
+// if the designated constraints aren't met.
+type StudentValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e StudentValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e StudentValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e StudentValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e StudentValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e StudentValidationError) ErrorName() string { return "StudentValidationError" }
+
+// Error satisfies the builtin error interface
+func (e StudentValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sStudent.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = StudentValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = StudentValidationError{}

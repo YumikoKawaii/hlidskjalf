@@ -13,83 +13,166 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion7
 
-// PawnServiceClient is the client API for PawnService service.
+// GreetServiceClient is the client API for GreetService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PawnServiceClient interface {
+type GreetServiceClient interface {
 	Greet(ctx context.Context, in *GreetRequest, opts ...grpc.CallOption) (*GreetResponse, error)
 }
 
-type pawnServiceClient struct {
+type greetServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewPawnServiceClient(cc grpc.ClientConnInterface) PawnServiceClient {
-	return &pawnServiceClient{cc}
+func NewGreetServiceClient(cc grpc.ClientConnInterface) GreetServiceClient {
+	return &greetServiceClient{cc}
 }
 
-func (c *pawnServiceClient) Greet(ctx context.Context, in *GreetRequest, opts ...grpc.CallOption) (*GreetResponse, error) {
+func (c *greetServiceClient) Greet(ctx context.Context, in *GreetRequest, opts ...grpc.CallOption) (*GreetResponse, error) {
 	out := new(GreetResponse)
-	err := c.cc.Invoke(ctx, "/pawn.api.PawnService/Greet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pawn.api.GreetService/Greet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// PawnServiceServer is the server API for PawnService service.
-// All implementations must embed UnimplementedPawnServiceServer
+// GreetServiceServer is the server API for GreetService service.
+// All implementations must embed UnimplementedGreetServiceServer
 // for forward compatibility
-type PawnServiceServer interface {
+type GreetServiceServer interface {
 	Greet(context.Context, *GreetRequest) (*GreetResponse, error)
-	mustEmbedUnimplementedPawnServiceServer()
+	mustEmbedUnimplementedGreetServiceServer()
 }
 
-// UnimplementedPawnServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedPawnServiceServer struct {
+// UnimplementedGreetServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedGreetServiceServer struct {
 }
 
-func (UnimplementedPawnServiceServer) Greet(context.Context, *GreetRequest) (*GreetResponse, error) {
+func (UnimplementedGreetServiceServer) Greet(context.Context, *GreetRequest) (*GreetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Greet not implemented")
 }
-func (UnimplementedPawnServiceServer) mustEmbedUnimplementedPawnServiceServer() {}
+func (UnimplementedGreetServiceServer) mustEmbedUnimplementedGreetServiceServer() {}
 
-// UnsafePawnServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PawnServiceServer will
+// UnsafeGreetServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GreetServiceServer will
 // result in compilation errors.
-type UnsafePawnServiceServer interface {
-	mustEmbedUnimplementedPawnServiceServer()
+type UnsafeGreetServiceServer interface {
+	mustEmbedUnimplementedGreetServiceServer()
 }
 
-func RegisterPawnServiceServer(s grpc.ServiceRegistrar, srv PawnServiceServer) {
-	s.RegisterService(&_PawnService_serviceDesc, srv)
+func RegisterGreetServiceServer(s grpc.ServiceRegistrar, srv GreetServiceServer) {
+	s.RegisterService(&_GreetService_serviceDesc, srv)
 }
 
-func _PawnService_Greet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _GreetService_Greet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GreetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PawnServiceServer).Greet(ctx, in)
+		return srv.(GreetServiceServer).Greet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pawn.api.PawnService/Greet",
+		FullMethod: "/pawn.api.GreetService/Greet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PawnServiceServer).Greet(ctx, req.(*GreetRequest))
+		return srv.(GreetServiceServer).Greet(ctx, req.(*GreetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _PawnService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "pawn.api.PawnService",
-	HandlerType: (*PawnServiceServer)(nil),
+var _GreetService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "pawn.api.GreetService",
+	HandlerType: (*GreetServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Greet",
-			Handler:    _PawnService_Greet_Handler,
+			Handler:    _GreetService_Greet_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "pawn/service.proto",
+}
+
+// PerformanceServiceClient is the client API for PerformanceService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type PerformanceServiceClient interface {
+	GetStudents(ctx context.Context, in *GetStudentsRequest, opts ...grpc.CallOption) (*GetStudentsResponse, error)
+}
+
+type performanceServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPerformanceServiceClient(cc grpc.ClientConnInterface) PerformanceServiceClient {
+	return &performanceServiceClient{cc}
+}
+
+func (c *performanceServiceClient) GetStudents(ctx context.Context, in *GetStudentsRequest, opts ...grpc.CallOption) (*GetStudentsResponse, error) {
+	out := new(GetStudentsResponse)
+	err := c.cc.Invoke(ctx, "/pawn.api.PerformanceService/GetStudents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PerformanceServiceServer is the server API for PerformanceService service.
+// All implementations must embed UnimplementedPerformanceServiceServer
+// for forward compatibility
+type PerformanceServiceServer interface {
+	GetStudents(context.Context, *GetStudentsRequest) (*GetStudentsResponse, error)
+	mustEmbedUnimplementedPerformanceServiceServer()
+}
+
+// UnimplementedPerformanceServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedPerformanceServiceServer struct {
+}
+
+func (UnimplementedPerformanceServiceServer) GetStudents(context.Context, *GetStudentsRequest) (*GetStudentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStudents not implemented")
+}
+func (UnimplementedPerformanceServiceServer) mustEmbedUnimplementedPerformanceServiceServer() {}
+
+// UnsafePerformanceServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PerformanceServiceServer will
+// result in compilation errors.
+type UnsafePerformanceServiceServer interface {
+	mustEmbedUnimplementedPerformanceServiceServer()
+}
+
+func RegisterPerformanceServiceServer(s grpc.ServiceRegistrar, srv PerformanceServiceServer) {
+	s.RegisterService(&_PerformanceService_serviceDesc, srv)
+}
+
+func _PerformanceService_GetStudents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStudentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PerformanceServiceServer).GetStudents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pawn.api.PerformanceService/GetStudents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PerformanceServiceServer).GetStudents(ctx, req.(*GetStudentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _PerformanceService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "pawn.api.PerformanceService",
+	HandlerType: (*PerformanceServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetStudents",
+			Handler:    _PerformanceService_GetStudents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
