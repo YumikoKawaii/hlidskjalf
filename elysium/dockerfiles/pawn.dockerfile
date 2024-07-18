@@ -2,7 +2,7 @@ FROM golang:1.22 AS builder
 
 WORKDIR /
 
-COPY . .
+COPY ./elysium .
 
 RUN go mod download
 

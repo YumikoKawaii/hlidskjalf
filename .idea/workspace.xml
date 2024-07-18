@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b33dc622-5328-4dda-8ce1-ac7d91d0fb30" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/publish-pawn.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/publish-pawn.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elysium/.bazeliskrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/elysium/.bazelversion" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/elysium/BUILD.bazel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/elysium/WORKSPACE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/dockerfiles/pawn.dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/elysium/dockerfiles/pawn.dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

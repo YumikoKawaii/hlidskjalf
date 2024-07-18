@@ -26,6 +26,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./dockerfiles/pawn.dockerfile
+          file: ./elysium/dockerfiles/pawn.dockerfile
           push: true
           tags: yumikokawaii/pawn:latest
