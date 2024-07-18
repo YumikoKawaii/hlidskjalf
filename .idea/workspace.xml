@@ -5,46 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b33dc622-5328-4dda-8ce1-ac7d91d0fb30" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/hlidskjalf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hlidskjalf.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elysium/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/elysium/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.idea/pawn.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/BUILD.bazel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/envoyproxy/validate/validate.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/gogoprotobuf/BUILD.bazel" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/gogoprotobuf/gogoproto/gogo.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/README.grpc-gateway" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/annotations.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/http.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/httpbody.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/code.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/error_details.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/status.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/buf.gen.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/buf.work.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/cmd/main.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/config/app.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.gw.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.validate.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pb/service_grpc.pb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pkg/clickhouse/client.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/pkg/clickhouse/config.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/proto/buf.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/proto/buf.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/proto/service.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/server/handler/greet/greet.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/server/server.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pawn/services/rpc-server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/.bazeliskrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/.bazelversion" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/BUILD.bazel" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/WORKSPACE" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
