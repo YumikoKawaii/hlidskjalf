@@ -4,4 +4,4 @@ start:
 	docker-compose --env-file .env.docker -f docker-compose.yaml up -d
 
 stop:
-	docker-compose -f docker-compose.yaml down
+	docker-compose --env-file .env.docker -f docker-compose.yaml down
