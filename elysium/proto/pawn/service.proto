@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package pawn.api;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/pawn/api;api";
+
+// PawnService ...
+service PawnService {
+
+  rpc Greet(GreetRequest) returns (GreetResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/greet"
+    };
+  }
+
+}
+
+// GreetRequest ...
+message GreetRequest{}
+
+// GreetResponse ...
+message GreetResponse{
+  int32 code = 1;
+
+  string message = 2;
+}
