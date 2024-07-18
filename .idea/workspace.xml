@@ -4,7 +4,48 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b33dc622-5328-4dda-8ce1-ac7d91d0fb30" name="Changes" comment="" />
+    <list default="true" id="b33dc622-5328-4dda-8ce1-ac7d91d0fb30" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/hlidskjalf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hlidskjalf.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elysium/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/elysium/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.idea/pawn.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/BUILD.bazel" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/envoyproxy/validate/validate.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/gogoprotobuf/BUILD.bazel" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/gogoprotobuf/gogoproto/gogo.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/README.grpc-gateway" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/annotations.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/http.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/api/httpbody.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/code.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/error_details.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/.third_party/googleapis/google/rpc/status.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/buf.gen.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/buf.work.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/cmd/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/config/app.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/go.sum" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.gw.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pb/service.pb.validate.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pb/service_grpc.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pkg/clickhouse/client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/pkg/clickhouse/config.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/proto/buf.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/proto/buf.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/proto/service.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/server/handler/greet/greet.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/server/server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pawn/services/rpc-server.go" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,29 +69,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Go Build.go build migrate_banners.go.executor": "Run",
-    "Python.migration.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/home/yumiko/Workspace/hlidskjalf",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Go Build.go build migrate_banners.go.executor&quot;: &quot;Run&quot;,
+    &quot;Python.migration.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/yumiko/Workspace/hlidskjalf/pawn&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/workload/clickhouse/configs" />
       <recent name="$PROJECT_DIR$/pawn" />
       <recent name="$PROJECT_DIR$/pawn/.third_party" />
       <recent name="$PROJECT_DIR$/scripts" />
@@ -59,8 +101,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-gosdk-33c477a475b1-e0158606a674-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-241.18034.61" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-GO-241.18034.61" />
+        <option value="bundled-gosdk-33c477a475b1-e0158606a674-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-241.15989.157" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-GO-241.15989.157" />
       </set>
     </attachedChunks>
   </component>

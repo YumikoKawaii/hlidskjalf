@@ -15,3 +15,8 @@ install-protoc-go:
 	go install github.com/envoyproxy/protoc-gen-validate@v0.4.1
 	go install github.com/gogo/protobuf/protoc-gen-gofast@v1.3.1
 	go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.14.7
+
+.PHONY: update-bazel
+
+update-bazel:
+	$(BAZEL) run //:gazelle
