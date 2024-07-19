@@ -12,8 +12,8 @@ services:
       ZOO_PORT: 2181
       ZOO_SERVERS: server.1=footprint-zoo:2888:3888
     volumes:
-      - '../../../hlidskjalf-volumes/zoo/data:/data'
-      - '../../../hlidskjalf-volumes/zoo/datalog:/datalog'
+      - '../../../../hlidskjalf-volumes/zoo/data:/data'
+      - '../../../../hlidskjalf-volumes/zoo/datalog:/datalog'
     networks:
       - hlidskjalf
 
@@ -25,12 +25,13 @@ services:
       CLICKHOUSE_ADMIN_USER: yumiko
       CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
     volumes:
-      - '../../../hlidskjalf-volumes/ch-1-1:/bitnami/clickhouse'
+      - '../../../../hlidskjalf-volumes/ch-1-1:/bitnami/clickhouse'
       - './configs/ch-1-1.xml:/etc/clickhouse-server/config.d/config.xml'
     ulimits:
       nofile: 262144
     ports:
       - '${CLICKHOUSE_HTTP_PORT}:8123'
+      - '${CLICKHOUSE_TCP_PORT}:9000'
     networks:
       - hlidskjalf
 
@@ -42,7 +43,7 @@ services:
       CLICKHOUSE_ADMIN_USER: yumiko
       CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
     volumes:
-      - '../../../hlidskjalf-volumes/ch-1-2:/bitnami/clickhouse'
+      - '../../../../hlidskjalf-volumes/ch-1-2:/bitnami/clickhouse'
       - './configs/ch-1-2.xml:/etc/clickhouse-server/config.d/config.xml'
     ulimits:
       nofile: 262144
@@ -59,7 +60,7 @@ services:
       CLICKHOUSE_ADMIN_USER: yumiko
       CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
     volumes:
-      - '../../../hlidskjalf-volumes/ch-2-1:/bitnami/clickhouse'
+      - '../../../../hlidskjalf-volumes/ch-2-1:/bitnami/clickhouse'
       - './configs/ch-2-1.xml:/etc/clickhouse-server/config.d/config.xml'
     ports:
       - '9002:9000'
@@ -76,7 +77,7 @@ services:
       CLICKHOUSE_ADMIN_USER: yumiko
       CLICKHOUSE_ADMIN_PASSWORD: Yumiko1@
     volumes:
-      - '../../../hlidskjalf-volumes/ch-2-2:/bitnami/clickhouse'
+      - '../../../../hlidskjalf-volumes/ch-2-2:/bitnami/clickhouse'
       - './configs/ch-2-2.xml:/etc/clickhouse-server/config.d/config.xml'
     ports:
       - '9003:9000'

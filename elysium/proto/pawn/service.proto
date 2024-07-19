@@ -8,11 +8,21 @@ import "validate/validate.proto";
 option go_package = "elysium.com/applications/pawn/api;api";
 
 // PawnService ...
-service PawnService {
+service GreetService {
 
   rpc Greet(GreetRequest) returns (GreetResponse) {
     option (google.api.http) = {
       get: "/api/v1/greet"
+    };
+  }
+
+}
+
+service PerformanceService {
+
+  rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/students"
     };
   }
 
@@ -26,4 +36,26 @@ message GreetResponse{
   int32 code = 1;
 
   string message = 2;
+}
+
+message GetStudentsRequest {
+}
+
+message GetStudentsResponse {
+  uint32 code = 1;
+  string message = 2;
+  repeated Student students = 3;
+}
+
+message Student {
+  string id = 1;
+  string full_name = 2;
+  uint32 age = 3;
+  string sex = 4;
+  string major = 5;
+  int32 year = 6;
+  float gpa = 7;
+  repeated string hobbies = 8;
+  string country = 9;
+  string province = 10;
 }

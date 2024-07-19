@@ -9,7 +9,7 @@ import (
 )
 
 type ServiceServer struct {
-	pb.UnimplementedPawnServiceServer
+	pb.UnimplementedGreetServiceServer
 }
 
 func NewServiceServer() *ServiceServer {
