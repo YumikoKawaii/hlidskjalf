@@ -1,4 +1,2 @@
-./scripts/venv
-./pawn/pb
-./.idea
-./elysium./.idea
+/elysium./.idea/
+.idea
