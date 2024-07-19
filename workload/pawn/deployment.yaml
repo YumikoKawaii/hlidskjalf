@@ -19,3 +19,14 @@ spec:
         ports:
         - containerPort: 80
         - containerPort: 8080
+        env:
+        - name: CLICKHOUSE_ADDRESSES
+          value: clickhouse:9000
+        - name: CLICKHOUSE_DATABASE
+          value: pawn
+        - name: CLICKHOUSE_USERNAME
+          value: yumiko
+        - name: CLICKHOUSE_PASSWORD
+          value: Yumiko1@
+        - name: CLICKHOUSE_CLUSTER
+          value: hlidskjalf
