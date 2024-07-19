@@ -12,7 +12,7 @@ func convertStudentToProtoStudent(student students.Student) *pb.Student {
 		Age:      student.Age,
 		Sex:      student.Sex,
 		Major:    student.Major,
-		Year:     int32(student.Year),
+		Year:     student.Year,
 		Gpa:      student.GPA,
 		Hobbies:  student.Hobbies,
 		Country:  student.Country,
