@@ -24,7 +24,7 @@ func NewRepository(client clickhouse.Client, cfg *clickhouse.Config) Repository 
 
 func (r *repoImpl) GetStudents(ctx context.Context) ([]Student, error) {
 
-	table := fmt.Sprintf("%s.%s", r.chCfg.Cluster, SyntheticStudentProfilesTable)
+	table := fmt.Sprintf("%s.%s", r.chCfg.Database, SyntheticStudentProfilesTable)
 
 	query := fmt.Sprintf(
 		""+
