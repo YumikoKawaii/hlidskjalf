@@ -47,8 +47,8 @@ services:
       - './configs/ch-1-2.xml:/etc/clickhouse-server/config.d/config.xml'
     ulimits:
       nofile: 262144
-    ports:
-      - '9001:9000'
+#    ports:
+#      - '9001:9000'
     networks:
       - hlidskjalf
 
@@ -62,8 +62,8 @@ services:
     volumes:
       - '../../../../hlidskjalf-volumes/ch-2-1:/bitnami/clickhouse'
       - './configs/ch-2-1.xml:/etc/clickhouse-server/config.d/config.xml'
-    ports:
-      - '9002:9000'
+#    ports:
+#      - '9002:9000'
     ulimits:
       nofile: 262144
     networks:
@@ -79,8 +79,8 @@ services:
     volumes:
       - '../../../../hlidskjalf-volumes/ch-2-2:/bitnami/clickhouse'
       - './configs/ch-2-2.xml:/etc/clickhouse-server/config.d/config.xml'
-    ports:
-      - '9003:9000'
+#    ports:
+#      - '9003:9000'
     ulimits:
       nofile: 262144
     networks:

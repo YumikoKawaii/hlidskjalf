@@ -28,4 +28,6 @@ jobs:
           context: .
           file: ./elysium/dockerfiles/pawn.dockerfile
           push: true
-          tags: yumikokawaii/pawn:latest
+          tags: |
+            yumikokawaii/pawn:${{github.sha}}
+            yumikokawaii/pawn:latest
