@@ -7,18 +7,18 @@ import (
 	"net/http"
 )
 
-type Server struct {
-	studentsService students.Service
+type ServiceServer struct {
 	pb.UnimplementedPerformanceServiceServer
+	studentsService students.Service
 }
 
-func NewServer(service students.Service) *Server {
-	return &Server{
+func NewServiceServer(service students.Service) *ServiceServer {
+	return &ServiceServer{
 		studentsService: service,
 	}
 }
 
-func (s *Server) GetStudents(ctx context.Context, request pb.GetStudentsRequest) (*pb.GetStudentsResponse, error) {
+func (s *ServiceServer) GetStudents(ctx context.Context, request *pb.GetStudentsRequest) (*pb.GetStudentsResponse, error) {
 
 	studentsData, err := s.studentsService.GetStudents(ctx)
 	if err != nil {

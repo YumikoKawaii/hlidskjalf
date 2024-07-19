@@ -20,7 +20,7 @@ service GreetService {
 
 service PerformanceService {
 
-  rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse) {
+  rpc FFF(GetStudentsRequest) returns (GetStudentsResponse) {
     option (google.api.http) = {
       get: "/api/v1/students"
     };

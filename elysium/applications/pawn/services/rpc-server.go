@@ -78,14 +78,16 @@ func (s *Server) Register(grpcServer ...interface{}) error {
 			); err != nil {
 				return err
 			}
+
 		case pb.PerformanceServiceServer:
 			pb.RegisterPerformanceServiceServer(s.gRPC, _srv)
-			if err := pb.RegisterGreetServiceHandlerFromEndpoint(
+			if err := pb.RegisterPerformanceServiceHandlerFromEndpoint(
 				context.Background(), s.mux, s.cfg.GRPC.String(),
 				[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())},
 			); err != nil {
 				return err
 			}
+
 		default:
 			return xerrors.Errorf("error unknown GRPC service to register: %#v", srv)
 		}

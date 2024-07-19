@@ -20,15 +20,13 @@ func Serve(cfg *config.Config) {
 	sv := services.NewServer(svCfg)
 
 	greetSv := greet.NewServiceServer()
-	if err := sv.Register(greetSv); err != nil {
-		panic(xerrors.Errorf("error register greet server: %w", err))
-	}
 
 	chClient := clickhouse.Initialize(ctx)
 	chCfg := clickhouse.LoadConfig()
-	perfSv := performance.NewServer(students.NewService(students.NewRepository(chClient, chCfg)))
-	if err := sv.Register(perfSv); err != nil {
-		panic(xerrors.Errorf("error register perf server: %w", err))
+	perfSv := performance.NewServiceServer(students.NewService(students.NewRepository(chClient, chCfg)))
+
+	if err := sv.Register(greetSv, perfSv); err != nil {
+		panic(xerrors.Errorf("error register greet server: %w", err))
 	}
 
 	if err := sv.Serve(); err != nil {
