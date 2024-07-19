@@ -29,5 +29,5 @@ jobs:
           file: ./elysium/dockerfiles/pawn.dockerfile
           push: true
           tags: |
-            yumikokawaii/pawn:${echo ${{github.sha}} | cut -c1-6}
+            yumikokawaii/pawn:${{ github.sha.substr(0, 6) }}
             yumikokawaii/pawn:latest
