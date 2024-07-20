@@ -1,2 +1,5 @@
 /elysium./.idea/
+/elysium/etl/data
+/elysium/etl/results
+/elysium/venv
 .idea
