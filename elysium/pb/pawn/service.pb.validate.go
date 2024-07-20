@@ -340,7 +340,7 @@ func (m *Student) Validate() error {
 
 	// no validation rules for Major
 
-	// no validation rules for Year
+	// no validation rules for Level
 
 	// no validation rules for Gpa
 

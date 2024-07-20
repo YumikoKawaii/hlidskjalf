@@ -53,7 +53,7 @@ message Student {
   uint32 age = 3;
   string sex = 4;
   string major = 5;
-  uint32 year = 6;
+  string level = 6;
   float gpa = 7;
   repeated string hobbies = 8;
   string country = 9;

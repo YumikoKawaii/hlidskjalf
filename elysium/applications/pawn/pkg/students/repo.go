@@ -43,7 +43,7 @@ func (r *repoImpl) GetStudents(ctx context.Context) ([]Student, error) {
 	for rows.Next() {
 		student := Student{}
 		if err := rows.Scan(
-			&student.Id, &student.Name, &student.Age, &student.Sex, &student.Major, &student.Year, &student.GPA,
+			&student.Id, &student.Name, &student.Age, &student.Sex, &student.Major, &student.Level, &student.GPA,
 			&student.Hobbies, &student.Country, &student.Province,
 		); err != nil {
 			return nil, err

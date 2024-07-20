@@ -6,7 +6,7 @@ type Student struct {
 	Age      uint32
 	Sex      string
 	Major    string
-	Year     uint32
+	Level    string
 	GPA      float32
 	Hobbies  []string
 	Country  string
