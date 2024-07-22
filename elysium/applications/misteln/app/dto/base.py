@@ -2,7 +2,7 @@ from typing import Optional, List, Union, Dict
 
 from pydantic import BaseModel
 
-from applications.misteln.app.helper.utilities import convert_str_to_camel
+from app.helper.utilities import convert_str_to_camel
 
 
 class CamelBaseModel(BaseModel):

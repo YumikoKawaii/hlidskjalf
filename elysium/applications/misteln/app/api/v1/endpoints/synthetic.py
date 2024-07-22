@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from applications.misteln.app.dto.pawn.synthetic import GetSyntheticStudentsResponse
-from applications.misteln.app.adapter.pawn import PawnAdapter
+from app.dto.pawn.synthetic import GetSyntheticStudentsResponse
+from app.adapter.pawn import PawnAdapter
 
 router = APIRouter()
 

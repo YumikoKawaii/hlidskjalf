@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from applications.misteln.app.dto.base import CamelBaseModel
+from app.dto.base import CamelBaseModel
 
 
 class SyntheticStudent(CamelBaseModel):

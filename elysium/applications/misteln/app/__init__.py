@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from applications.misteln.setting import settings
-from applications.misteln.app.api.v1.endpoints import v1_router
+from setting import settings
+from app.api.v1.endpoints import v1_router
 
 
 def initialize() -> FastAPI:

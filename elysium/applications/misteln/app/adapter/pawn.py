@@ -2,8 +2,8 @@ from typing import Dict
 import requests
 import logging
 
-from applications.misteln.setting import settings
-from applications.misteln.app.dto.pawn.synthetic import GetSyntheticStudentsResponse
+from setting import settings
+from app.dto.pawn.synthetic import GetSyntheticStudentsResponse
 
 
 class PawnAdapter:
