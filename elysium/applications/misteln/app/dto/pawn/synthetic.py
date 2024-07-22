@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from applications.misteln.app.dto.base import CamelBaseModel
 
 
 class SyntheticStudent(CamelBaseModel):
     id: str
-    name: str
+    full_name: Optional[str] = None
     age: int
     sex: str
     major: str
@@ -17,6 +17,6 @@ class SyntheticStudent(CamelBaseModel):
 
 
 class GetSyntheticStudentsResponse(CamelBaseModel):
-    code: str
+    code: int
     message: str
     students: List[SyntheticStudent]
