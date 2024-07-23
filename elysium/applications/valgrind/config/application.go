@@ -7,7 +7,10 @@ import (
 
 type Config struct {
 	MigrateSchema struct{} `kong:"cmd"`
+	Serve         struct{} `kong:"cmd"`
 
+	HTTPPort      int               `env:"HTTP_PORT" default:"8080"`
+	GRPCPort      int               `env:"GRPC_PORT" default:"8090"`
 	ClickhouseCfg clickhouse.Config `kong:"embed"`
 }
 
