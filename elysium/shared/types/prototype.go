@@ -12,4 +12,7 @@ type Prototype interface {
 	ToMySQLTableName() string
 	// postgres related settings
 	ToPostgresTableName() string
+
+	// Serialize data
+	ToBytes() []byte
 }
