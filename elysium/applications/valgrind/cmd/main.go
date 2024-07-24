@@ -18,7 +18,8 @@ func main() {
 	case "migrate-schema":
 		fmt.Println("migrating schema...")
 		serve.Migrate(cfg)
-		return
+	case "consume":
+		serve.Consume(cfg)
 	default:
 		log.Fatalf("unexpected command: %v", kongCtx.Command())
 	}

@@ -7,6 +7,7 @@ import (
 	"elysium.com/shared/types"
 	"fmt"
 	"google.golang.org/appengine/log"
+	"strings"
 	"time"
 )
 
@@ -15,12 +16,23 @@ const (
 )
 
 type Consumer interface {
-	Consume(ctx context.Context)
+	Consume(ctx context.Context, topic string)
+	Close(ctx context.Context) error
 }
 
 type Batch struct {
 	subject    string
 	prototypes []types.Prototype
+}
+
+func NewConsumer(redisConsumer redis.Consumer, chClient clickhouse.Client, chCfg clickhouse.Config) Consumer {
+	return &consumerImpl{
+		redisConsumer: redisConsumer,
+		chClient:      chClient,
+		chCfg:         chCfg,
+		eventChan:     make(chan types.Prototype),
+		batchChan:     make(chan Batch),
+	}
 }
 
 type consumerImpl struct {
@@ -111,7 +123,7 @@ func (c *consumerImpl) handleBatch(ctx context.Context, batch Batch) error {
 			"insert into %s "+
 			"values %s",
 		distributedTable,
-		values,
+		strings.Join(values, ","),
 	)
 
 	if err := c.chClient.Exec(ctx, stmt); err != nil {
@@ -119,4 +131,8 @@ func (c *consumerImpl) handleBatch(ctx context.Context, batch Batch) error {
 	}
 
 	return nil
+}
+
+func (c *consumerImpl) Close(ctx context.Context) error {
+	return c.redisConsumer.Close(ctx)
 }
