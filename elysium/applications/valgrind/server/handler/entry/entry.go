@@ -13,8 +13,10 @@ type Service struct {
 	publisher publish.Publisher
 }
 
-func NewService() *Service {
-	return &Service{}
+func NewService(publisher publish.Publisher) *Service {
+	return &Service{
+		publisher: publisher,
+	}
 }
 
 func (s *Service) Entry(ctx context.Context, request *pb.EntryRequest) (*pb.EntryResponse, error) {

@@ -30,7 +30,7 @@ func NewEntryServiceClient(cc grpc.ClientConnInterface) EntryServiceClient {
 
 func (c *entryServiceClient) Entry(ctx context.Context, in *EntryRequest, opts ...grpc.CallOption) (*EntryResponse, error) {
 	out := new(EntryResponse)
-	err := c.cc.Invoke(ctx, "/pawn.api.EntryService/Entry", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/valgrind.api.EntryService/Entry", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func _EntryService_Entry_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pawn.api.EntryService/Entry",
+		FullMethod: "/valgrind.api.EntryService/Entry",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(EntryServiceServer).Entry(ctx, req.(*EntryRequest))
@@ -84,7 +84,7 @@ func _EntryService_Entry_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 var _EntryService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "pawn.api.EntryService",
+	ServiceName: "valgrind.api.EntryService",
 	HandlerType: (*EntryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
