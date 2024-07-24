@@ -12,11 +12,13 @@ type SyntheticStudent struct {
 	Sex        string    `db:"sex" ctype:"String" json:"sex,omitempty"`
 	Major      string    `db:"major" ctype:"String" json:"major,omitempty"`
 	Level      string    `db:"level" ctype:"String" json:"level,omitempty"`
-	GPA        float32   `db:"gpa" ctype:"Float32" json:"GPA,omitempty"`
+	GPA        float32   `db:"gpa" ctype:"Float32" json:"gpa,omitempty"`
 	Hobbies    []string  `db:"hobbies" ctype:"Array(String)" json:"hobbies,omitempty"`
 	Country    string    `db:"country" ctype:"String" json:"country,omitempty"`
 	Province   string    `db:"province" ctype:"String" json:"province,omitempty"`
 	ActionTime time.Time `db:"action_time" ctype:"DateTime64(3)" json:"actionTime"`
+
+	Subject string `db:"-" ctype:"-" json:"subject"`
 }
 
 func (SyntheticStudent) ToClickhouseTableName() string {
@@ -54,4 +56,14 @@ func (SyntheticStudent) ToPostgresTableName() string {
 func (s SyntheticStudent) ToBytes() []byte {
 	bytes, _ := json.Marshal(s)
 	return bytes
+}
+
+func (SyntheticStudent) Analyze(data []byte) (Prototype, error) {
+	student := SyntheticStudent{}
+	err := json.Unmarshal(data, &student)
+	return student, err
+}
+
+func (SyntheticStudent) GetSubject() string {
+	return "synthetic_student"
 }

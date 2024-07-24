@@ -13,6 +13,12 @@ type Prototype interface {
 	// postgres related settings
 	ToPostgresTableName() string
 
-	// Serialize data
+	// serialize data
 	ToBytes() []byte
+	Analyze([]byte) (Prototype, error)
+	GetSubject() string
+}
+
+type Primordial struct {
+	Subject string `json:"subject"`
 }
