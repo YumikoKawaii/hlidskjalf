@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -43,6 +44,10 @@ func (SyntheticStudent) GetClickhouseEngine() string {
 
 func (SyntheticStudent) GetClickhouseTTL() string {
 	return "toDate(action_time) + toIntervalDay(10)"
+}
+
+func (SyntheticStudent) ToInsertValue() string {
+	return fmt.Sprintf("(%[1]s, %[2]s, %[3]s, %[4]s, %[5]s, %[6]s, %[7]s, %[8]s, %[9]s, %[10]s, %[11]s)")
 }
 
 func (SyntheticStudent) ToMySQLTableName() string {

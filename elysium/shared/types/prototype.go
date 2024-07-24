@@ -8,6 +8,8 @@ type Prototype interface {
 	GetShardingKey() string
 	GetClickhouseEngine() string
 	GetClickhouseTTL() string
+	ToInsertValue() string
+
 	// mysql related settings
 	ToMySQLTableName() string
 	// postgres related settings
