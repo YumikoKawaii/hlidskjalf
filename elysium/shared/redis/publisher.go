@@ -2,13 +2,12 @@ package redis
 
 import (
 	"context"
-	"elysium.com/shared/types"
 	"github.com/go-redis/redis/v8"
 	"google.golang.org/appengine/log"
 )
 
 type Publisher interface {
-	Publish(ctx context.Context, topic string, prototype types.Prototype) error
+	Publish(ctx context.Context, topic string, bytes []byte) error
 }
 
 type publisherImpl struct {
@@ -21,9 +20,9 @@ func NewPublisher(client *redis.Client) Publisher {
 	}
 }
 
-func (p *publisherImpl) Publish(ctx context.Context, topic string, prototype types.Prototype) error {
+func (p *publisherImpl) Publish(ctx context.Context, topic string, bytes []byte) error {
 
-	if err := p.redisClient.Publish(ctx, topic, prototype.ToBytes()); err != nil {
+	if err := p.redisClient.Publish(ctx, topic, bytes); err != nil {
 		log.Errorf(ctx, "error while publish message to topic %s: %s", topic, err.Err())
 	}
 
