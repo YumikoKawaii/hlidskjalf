@@ -8,8 +8,18 @@ type Prototype interface {
 	GetShardingKey() string
 	GetClickhouseEngine() string
 	GetClickhouseTTL() string
+
 	// mysql related settings
 	ToMySQLTableName() string
 	// postgres related settings
 	ToPostgresTableName() string
+
+	// serialize data
+	ToBytes() []byte
+	Analyze([]byte) (Prototype, error)
+	GetSubject() string
+}
+
+type Primordial struct {
+	Subject string `json:"subject"`
 }

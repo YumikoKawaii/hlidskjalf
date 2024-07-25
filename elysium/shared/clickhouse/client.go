@@ -20,40 +20,40 @@ type clientImpl struct {
 	conn client.Conn
 }
 
-func Initialize(ctx context.Context) Client {
+func Initialize(ctx context.Context, cfg Config) Client {
 
-	cfg := LoadConfig()
-
-	conn, err := client.Open(&client.Options{
-		Addr: strings.Split(cfg.Addresses, ";"),
-		Auth: client.Auth{
-			Database: cfg.Database,
-			Username: cfg.Username,
-			Password: cfg.Password,
+	conn, err := client.Open(
+		&client.Options{
+			Addr: strings.Split(cfg.Addresses, ";"),
+			Auth: client.Auth{
+				Database: cfg.Database,
+				Username: cfg.Username,
+				Password: cfg.Password,
+			},
+			DialContext: func(ctx context.Context, addr string) (net.Conn, error) {
+				//dialCount++
+				var d net.Dialer
+				return d.DialContext(ctx, "tcp", addr)
+			},
+			Debug: true,
+			Debugf: func(format string, v ...any) {
+				fmt.Printf(format+"\n", v...)
+			},
+			Settings: client.Settings{
+				"max_execution_time": 60,
+			},
+			Compression: &client.Compression{
+				Method: client.CompressionLZ4,
+			},
+			DialTimeout:          time.Second * 30,
+			MaxOpenConns:         5,
+			MaxIdleConns:         5,
+			ConnMaxLifetime:      time.Duration(10) * time.Minute,
+			ConnOpenStrategy:     client.ConnOpenInOrder,
+			BlockBufferSize:      10,
+			MaxCompressionBuffer: 10240,
 		},
-		DialContext: func(ctx context.Context, addr string) (net.Conn, error) {
-			//dialCount++
-			var d net.Dialer
-			return d.DialContext(ctx, "tcp", addr)
-		},
-		Debug: true,
-		Debugf: func(format string, v ...any) {
-			fmt.Printf(format+"\n", v...)
-		},
-		Settings: client.Settings{
-			"max_execution_time": 60,
-		},
-		Compression: &client.Compression{
-			Method: client.CompressionLZ4,
-		},
-		DialTimeout:          time.Second * 30,
-		MaxOpenConns:         5,
-		MaxIdleConns:         5,
-		ConnMaxLifetime:      time.Duration(10) * time.Minute,
-		ConnOpenStrategy:     client.ConnOpenInOrder,
-		BlockBufferSize:      10,
-		MaxCompressionBuffer: 10240,
-	})
+	)
 
 	if err != nil {
 		panic(xerrors.Errorf("error init clickhouse client: %w", err))

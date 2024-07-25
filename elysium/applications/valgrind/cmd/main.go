@@ -1,20 +1,26 @@
 package main
 
 import (
-	"context"
-	"elysium.com/applications/valgrind/pkg/mirgation"
-	"elysium.com/shared/clickhouse"
-	"elysium.com/shared/types"
+	"elysium.com/applications/valgrind/config"
+	"elysium.com/applications/valgrind/serve"
+	"elysium.com/applications/valgrind/server"
+	"fmt"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 
-	ctx := context.Background()
-	chCfg := clickhouse.LoadConfig()
-	chClient := clickhouse.Initialize(ctx)
-
-	migrator := mirgation.NewMigrator(chClient, chCfg)
-
-	migrator.MigrateSchema(ctx, types.SyntheticStudent{})
+	cfg, kongCtx := config.Initialize()
+	switch kongCtx.Command() {
+	case "serve":
+		server.Serve(cfg)
+	case "migrate-schema":
+		fmt.Println("migrating schema...")
+		serve.Migrate(cfg)
+	case "consume":
+		serve.Consume(cfg)
+	default:
+		logrus.Fatalf("unexpected command: %v", kongCtx.Command())
+	}
 
 }
