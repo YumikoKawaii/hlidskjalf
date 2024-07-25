@@ -4,6 +4,7 @@ import (
 	"context"
 	"elysium.com/shared/redis"
 	"elysium.com/shared/types"
+	"github.com/sirupsen/logrus"
 )
 
 type Publisher interface {
@@ -21,10 +22,12 @@ func NewPublisher(publisher redis.Publisher) Publisher {
 func (p *publisherImpl) Publish(ctx context.Context, topic string, bytes []byte) error {
 
 	// analyze if bytes is valid
-	_, err := types.Analyze(bytes)
+	prototype, err := types.Analyze(bytes)
 	if err != nil {
 		return err
 	}
+
+	logrus.Infof("[Valgrind] - Incoming event: %s", prototype.GetSubject())
 
 	return p.redisPublisher.Publish(ctx, topic, bytes)
 }

@@ -2,8 +2,8 @@ package redis
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
-	"google.golang.org/appengine/log"
+	v8 "github.com/go-redis/redis/v8"
+	"github.com/sirupsen/logrus"
 )
 
 type Publisher interface {
@@ -11,10 +11,10 @@ type Publisher interface {
 }
 
 type publisherImpl struct {
-	redisClient *redis.Client
+	redisClient *v8.Client
 }
 
-func NewPublisher(client *redis.Client) Publisher {
+func NewPublisher(client *v8.Client) Publisher {
 	return &publisherImpl{
 		redisClient: client,
 	}
@@ -22,10 +22,10 @@ func NewPublisher(client *redis.Client) Publisher {
 
 func (p *publisherImpl) Publish(ctx context.Context, topic string, bytes []byte) error {
 
-	if err := p.redisClient.Publish(ctx, topic, bytes); err != nil {
-		log.Errorf(ctx, "error while publish message to topic %s: %s", topic, err.Err())
+	if err := p.redisClient.Publish(ctx, topic, bytes).Err(); err != nil {
+		logrus.Errorf("error while publish message to topic %s: %s", topic, err.Error())
 	}
-
+	logrus.Infof("[Valgrind] - Event was sent to topic %s", topic)
 	return nil
 
 }

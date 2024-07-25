@@ -5,7 +5,7 @@ import (
 	"elysium.com/applications/valgrind/serve"
 	"elysium.com/applications/valgrind/server"
 	"fmt"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -13,7 +13,6 @@ func main() {
 	cfg, kongCtx := config.Initialize()
 	switch kongCtx.Command() {
 	case "serve":
-		fmt.Println("serving...")
 		server.Serve(cfg)
 	case "migrate-schema":
 		fmt.Println("migrating schema...")
@@ -21,7 +20,7 @@ func main() {
 	case "consume":
 		serve.Consume(cfg)
 	default:
-		log.Fatalf("unexpected command: %v", kongCtx.Command())
+		logrus.Fatalf("unexpected command: %v", kongCtx.Command())
 	}
 
 }

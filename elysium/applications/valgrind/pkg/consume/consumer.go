@@ -6,7 +6,7 @@ import (
 	"elysium.com/shared/redis"
 	"elysium.com/shared/types"
 	"fmt"
-	"google.golang.org/appengine/log"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 )
@@ -98,7 +98,7 @@ func (c *consumerImpl) forkBatchChan(ctx context.Context) {
 			batches := divideBatchIntoBatchesBySubject(batch)
 			for _, b := range batches {
 				if err := c.handleBatch(ctx, b); err != nil {
-					log.Errorf(ctx, "error handling batch: %s", err.Error())
+					logrus.Errorf("error handling batch: %s", err.Error())
 				}
 			}
 		}

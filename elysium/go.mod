@@ -6,9 +6,11 @@ require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.26.0
 	github.com/alecthomas/kong v0.9.0
 	github.com/envoyproxy/protoc-gen-validate v1.0.4
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
+	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/appengine v1.6.8
 	google.golang.org/genproto/googleapis/api v0.0.0-20240709173604-40e1e62336c5
@@ -24,7 +26,6 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
