@@ -7,7 +7,7 @@ import (
 	"elysium.com/shared/clickhouse"
 	"elysium.com/shared/redis"
 	"elysium.com/shared/topics"
-	"google.golang.org/appengine/log"
+	"github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"time"
@@ -18,14 +18,14 @@ func Consume(cfg *config.Config) {
 	ctx := context.Background()
 
 	redisCli := redis.Initialize(cfg.RedisCfg)
-	redisConsumer := redis.NewConsumer(redisCli)
+	redisConsumer := redis.NewConsumer(redisCli, consume.InformMessageFn)
 	chCli := clickhouse.Initialize(ctx, cfg.ClickhouseCfg)
 
 	consumer := consume.NewConsumer(redisConsumer, chCli, cfg.ClickhouseCfg)
 
 	consumer.Consume(ctx, topics.EntryTopic)
 
-	log.Infof(ctx, "[Valgrind] serving...")
+	logrus.Infof("[Valgrind] - Serving...")
 	// trap here until get terminated
 
 	signals := make(chan os.Signal, 1)
@@ -38,8 +38,8 @@ func Consume(cfg *config.Config) {
 
 	// we need to close consumer group first to avoid sending to closed worker pool.
 	if err := consumer.Close(closeCtx); err != nil {
-		log.Errorf(ctx, "error closing consumer: %s", err.Error())
+		logrus.Errorf("error closing consumer: %s", err.Error())
 	}
 
-	log.Infof(ctx, "shuting down...")
+	logrus.Infof("shuting down...")
 }

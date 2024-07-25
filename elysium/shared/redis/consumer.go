@@ -8,6 +8,8 @@ import (
 
 type HandleMessageFn func(bytes []byte) error
 
+type InformMessageHandled func()
+
 type Consumer interface {
 	Consume(ctx context.Context, topic string, fn HandleMessageFn)
 	Close(ctx context.Context) error
@@ -16,11 +18,13 @@ type Consumer interface {
 type consumerImpl struct {
 	redisClient *v8.Client
 	subscriber  *v8.PubSub
+	informFn    InformMessageHandled
 }
 
-func NewConsumer(client *v8.Client) Consumer {
+func NewConsumer(client *v8.Client, informFn InformMessageHandled) Consumer {
 	return &consumerImpl{
 		redisClient: client,
+		informFn:    informFn,
 	}
 }
 
@@ -29,23 +33,20 @@ func (c *consumerImpl) Consume(ctx context.Context, topic string, fn HandleMessa
 	subscriber := c.redisClient.Subscribe(ctx, topic)
 	c.subscriber = subscriber
 	for {
-		b, err := c.subscriber.Receive(ctx)
+		message, err := c.subscriber.ReceiveMessage(ctx)
 		if err != nil {
 			logrus.Errorf("error while receiving message: %s", err.Error())
 			continue
 		}
 
-		bytes, ok := b.([]byte)
-		if !ok {
-			logrus.Errorf("error invalid message payload: %v", b)
-			continue
-		}
+		bytes := []byte(message.Payload)
 
 		if err := fn(bytes); err != nil {
 			logrus.Errorf("error handling message: %s", err.Error())
 		}
+
+		c.informFn()
 	}
-	//return nil
 }
 
 func (c *consumerImpl) Close(ctx context.Context) error {

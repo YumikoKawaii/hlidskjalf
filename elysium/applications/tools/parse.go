@@ -20,7 +20,7 @@ func main() {
 		Hobbies:    nil,
 		Country:    "",
 		Province:   "",
-		ActionTime: time.Time{},
+		ActionTime: time.Now().UTC(),
 		Subject:    "synthetic_student",
 	}
 
