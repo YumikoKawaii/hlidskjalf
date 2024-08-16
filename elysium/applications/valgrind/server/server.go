@@ -6,8 +6,8 @@ import (
 	"elysium.com/applications/valgrind/server/handler/entry"
 	"elysium.com/applications/valgrind/services"
 	"elysium.com/shared/redis"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
-	"log"
 )
 
 func Serve(cfg *config.Config) {
@@ -27,6 +27,6 @@ func Serve(cfg *config.Config) {
 	}
 
 	if err := sv.Serve(); err != nil {
-		log.Fatalf(err.Error())
+		logrus.Fatalf(err.Error())
 	}
 }

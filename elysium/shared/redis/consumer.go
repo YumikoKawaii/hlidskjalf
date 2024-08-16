@@ -2,11 +2,13 @@ package redis
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
-	"google.golang.org/appengine/log"
+	v8 "github.com/go-redis/redis/v8"
+	"github.com/sirupsen/logrus"
 )
 
 type HandleMessageFn func(bytes []byte) error
+
+type InformMessageHandled func()
 
 type Consumer interface {
 	Consume(ctx context.Context, topic string, fn HandleMessageFn)
@@ -14,13 +16,15 @@ type Consumer interface {
 }
 
 type consumerImpl struct {
-	redisClient *redis.Client
-	subscriber  *redis.PubSub
+	redisClient *v8.Client
+	subscriber  *v8.PubSub
+	informFn    InformMessageHandled
 }
 
-func NewConsumer(client *redis.Client) Consumer {
+func NewConsumer(client *v8.Client, informFn InformMessageHandled) Consumer {
 	return &consumerImpl{
 		redisClient: client,
+		informFn:    informFn,
 	}
 }
 
@@ -29,23 +33,20 @@ func (c *consumerImpl) Consume(ctx context.Context, topic string, fn HandleMessa
 	subscriber := c.redisClient.Subscribe(ctx, topic)
 	c.subscriber = subscriber
 	for {
-		b, err := c.subscriber.Receive(ctx)
+		message, err := c.subscriber.ReceiveMessage(ctx)
 		if err != nil {
-			log.Errorf(ctx, "error while receiving message: %s", err.Error())
+			logrus.Errorf("error while receiving message: %s", err.Error())
 			continue
 		}
 
-		bytes, ok := b.([]byte)
-		if !ok {
-			log.Errorf(ctx, "error invalid message payload: %v", b)
-			continue
-		}
+		bytes := []byte(message.Payload)
 
 		if err := fn(bytes); err != nil {
-			log.Errorf(ctx, "error handling message: %s", err.Error())
+			logrus.Errorf("error handling message: %s", err.Error())
 		}
+
+		c.informFn()
 	}
-	//return nil
 }
 
 func (c *consumerImpl) Close(ctx context.Context) error {

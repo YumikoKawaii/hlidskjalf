@@ -11,5 +11,14 @@ func divideBatchIntoBatchesBySubject(primo Batch) []Batch {
 
 	batches := make([]Batch, 0)
 
+	for subject := range batchMap {
+		batches = append(
+			batches, Batch{
+				subject:    subject,
+				prototypes: batchMap[subject],
+			},
+		)
+	}
+
 	return batches
 }

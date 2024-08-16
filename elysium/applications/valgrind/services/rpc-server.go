@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -99,7 +99,7 @@ func (s *Server) Serve() error {
 	}
 
 	go func() {
-		log.Printf("[Valgrind] - Serving on %s\n", s.cfg.HTTP)
+		logrus.Infof("[Valgrind] - Serving on %s", s.cfg.HTTP)
 		if err := httpServer.ListenAndServe(); err != nil {
 			errch <- err
 		}
@@ -123,7 +123,7 @@ func (s *Server) Serve() error {
 			defer cancel()
 			s.gRPC.GracefulStop()
 			if err := httpServer.Shutdown(ctx); err != nil {
-				log.Printf("failed to stop server: %w", err)
+				logrus.Errorf("failed to stop server: %w", err)
 			}
 		case err := <-errch:
 			return err

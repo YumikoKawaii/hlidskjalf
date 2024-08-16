@@ -6,7 +6,7 @@ import (
 	"elysium.com/shared/redis"
 	"elysium.com/shared/types"
 	"fmt"
-	"google.golang.org/appengine/log"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 )
@@ -23,6 +23,10 @@ type Consumer interface {
 type Batch struct {
 	subject    string
 	prototypes []types.Prototype
+}
+
+func InformMessageFn() {
+	logrus.Infof("[Valgrind] - Message is processed")
 }
 
 func NewConsumer(redisConsumer redis.Consumer, chClient clickhouse.Client, chCfg clickhouse.Config) Consumer {
@@ -73,10 +77,15 @@ func (c *consumerImpl) forkEventChan() {
 	for {
 		select {
 		case <-ticker.C:
+			if len(bag) == 0 {
+				continue
+			}
 			batch := Batch{
 				prototypes: bag,
 			}
 			c.batchChan <- batch
+			bag = make([]types.Prototype, 0)
+			logrus.Infof("[Valgrind] - Flush all events")
 		case event := <-c.eventChan:
 			bag = append(bag, event)
 			if len(bag) == batchSize {
@@ -85,6 +94,7 @@ func (c *consumerImpl) forkEventChan() {
 				}
 				c.batchChan <- batch
 				bag = make([]types.Prototype, 0)
+				logrus.Infof("[Valgrind] - Flush all events")
 			}
 		}
 	}
@@ -95,10 +105,11 @@ func (c *consumerImpl) forkBatchChan(ctx context.Context) {
 	for {
 		select {
 		case batch := <-c.batchChan:
+			logrus.Infof("[Valgrind] - Received batch, length: %d", len(batch.prototypes))
 			batches := divideBatchIntoBatchesBySubject(batch)
 			for _, b := range batches {
 				if err := c.handleBatch(ctx, b); err != nil {
-					log.Errorf(ctx, "error handling batch: %s", err.Error())
+					logrus.Errorf("error handling batch: %s", err.Error())
 				}
 			}
 		}
@@ -115,7 +126,7 @@ func (c *consumerImpl) handleBatch(ctx context.Context, batch Batch) error {
 	// generate query
 	values := make([]string, 0)
 	for _, prototype := range batch.prototypes {
-		values = append(values, prototype.ToInsertValue())
+		values = append(values, types.ToInsertValue(prototype))
 	}
 
 	stmt := fmt.Sprintf(
