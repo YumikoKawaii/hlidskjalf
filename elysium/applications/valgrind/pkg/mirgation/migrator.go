@@ -45,6 +45,9 @@ func (m *migratorImpl) MigrateSchema(ctx context.Context, prototype types.Protot
 	protoes := make([]ColumnDescription, 0)
 	for idx := 0; idx < fields.NumField(); idx++ {
 		field := fields.Field(idx)
+		if field.Tag.Get("db") == "-" {
+			continue
+		}
 		protoes = append(
 			protoes, ColumnDescription{
 				Name: field.Tag.Get("db"),
