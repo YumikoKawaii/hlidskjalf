@@ -44,10 +44,10 @@ func (m *EntryRequest) Validate() error {
 		return nil
 	}
 
-	if utf8.RuneCountInString(m.GetPayload()) < 1 {
+	if len(m.GetPayload()) < 1 {
 		return EntryRequestValidationError{
 			field:  "Payload",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be at least 1 bytes",
 		}
 	}
 

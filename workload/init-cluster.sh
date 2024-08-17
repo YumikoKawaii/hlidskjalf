@@ -24,4 +24,4 @@ kubectl label node k3d-worker-1-0 node-role.kubernetes.io/worker=worker
 kubectl label node k3d-worker-2-0 node-role.kubernetes.io/worker=worker
 kubectl label node k3d-worker-3-0 node-role.kubernetes.io/worker=worker
 
-kubectl create namespace misteln
+kubectl create namespace elysium

@@ -5,7 +5,6 @@ import (
 	"elysium.com/applications/valgrind/pkg/publish"
 	pb "elysium.com/pb/valgrind"
 	"elysium.com/shared/topics"
-	"encoding/base64"
 	"net/http"
 )
 
@@ -29,16 +28,7 @@ func (s *Service) Entry(ctx context.Context, request *pb.EntryRequest) (*pb.Entr
 		}, nil
 	}
 
-	// decode payload
-	payload, err := base64.StdEncoding.DecodeString(request.Payload)
-	if err != nil {
-		return &pb.EntryResponse{
-			Code:    http.StatusBadRequest,
-			Message: "invalid payload",
-		}, nil
-	}
-
-	if err := s.publisher.Publish(ctx, topics.EntryTopic, payload); err != nil {
+	if err := s.publisher.Publish(ctx, topics.EntryTopic, request.Payload); err != nil {
 		return &pb.EntryResponse{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),

@@ -20,7 +20,8 @@ service EntryService {
 }
 
 message EntryRequest {
-  string payload = 1 [(validate.rules).string = {min_len: 1}];
+//  string payload = 1 [(validate.rules).string = {min_len: 1}];
+  bytes payload = 1 [(validate.rules).bytes = {min_len: 1}];
 }
 
 message EntryResponse {
