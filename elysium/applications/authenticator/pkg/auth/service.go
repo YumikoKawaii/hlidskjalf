@@ -21,8 +21,8 @@ type Service interface {
 }
 
 type Secret struct {
-	HashKey    string
-	EncryptKey string
+	HashKey    string `env:"HASH_KEY"`
+	EncryptKey string `env:"ENCRYPT_KEY"`
 }
 
 type serviceImpl struct {
@@ -30,8 +30,11 @@ type serviceImpl struct {
 	secret Secret
 }
 
-func NewService() Service {
-	return &serviceImpl{}
+func NewService(r repository.Repository, secret Secret) Service {
+	return &serviceImpl{
+		repo:   r,
+		secret: secret,
+	}
 }
 
 func (s *serviceImpl) Signup(ctx context.Context, email, password string) (*repository.Account, error) {

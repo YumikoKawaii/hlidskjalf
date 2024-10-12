@@ -14,6 +14,10 @@ type Handler struct {
 	apiKeyResolver api_key.Resolver
 }
 
-func NewService() *Handler {
-	return &Handler{}
+func NewService(service auth.Service, jwtResolver jwt.Resolver, apiKeyResolver api_key.Resolver) *Handler {
+	return &Handler{
+		authService:    service,
+		jwtResolver:    jwtResolver,
+		apiKeyResolver: apiKeyResolver,
+	}
 }

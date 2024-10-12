@@ -12,14 +12,15 @@ type Repository interface {
 	GetAccountByHashedEmail(ctx context.Context, email string) (*Account, error)
 
 	UpsertPermissions(ctx context.Context, permissions []Permission, batchSize int) error
+	GetPermissions(ctx context.Context) ([]Permission, error)
 }
 
 type repoImpl struct {
 	db *gorm.DB
 }
 
-func NewRepository() Repository {
-	return &repoImpl{}
+func NewRepository(db *gorm.DB) Repository {
+	return &repoImpl{db: db}
 }
 
 func (r *repoImpl) UpsertAccount(ctx context.Context, account *Account) error {
@@ -42,4 +43,10 @@ func (r *repoImpl) UpsertPermissions(ctx context.Context, permissions []Permissi
 	return r.db.Model(&Permission{}).Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).CreateInBatches(permissions, batchSize).Error
+}
+
+func (r *repoImpl) GetPermissions(ctx context.Context) ([]Permission, error) {
+	permissions := make([]Permission, 0)
+	err := r.db.Model(&Permission{}).Find(permissions).Error
+	return permissions, err
 }
