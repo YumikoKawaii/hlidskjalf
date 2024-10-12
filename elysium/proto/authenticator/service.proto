@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package authenticator.api;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/authenticator/api;api";
+
+// Authenticator ...
+service Authenticator {
+
+  rpc Signup(SignupRequest) returns (SignupResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/signup"
+      body: "*"
+    };
+  }
+
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/login"
+      body: "*"
+    };
+  }
+
+  rpc UpdatePermissions(UpdatePermissionsRequest) returns (UpdatePermissionsResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/permissions"
+      body: "*"
+    };
+  }
+
+//  rpc GetUsersInfo(GetUsersInfoRequest) returns (GetUsersInfoResponse) {
+//    option (google.api.http) = {
+//      get: "/api/v1/users"
+//    };
+//  }
+//
+//  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {
+//    option (google.api.http) = {
+//      get: "/api/v1/users/{user_id}"
+//    };
+//  }
+
+}
+
+message SignupRequest {
+  string email = 1 [(validate.rules).string = {min_len: 6}];
+  string password = 2 [(validate.rules).string = {min_len: 8}];
+}
+
+message SignupResponse {
+  int32 code = 1;
+  string message = 2;
+  string token = 3;
+}
+
+message LoginRequest {
+  string email = 1 [(validate.rules).string = {min_len: 6}];
+  string password = 2 [(validate.rules).string = {min_len: 8}];
+}
+
+message LoginResponse {
+  int32 code = 1;
+  string message = 2;
+  string token = 3;
+}
+
+message UpdatePermissionsRequest {
+  string id = 1 [(validate.rules).string = {len: 36}];
+  repeated string permissions = 2 [
+    (validate.rules).repeated = {
+      unique: true,
+      min_items: 1,
+      max_items: 1000,
+      items: {string: {min_len : 1}}
+    }
+  ];
+
+  string api_key = 3 [(validate.rules).string = {min_len: 1}];
+}
+
+message UpdatePermissionsResponse {
+  int32 code = 1;
+  string message = 2;
+}
+//
+//message GetUsersInfoRequest {
+//
+//}
+//
+//message GetUsersInfoResponse {
+//
+//}
+//
+//message GetUserInfoRequest {
+//
+//}
+//
+//message GetUserInfoResponse {
+//
+//}
