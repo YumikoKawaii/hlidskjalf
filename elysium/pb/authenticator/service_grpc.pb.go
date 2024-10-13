@@ -21,6 +21,7 @@ type AuthenticatorClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	UpdatePermissions(ctx context.Context, in *UpdatePermissionsRequest, opts ...grpc.CallOption) (*UpdatePermissionsResponse, error)
 	GetPermissions(ctx context.Context, in *GetPermissionsRequest, opts ...grpc.CallOption) (*GetPermissionsResponse, error)
+	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
 }
 
 type authenticatorClient struct {
@@ -67,6 +68,15 @@ func (c *authenticatorClient) GetPermissions(ctx context.Context, in *GetPermiss
 	return out, nil
 }
 
+func (c *authenticatorClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
+	out := new(VerifyResponse)
+	err := c.cc.Invoke(ctx, "/authenticator.api.Authenticator/Verify", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticatorServer is the server API for Authenticator service.
 // All implementations must embed UnimplementedAuthenticatorServer
 // for forward compatibility
@@ -75,6 +85,7 @@ type AuthenticatorServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	UpdatePermissions(context.Context, *UpdatePermissionsRequest) (*UpdatePermissionsResponse, error)
 	GetPermissions(context.Context, *GetPermissionsRequest) (*GetPermissionsResponse, error)
+	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
 	mustEmbedUnimplementedAuthenticatorServer()
 }
 
@@ -93,6 +104,9 @@ func (UnimplementedAuthenticatorServer) UpdatePermissions(context.Context, *Upda
 }
 func (UnimplementedAuthenticatorServer) GetPermissions(context.Context, *GetPermissionsRequest) (*GetPermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPermissions not implemented")
+}
+func (UnimplementedAuthenticatorServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
 func (UnimplementedAuthenticatorServer) mustEmbedUnimplementedAuthenticatorServer() {}
 
@@ -179,6 +193,24 @@ func _Authenticator_GetPermissions_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Authenticator_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticatorServer).Verify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authenticator.api.Authenticator/Verify",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticatorServer).Verify(ctx, req.(*VerifyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Authenticator_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "authenticator.api.Authenticator",
 	HandlerType: (*AuthenticatorServer)(nil),
@@ -198,6 +230,10 @@ var _Authenticator_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPermissions",
 			Handler:    _Authenticator_GetPermissions_Handler,
+		},
+		{
+			MethodName: "Verify",
+			Handler:    _Authenticator_Verify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

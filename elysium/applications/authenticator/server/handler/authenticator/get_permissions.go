@@ -16,7 +16,6 @@ func (s *Handler) GetPermissions(ctx context.Context, request *pb.GetPermissions
 		Code:    http.StatusOK,
 		Message: "Success",
 		Data: &pb.GetPermissionsResponse_Data{
-			Id:          request.UserId,
 			Permissions: permissions,
 		},
 	}, nil

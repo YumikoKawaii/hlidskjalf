@@ -36,6 +36,13 @@ service Authenticator {
       get: "/api/v1/permissions/{user_id}"
     };
   }
+
+  rpc Verify(VerifyRequest) returns (VerifyResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/verify"
+      body: "*"
+    };
+  }
 }
 
 message SignupRequest {
@@ -89,7 +96,15 @@ message GetPermissionsResponse {
   Data data = 3;
 
   message Data {
-    string id = 1;
     repeated string permissions = 2;
   }
+}
+
+message VerifyRequest {
+  string route = 1;
+}
+
+message VerifyResponse {
+  int32 code = 1;
+  string id = 2;
 }

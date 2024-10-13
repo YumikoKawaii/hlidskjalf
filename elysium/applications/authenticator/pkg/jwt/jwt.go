@@ -21,6 +21,10 @@ type Claim struct {
 	info Info
 }
 
+func (c *Claim) GetInfo() Info {
+	return c.info
+}
+
 type Resolver interface {
 	GenerateToken(info Info) (string, error)
 	VerifyToken(token string) (*Claim, error)
