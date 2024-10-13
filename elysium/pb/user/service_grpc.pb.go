@@ -31,7 +31,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 
 func (c *userServiceClient) UpsertUser(ctx context.Context, in *UpsertUserRequest, opts ...grpc.CallOption) (*UpsertUserResponse, error) {
 	out := new(UpsertUserResponse)
-	err := c.cc.Invoke(ctx, "/userservice.api.UserService/UpsertUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.api.UserService/UpsertUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (c *userServiceClient) UpsertUser(ctx context.Context, in *UpsertUserReques
 
 func (c *userServiceClient) GetUsersInfo(ctx context.Context, in *GetUsersInfoRequest, opts ...grpc.CallOption) (*GetUsersInfoResponse, error) {
 	out := new(GetUsersInfoResponse)
-	err := c.cc.Invoke(ctx, "/userservice.api.UserService/GetUsersInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.api.UserService/GetUsersInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func _UserService_UpsertUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userservice.api.UserService/UpsertUser",
+		FullMethod: "/user.api.UserService/UpsertUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UpsertUser(ctx, req.(*UpsertUserRequest))
@@ -107,7 +107,7 @@ func _UserService_GetUsersInfo_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userservice.api.UserService/GetUsersInfo",
+		FullMethod: "/user.api.UserService/GetUsersInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUsersInfo(ctx, req.(*GetUsersInfoRequest))
@@ -116,7 +116,7 @@ func _UserService_GetUsersInfo_Handler(srv interface{}, ctx context.Context, dec
 }
 
 var _UserService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "userservice.api.UserService",
+	ServiceName: "user.api.UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -129,5 +129,5 @@ var _UserService_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "userservice/service.proto",
+	Metadata: "user/service.proto",
 }

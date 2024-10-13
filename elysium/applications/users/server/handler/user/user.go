@@ -1,16 +1,16 @@
 package user
 
 import (
-	"elysium.com/applications/user/pkg/userservice"
+	"elysium.com/applications/users/pkg/user_service"
 	pb "elysium.com/pb/user"
 )
 
 type Handler struct {
 	*pb.UnimplementedUserServiceServer
-	userService userservice.Service
+	userService user_service.Service
 }
 
-func NewHandler(service userservice.Service) *Handler {
+func NewHandler(service user_service.Service) *Handler {
 	return &Handler{
 		userService: service,
 	}

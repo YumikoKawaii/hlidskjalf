@@ -1,8 +1,8 @@
-package userservice
+package user_service
 
 import (
 	"context"
-	"elysium.com/applications/user/pkg/repository"
+	"elysium.com/applications/users/pkg/repository"
 )
 
 type Service interface {

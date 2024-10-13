@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"elysium.com/applications/user/pkg/repository"
+	"elysium.com/applications/users/pkg/repository"
 	pb "elysium.com/pb/user"
 	"net/http"
 )

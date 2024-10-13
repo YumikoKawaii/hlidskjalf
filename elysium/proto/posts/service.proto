@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package post.api;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/postservice/api;api";
+
+// PostService ...
+service PostService {
+
+  rpc UpsertPost(UpsertPostRequest) returns (UpsertPostResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/posts"
+      body: "*"
+    };
+  }
+
+  rpc GetPosts(GetPostsRequest) returns (GetPostResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/posts"
+    };
+  }
+}
+
+message Post {
+  int32 id = 1;
+  string author = 2;
+  string content = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message UpsertPostRequest {
+  int32 id = 1;
+  string author = 2;
+  string content = 3;
+  repeated string medias = 4;
+}
+
+message UpsertPostResponse {
+  int32 code = 1;
+  string message = 2;
+  int32 id = 3;
+}
+
+message GetPostsRequest {
+  repeated int32 ids = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message GetPostResponse {
+  int32 code = 1;
+  string message = 2;
+  Data data = 3;
+
+  message Data {
+    repeated Post posts = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+  }
+}
