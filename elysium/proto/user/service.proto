@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package user.api;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/userservice/api;api";
+
+// UserService ...
+service UserService {
+
+  rpc UpsertUser(UpsertUserRequest) returns (UpsertUserResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/users"
+      body: "*"
+    };
+  }
+
+  rpc GetUsersInfo(GetUsersInfoRequest) returns (GetUsersInfoResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+    };
+  }
+}
+
+message UserInfo {
+  string id = 1;
+  string name = 2;
+  string alias = 3;
+  string avatar = 4;
+  string introduction = 5;
+  string workplace = 6;
+  string hometown = 7;
+}
+
+message UpsertUserRequest {
+  string name = 1;
+  string alias = 2;
+  string avatar = 3;
+  string introduction = 4;
+  string workplace = 5;
+  string hometown = 6;
+}
+
+message UpsertUserResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message GetUsersInfoRequest {
+  repeated string ids = 1 [
+    (validate.rules).repeated = {
+      unique: true,
+      min_items: 1,
+      max_items: 1000,
+      items: {string: {len : 36}}
+    }
+  ];
+}
+
+message GetUsersInfoResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated UserInfo users_info = 3;
+}

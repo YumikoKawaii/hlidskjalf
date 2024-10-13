@@ -10,6 +10,7 @@ import (
 
 type Storage interface {
 	Operate(ctx context.Context, interval time.Duration)
+	GetPermissionsById(ctx context.Context, id string) ([]string, error)
 }
 
 type storageImpl struct {
@@ -34,6 +35,10 @@ func (s *storageImpl) Operate(ctx context.Context, interval time.Duration) {
 		}
 	}
 
+}
+
+func (s *storageImpl) GetPermissionsById(ctx context.Context, id string) ([]string, error) {
+	return s.redisClient.SMembers(ctx, id).Result()
 }
 
 func (s *storageImpl) updateCache(ctx context.Context) {

@@ -31,18 +31,11 @@ service Authenticator {
     };
   }
 
-//  rpc GetUsersInfo(GetUsersInfoRequest) returns (GetUsersInfoResponse) {
-//    option (google.api.http) = {
-//      get: "/api/v1/users"
-//    };
-//  }
-//
-//  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {
-//    option (google.api.http) = {
-//      get: "/api/v1/users/{user_id}"
-//    };
-//  }
-
+  rpc GetPermissions(GetPermissionsRequest) returns (GetPermissionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/permissions/{user_id}"
+    };
+  }
 }
 
 message SignupRequest {
@@ -85,19 +78,18 @@ message UpdatePermissionsResponse {
   int32 code = 1;
   string message = 2;
 }
-//
-//message GetUsersInfoRequest {
-//
-//}
-//
-//message GetUsersInfoResponse {
-//
-//}
-//
-//message GetUserInfoRequest {
-//
-//}
-//
-//message GetUserInfoResponse {
-//
-//}
+
+message GetPermissionsRequest {
+  string user_id = 1;
+}
+
+message GetPermissionsResponse {
+  int32 code = 1;
+  string message = 2;
+  Data data = 3;
+
+  message Data {
+    string id = 1;
+    repeated string permissions = 2;
+  }
+}

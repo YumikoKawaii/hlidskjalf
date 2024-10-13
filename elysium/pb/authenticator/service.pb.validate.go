@@ -518,3 +518,223 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdatePermissionsResponseValidationError{}
+
+// Validate checks the field values on GetPermissionsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetPermissionsRequest) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for UserId
+
+	return nil
+}
+
+// GetPermissionsRequestValidationError is the validation error returned by
+// GetPermissionsRequest.Validate if the designated constraints aren't met.
+type GetPermissionsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetPermissionsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetPermissionsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetPermissionsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetPermissionsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetPermissionsRequestValidationError) ErrorName() string {
+	return "GetPermissionsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetPermissionsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetPermissionsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetPermissionsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetPermissionsRequestValidationError{}
+
+// Validate checks the field values on GetPermissionsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetPermissionsResponse) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetPermissionsResponseValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	return nil
+}
+
+// GetPermissionsResponseValidationError is the validation error returned by
+// GetPermissionsResponse.Validate if the designated constraints aren't met.
+type GetPermissionsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetPermissionsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetPermissionsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetPermissionsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetPermissionsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetPermissionsResponseValidationError) ErrorName() string {
+	return "GetPermissionsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetPermissionsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetPermissionsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetPermissionsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetPermissionsResponseValidationError{}
+
+// Validate checks the field values on GetPermissionsResponse_Data with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetPermissionsResponse_Data) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Id
+
+	return nil
+}
+
+// GetPermissionsResponse_DataValidationError is the validation error returned
+// by GetPermissionsResponse_Data.Validate if the designated constraints
+// aren't met.
+type GetPermissionsResponse_DataValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetPermissionsResponse_DataValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetPermissionsResponse_DataValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetPermissionsResponse_DataValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetPermissionsResponse_DataValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetPermissionsResponse_DataValidationError) ErrorName() string {
+	return "GetPermissionsResponse_DataValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetPermissionsResponse_DataValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetPermissionsResponse_Data.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetPermissionsResponse_DataValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetPermissionsResponse_DataValidationError{}
