@@ -123,6 +123,16 @@ func (m *UpsertInteractionRequest) Validate() error {
 		return nil
 	}
 
+	if v, ok := interface{}(m.GetId()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpsertInteractionRequestValidationError{
+				field:  "Id",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	// no validation rules for PostId
 
 	// no validation rules for Author
@@ -201,6 +211,8 @@ func (m *UpsertInteractionResponse) Validate() error {
 	// no validation rules for Code
 
 	// no validation rules for Message
+
+	// no validation rules for InteractionId
 
 	return nil
 }

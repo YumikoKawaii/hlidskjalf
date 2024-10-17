@@ -3,6 +3,7 @@ syntax = "proto3";
 package interaction.api;
 
 import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
 
 option go_package = "elysium.com/applications/interactionservice/api;api";
@@ -35,15 +36,17 @@ message Interaction {
 }
 
 message UpsertInteractionRequest {
-  int32 post_id = 1;
-  string author = 2;
-  string type = 3;
-  string content = 4;
+  google.protobuf.UInt32Value id = 1;
+  int32 post_id = 2;
+  string author = 3;
+  string type = 4;
+  string content = 5;
 }
 
 message UpsertInteractionResponse {
   int32 code = 1;
   string message = 2;
+  int32 interaction_id = 3;
 }
 
 message GetInteractionsRequest {
