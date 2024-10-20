@@ -25,7 +25,7 @@ func (s *Handler) UpsertUser(ctx context.Context, request *pb.UpsertUserRequest)
 	}
 
 	if err := s.userService.UpsertUser(ctx, &repository.User{
-		Id:           id,
+		Id:           &id,
 		Name:         request.Name,
 		Alias:        request.Alias,
 		Avatar:       request.Avatar,

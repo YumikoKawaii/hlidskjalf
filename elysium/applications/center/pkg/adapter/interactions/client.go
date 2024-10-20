@@ -1,6 +1,12 @@
 package interactions
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"net/url"
+	"strconv"
+	"strings"
+)
 
 type Client interface {
 	UpsertInteraction(ctx context.Context, request UpsertInteractionRequest) (UpsertInteractionResponse, error)
@@ -16,7 +22,7 @@ func NewClient(config Config, isUseGrpc bool) Client {
 }
 
 type Config struct {
-	Host string
+	Host string `env:"INTERACTIONS_SERVICE_HOST"`
 }
 
 type UpsertInteractionRequest struct {
@@ -37,6 +43,27 @@ type GetInteractionRequest struct {
 	PostIds  []int32 `json:"postIds,omitempty"`
 	Page     int32   `json:"page,omitempty"`
 	PageSize int32   `json:"pageSize,omitempty"`
+}
+
+func (r *GetInteractionRequest) Query() string {
+	query := url.Values{}
+	if len(r.PostIds) != 0 {
+		ids := make([]string, 0)
+		for _, id := range r.PostIds {
+			ids = append(ids, strconv.Itoa(int(id)))
+		}
+		query.Add("postIds", strings.Join(ids, ","))
+	}
+
+	if r.Page != 0 {
+		query.Add("page", strconv.Itoa(int(r.Page)))
+	}
+
+	if r.PageSize != 0 {
+		query.Add("pageSize", strconv.Itoa(int(r.PageSize)))
+	}
+
+	return fmt.Sprintf("?%s", query.Encode())
 }
 
 type GetInteractionResponse struct {

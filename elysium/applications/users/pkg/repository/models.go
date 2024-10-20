@@ -3,7 +3,7 @@ package repository
 import "time"
 
 type User struct {
-	Id           string    `json:"id,omitempty"`
+	Id           *string   `json:"id,omitempty"`
 	Name         string    `json:"name,omitempty"`
 	Alias        string    `json:"alias,omitempty"`
 	Avatar       string    `json:"avatar,omitempty"`

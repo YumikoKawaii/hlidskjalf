@@ -3,6 +3,7 @@ package interactions
 import (
 	"context"
 	"elysium.com/applications/interactions/pkg/repository"
+	"elysium.com/applications/utils"
 	pb "elysium.com/pb/interactions"
 	"net/http"
 )
@@ -22,6 +23,7 @@ func (s *Handler) UpsertInteraction(ctx context.Context, request *pb.UpsertInter
 
 func (s *Handler) transformProtoToInteraction(request *pb.UpsertInteractionRequest) *repository.Interaction {
 	return &repository.Interaction{
+		Id:      utils.ProtoToUInt32Pointer(request.Id),
 		PostId:  request.PostId,
 		Author:  request.Author,
 		Type:    request.Type,

@@ -3,6 +3,7 @@ package posts
 import (
 	"context"
 	"elysium.com/applications/posts/pkg/repository"
+	"elysium.com/applications/utils"
 	pb "elysium.com/pb/posts"
 	"net/http"
 )
@@ -18,13 +19,13 @@ func (s *Handler) UpsertPost(ctx context.Context, request *pb.UpsertPostRequest)
 	return &pb.UpsertPostResponse{
 		Code:    http.StatusOK,
 		Message: "Success",
-		Id:      post.Id,
+		Id:      *post.Id,
 	}, nil
 }
 
 func (s *Handler) transformProtoToPost(request *pb.UpsertPostRequest) *repository.Post {
 	return &repository.Post{
-		Id:      request.Id,
+		Id:      utils.ProtoToUInt32Pointer(request.Id),
 		Author:  request.Author,
 		Content: request.Content,
 	}

@@ -3,7 +3,7 @@ package repository
 import "time"
 
 type Interaction struct {
-	Id        int32     `json:"id,omitempty"`
+	Id        *uint32   `json:"id,omitempty"`
 	PostId    int32     `json:"postId,omitempty"`
 	Author    string    `json:"author,omitempty"`
 	Type      string    `json:"type,omitempty"`

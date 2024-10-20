@@ -15,9 +15,13 @@ func (s *Handler) GetUsersInfo(ctx context.Context, request *pb.GetUsersInfoRequ
 	}
 
 	return &pb.GetUsersInfoResponse{
-		Code:      http.StatusOK,
-		Message:   "Success",
-		UsersInfo: s.transformUsersToProto(users),
+		Code:    http.StatusOK,
+		Message: "Success",
+		Data: &pb.GetUsersInfoResponse_Data{
+			UsersInfo: s.transformUsersToProto(users),
+			Page:      request.Page,
+			PageSize:  0,
+		},
 	}, nil
 }
 
@@ -26,7 +30,7 @@ func (s *Handler) transformUsersToProto(users []repository.User) []*pb.UserInfo 
 	protos := make([]*pb.UserInfo, 0)
 	for _, user := range users {
 		protos = append(protos, &pb.UserInfo{
-			Id:           user.Id,
+			Id:           *user.Id,
 			Name:         user.Name,
 			Alias:        user.Alias,
 			Avatar:       user.Avatar,

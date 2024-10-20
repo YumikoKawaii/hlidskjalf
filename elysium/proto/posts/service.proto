@@ -3,6 +3,7 @@ syntax = "proto3";
 package post.api;
 
 import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
 
 option go_package = "elysium.com/applications/postservice/api;api";
@@ -25,15 +26,15 @@ service PostService {
 }
 
 message Post {
-  int32 id = 1;
+  uint32 id = 1;
   string author = 2;
   string content = 3;
-  string created_at = 4;
-  string updated_at = 5;
+  int32 created_at = 4;
+  int32 updated_at = 5;
 }
 
 message UpsertPostRequest {
-  int32 id = 1;
+  google.protobuf.UInt32Value id = 1;
   string author = 2;
   string content = 3;
   repeated string medias = 4;
@@ -42,7 +43,7 @@ message UpsertPostRequest {
 message UpsertPostResponse {
   int32 code = 1;
   string message = 2;
-  int32 id = 3;
+  uint32 id = 3;
 }
 
 message GetPostsRequest {

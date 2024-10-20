@@ -34,11 +34,11 @@ func (s *Handler) transformPostToProto(posts []repository.Post) []*pb.Post {
 	protos := make([]*pb.Post, 0)
 	for _, post := range posts {
 		protos = append(protos, &pb.Post{
-			Id:        post.Id,
+			Id:        *post.Id,
 			Author:    post.Author,
 			Content:   post.Content,
-			CreatedAt: post.CreatedAt.UTC().String(),
-			UpdatedAt: post.UpdatedAt.UTC().String(),
+			CreatedAt: int32(post.CreatedAt.UTC().Unix()),
+			UpdatedAt: int32(post.UpdatedAt.UTC().Unix()),
 		})
 	}
 	return protos

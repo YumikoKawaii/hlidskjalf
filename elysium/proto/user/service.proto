@@ -3,6 +3,7 @@ syntax = "proto3";
 package user.api;
 
 import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
 import "validate/validate.proto";
 
 option go_package = "elysium.com/applications/user_service/api;api";
@@ -46,6 +47,7 @@ message UpsertUserRequest {
 message UpsertUserResponse {
   int32 code = 1;
   string message = 2;
+  string id = 3;
 }
 
 message GetUsersInfoRequest {
@@ -57,10 +59,18 @@ message GetUsersInfoRequest {
       items: {string: {len : 36}}
     }
   ];
+  int32 page = 2;
+  int32 page_size = 3;
 }
 
 message GetUsersInfoResponse {
   int32 code = 1;
   string message = 2;
-  repeated UserInfo users_info = 3;
+  Data data = 3;
+
+  message Data {
+    repeated UserInfo users_info = 1;
+    int32 page = 2;
+    int32 page_size = 3;
+  }
 }

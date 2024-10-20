@@ -3,7 +3,7 @@ package repository
 import "time"
 
 type Post struct {
-	Id        int32     `json:"id,omitempty"`
+	Id        *uint32   `json:"id,omitempty"`
 	Author    string    `json:"author,omitempty"`
 	Content   string    `json:"content,omitempty"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`

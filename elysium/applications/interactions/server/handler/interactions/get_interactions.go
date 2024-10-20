@@ -34,7 +34,7 @@ func (s *Handler) transformInteractionsToProtos(interactions []repository.Intera
 	protos := make([]*pb.Interaction, 0)
 	for _, i := range interactions {
 		protos = append(protos, &pb.Interaction{
-			Id:        i.Id,
+			Id:        *i.Id,
 			PostId:    i.PostId,
 			Author:    i.Author,
 			Type:      i.Type,

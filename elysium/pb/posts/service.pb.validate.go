@@ -118,7 +118,15 @@ func (m *UpsertPostRequest) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Id
+	if v, ok := interface{}(m.GetId()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpsertPostRequestValidationError{
+				field:  "Id",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	// no validation rules for Author
 

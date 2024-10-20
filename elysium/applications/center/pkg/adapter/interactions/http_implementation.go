@@ -38,24 +38,39 @@ func (c *httpClient) UpsertInteraction(ctx context.Context, request UpsertIntera
 	}
 
 	resp, err := c.client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return UpsertInteractionResponse{}, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return UpsertInteractionResponse{}, xerrors.Errorf("http status: %d", resp.StatusCode)
 	}
 
 	response := UpsertInteractionResponse{}
-	bodyDecoder := json.NewDecoder(resp.Body)
-	if err := bodyDecoder.Decode(&response); err != nil {
-		return UpsertInteractionResponse{}, err
-	}
-
-	return response, nil
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	return response, err
 }
 
 func (c *httpClient) GetInteractions(ctx context.Context, request GetInteractionRequest) (GetInteractionResponse, error) {
-	return GetInteractionResponse{}, nil
+
+	requestUrl, _ := url.JoinPath(c.host, request.Query())
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestUrl, nil)
+	if err != nil {
+		return GetInteractionResponse{}, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return GetInteractionResponse{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return GetInteractionResponse{}, xerrors.Errorf("http status: %d", resp.StatusCode)
+	}
+
+	response := GetInteractionResponse{}
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	return response, err
 }

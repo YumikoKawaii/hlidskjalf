@@ -6,6 +6,7 @@ package api
 import (
 	fmt "fmt"
 	_ "github.com/envoyproxy/protoc-gen-validate/validate"
+	_ "github.com/gogo/protobuf/types"
 	proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	io "io"
@@ -209,6 +210,7 @@ func (m *UpsertUserRequest) GetHometown() string {
 type UpsertUserResponse struct {
 	Code                 int32    `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Id                   string   `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -261,8 +263,17 @@ func (m *UpsertUserResponse) GetMessage() string {
 	return ""
 }
 
+func (m *UpsertUserResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
 type GetUsersInfoRequest struct {
 	Ids                  []string `protobuf:"bytes,1,rep,name=ids,proto3" json:"ids,omitempty"`
+	Page                 int32    `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize             int32    `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -308,13 +319,27 @@ func (m *GetUsersInfoRequest) GetIds() []string {
 	return nil
 }
 
+func (m *GetUsersInfoRequest) GetPage() int32 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
+func (m *GetUsersInfoRequest) GetPageSize() int32 {
+	if m != nil {
+		return m.PageSize
+	}
+	return 0
+}
+
 type GetUsersInfoResponse struct {
-	Code                 int32       `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	Message              string      `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	UsersInfo            []*UserInfo `protobuf:"bytes,3,rep,name=users_info,json=usersInfo,proto3" json:"users_info,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	Code                 int32                      `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message              string                     `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data                 *GetUsersInfoResponse_Data `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
+	XXX_unrecognized     []byte                     `json:"-"`
+	XXX_sizecache        int32                      `json:"-"`
 }
 
 func (m *GetUsersInfoResponse) Reset()         { *m = GetUsersInfoResponse{} }
@@ -364,11 +389,74 @@ func (m *GetUsersInfoResponse) GetMessage() string {
 	return ""
 }
 
-func (m *GetUsersInfoResponse) GetUsersInfo() []*UserInfo {
+func (m *GetUsersInfoResponse) GetData() *GetUsersInfoResponse_Data {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type GetUsersInfoResponse_Data struct {
+	UsersInfo            []*UserInfo `protobuf:"bytes,1,rep,name=users_info,json=usersInfo,proto3" json:"users_info,omitempty"`
+	Page                 int32       `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize             int32       `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *GetUsersInfoResponse_Data) Reset()         { *m = GetUsersInfoResponse_Data{} }
+func (m *GetUsersInfoResponse_Data) String() string { return proto.CompactTextString(m) }
+func (*GetUsersInfoResponse_Data) ProtoMessage()    {}
+func (*GetUsersInfoResponse_Data) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d9e7c516be0a4556, []int{4, 0}
+}
+func (m *GetUsersInfoResponse_Data) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetUsersInfoResponse_Data) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetUsersInfoResponse_Data.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetUsersInfoResponse_Data) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetUsersInfoResponse_Data.Merge(m, src)
+}
+func (m *GetUsersInfoResponse_Data) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetUsersInfoResponse_Data) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetUsersInfoResponse_Data.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetUsersInfoResponse_Data proto.InternalMessageInfo
+
+func (m *GetUsersInfoResponse_Data) GetUsersInfo() []*UserInfo {
 	if m != nil {
 		return m.UsersInfo
 	}
 	return nil
+}
+
+func (m *GetUsersInfoResponse_Data) GetPage() int32 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
+func (m *GetUsersInfoResponse_Data) GetPageSize() int32 {
+	if m != nil {
+		return m.PageSize
+	}
+	return 0
 }
 
 func init() {
@@ -377,44 +465,50 @@ func init() {
 	proto.RegisterType((*UpsertUserResponse)(nil), "user.api.UpsertUserResponse")
 	proto.RegisterType((*GetUsersInfoRequest)(nil), "user.api.GetUsersInfoRequest")
 	proto.RegisterType((*GetUsersInfoResponse)(nil), "user.api.GetUsersInfoResponse")
+	proto.RegisterType((*GetUsersInfoResponse_Data)(nil), "user.api.GetUsersInfoResponse.Data")
 }
 
 func init() { proto.RegisterFile("user/service.proto", fileDescriptor_d9e7c516be0a4556) }
 
 var fileDescriptor_d9e7c516be0a4556 = []byte{
-	// 504 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xbd, 0x8e, 0xd3, 0x40,
-	0x10, 0xc7, 0xd9, 0x38, 0xce, 0xc7, 0xdc, 0x71, 0x70, 0x43, 0x80, 0x95, 0x09, 0x56, 0x64, 0x21,
-	0x14, 0x21, 0x61, 0xeb, 0x8e, 0x0e, 0x84, 0x90, 0xd2, 0x20, 0x5a, 0xa3, 0x6b, 0x68, 0x4e, 0x8b,
-	0xbd, 0x17, 0x56, 0xd8, 0x5e, 0xe3, 0xb5, 0x13, 0xd1, 0xf2, 0x08, 0xd0, 0xdc, 0x7b, 0xd0, 0xf1,
-	0x04, 0x94, 0x48, 0x48, 0xd4, 0x28, 0x50, 0xf0, 0x0c, 0x54, 0x68, 0xd7, 0xf1, 0x25, 0x39, 0x85,
-	0x43, 0xa2, 0xdb, 0xf9, 0xcf, 0xee, 0xcc, 0x6f, 0x76, 0x66, 0x00, 0x2b, 0xc5, 0x8b, 0x40, 0xf1,
-	0x62, 0x26, 0x22, 0xee, 0xe7, 0x85, 0x2c, 0x25, 0xf6, 0xb4, 0xe6, 0xb3, 0x5c, 0x38, 0xc3, 0xa9,
-	0x94, 0xd3, 0x84, 0x07, 0x2c, 0x17, 0x01, 0xcb, 0x32, 0x59, 0xb2, 0x52, 0xc8, 0x4c, 0xd5, 0xf7,
-	0x9c, 0x9b, 0x33, 0x96, 0x88, 0x98, 0x95, 0x3c, 0x68, 0x0e, 0xb5, 0xc3, 0xfb, 0x44, 0xa0, 0x77,
-	0xa4, 0x78, 0xf1, 0x2c, 0x3b, 0x91, 0xb8, 0x07, 0x2d, 0x11, 0x53, 0x32, 0x22, 0xe3, 0x7e, 0xd8,
-	0x12, 0x31, 0x22, 0xb4, 0x33, 0x96, 0x72, 0xda, 0x32, 0x8a, 0x39, 0xe3, 0x00, 0x6c, 0x96, 0x08,
-	0xa6, 0xa8, 0x65, 0xc4, 0xda, 0xc0, 0x1b, 0xd0, 0x61, 0x33, 0x56, 0xb2, 0x82, 0xb6, 0x8d, 0xbc,
-	0xb4, 0xd0, 0x83, 0x5d, 0x91, 0x95, 0x85, 0x8c, 0xab, 0x48, 0xe3, 0x50, 0xdb, 0x78, 0x37, 0x34,
-	0x1c, 0x42, 0x7f, 0x2e, 0x8b, 0xd7, 0x79, 0xc2, 0x22, 0x4e, 0x3b, 0xe6, 0xc2, 0x4a, 0x40, 0x07,
-	0x7a, 0xaf, 0x64, 0xca, 0x4b, 0x39, 0xcf, 0x68, 0xd7, 0x38, 0xcf, 0x6c, 0xef, 0x23, 0x81, 0xfd,
-	0xa3, 0x5c, 0xf1, 0xa2, 0xd4, 0x25, 0x84, 0xfc, 0x4d, 0xc5, 0x55, 0x79, 0x46, 0x4d, 0xb6, 0x51,
-	0xb7, 0xb6, 0x53, 0x5b, 0x17, 0x52, 0xb7, 0xff, 0x45, 0x6d, 0x5f, 0x44, 0xdd, 0x39, 0x47, 0x3d,
-	0x01, 0x5c, 0x87, 0x56, 0xb9, 0xcc, 0x14, 0xd7, 0xd4, 0x91, 0x8c, 0x6b, 0x6a, 0x3b, 0x34, 0x67,
-	0xa4, 0xd0, 0x4d, 0xb9, 0x52, 0x6c, 0xda, 0xb4, 0xa0, 0x31, 0xbd, 0xc7, 0x70, 0xed, 0x29, 0x37,
-	0x01, 0x94, 0xee, 0x5c, 0x53, 0xfa, 0x5d, 0xb0, 0x44, 0xac, 0x28, 0x19, 0x59, 0xe3, 0xfe, 0x64,
-	0xf0, 0x7b, 0xb2, 0xff, 0x9e, 0xec, 0xf5, 0xc8, 0xd5, 0x5f, 0x5d, 0x4a, 0x3c, 0xbb, 0xb0, 0x4e,
-	0xc9, 0x9d, 0x50, 0x5f, 0xf0, 0xe6, 0x30, 0xd8, 0x7c, 0xfe, 0x3f, 0x10, 0x78, 0x00, 0xa0, 0xc7,
-	0x4f, 0x1d, 0x8b, 0xec, 0x44, 0x52, 0x6b, 0x64, 0x8d, 0x77, 0x0e, 0xd1, 0x6f, 0x26, 0xd2, 0x6f,
-	0xc6, 0x2a, 0xec, 0x57, 0x4d, 0xa2, 0xc3, 0x6f, 0x04, 0x76, 0xb4, 0xfe, 0xbc, 0x9e, 0x62, 0x64,
-	0x00, 0xab, 0xbf, 0xc0, 0x5b, 0x6b, 0x8f, 0xcf, 0xb7, 0xd5, 0x19, 0x6e, 0x77, 0xd6, 0xe4, 0x1e,
-	0x7d, 0xf7, 0xf5, 0xe7, 0x87, 0x16, 0x7a, 0x97, 0xcd, 0x02, 0xcc, 0x0e, 0x02, 0x93, 0xf3, 0x21,
-	0xb9, 0x87, 0x31, 0xec, 0xae, 0xd7, 0x8a, 0xb7, 0x57, 0x71, 0xb6, 0x7c, 0xa1, 0xe3, 0xfe, 0xcd,
-	0xbd, 0x4c, 0x74, 0xdd, 0x24, 0xba, 0x82, 0x9b, 0x89, 0x26, 0x4f, 0x3e, 0x2f, 0x5c, 0xf2, 0x65,
-	0xe1, 0x92, 0xef, 0x0b, 0x97, 0x9c, 0xfe, 0x70, 0x2f, 0xbd, 0xb8, 0xcf, 0x93, 0xb7, 0x4a, 0x54,
-	0xa9, 0x1f, 0xc9, 0x34, 0x60, 0x79, 0x9e, 0x88, 0xa8, 0x5e, 0x49, 0xf3, 0xe2, 0x78, 0xb9, 0xc7,
-	0x3a, 0xca, 0x23, 0x96, 0x8b, 0x97, 0x1d, 0xb3, 0x8f, 0x0f, 0xfe, 0x04, 0x00, 0x00, 0xff, 0xff,
-	0x5d, 0xe5, 0xf1, 0x34, 0xe6, 0x03, 0x00, 0x00,
+	// 577 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xcd, 0x8e, 0xd3, 0x30,
+	0x10, 0xc6, 0x4d, 0xd3, 0x9f, 0xe9, 0xb2, 0xb0, 0xa6, 0x40, 0xd4, 0x2d, 0xd1, 0x2a, 0x20, 0xb4,
+	0x42, 0x22, 0xd1, 0x96, 0x03, 0x12, 0x1c, 0x90, 0x2a, 0x24, 0xc4, 0x35, 0xab, 0xbd, 0x70, 0xa9,
+	0xbc, 0x89, 0x5b, 0x0c, 0x69, 0x6c, 0x62, 0xa7, 0x15, 0x7b, 0xe4, 0x11, 0xe0, 0xb2, 0xef, 0xc1,
+	0x8d, 0x27, 0xe0, 0x88, 0x84, 0xc4, 0x19, 0x15, 0x0e, 0xf0, 0x0a, 0x9c, 0x90, 0x9d, 0x66, 0xdb,
+	0xae, 0x4a, 0x11, 0x9c, 0xe2, 0xf9, 0xc6, 0xfe, 0xbe, 0x6f, 0x66, 0x1c, 0x03, 0xce, 0x25, 0xcd,
+	0x02, 0x49, 0xb3, 0x09, 0x8b, 0xa8, 0x2f, 0x32, 0xae, 0x38, 0x6e, 0x68, 0xcc, 0x27, 0x82, 0x75,
+	0xba, 0x23, 0xce, 0x47, 0x09, 0x0d, 0x88, 0x60, 0x01, 0x49, 0x53, 0xae, 0x88, 0x62, 0x3c, 0x95,
+	0xc5, 0xbe, 0x8e, 0x3b, 0xcf, 0x9a, 0xe8, 0x38, 0x1f, 0x06, 0xd3, 0x8c, 0x08, 0x41, 0xb3, 0x32,
+	0x7f, 0x7d, 0x42, 0x12, 0x16, 0x13, 0x45, 0x83, 0x72, 0x51, 0x24, 0xbc, 0x0f, 0x08, 0x1a, 0x47,
+	0x92, 0x66, 0x4f, 0xd3, 0x21, 0xc7, 0xdb, 0x50, 0x61, 0xb1, 0x83, 0xf6, 0xd0, 0x7e, 0x33, 0xac,
+	0xb0, 0x18, 0x63, 0xa8, 0xa6, 0x64, 0x4c, 0x9d, 0x8a, 0x41, 0xcc, 0x1a, 0xb7, 0xc1, 0x26, 0x09,
+	0x23, 0xd2, 0xb1, 0x0c, 0x58, 0x04, 0xf8, 0x1a, 0xd4, 0xc8, 0x84, 0x28, 0x92, 0x39, 0x55, 0x03,
+	0xcf, 0x23, 0xec, 0xc1, 0x16, 0x4b, 0x55, 0xc6, 0xe3, 0x3c, 0xd2, 0x76, 0x1d, 0xdb, 0x64, 0x57,
+	0x30, 0xdc, 0x85, 0xe6, 0x94, 0x67, 0x2f, 0x45, 0x42, 0x22, 0xea, 0xd4, 0xcc, 0x86, 0x05, 0x80,
+	0x3b, 0xd0, 0x78, 0xce, 0xc7, 0x54, 0xf1, 0x69, 0xea, 0xd4, 0x4d, 0xf2, 0x2c, 0xf6, 0xde, 0x23,
+	0xd8, 0x39, 0x12, 0x92, 0x66, 0x4a, 0x97, 0x10, 0xd2, 0x57, 0x39, 0x95, 0xea, 0xcc, 0x35, 0x5a,
+	0xe7, 0xba, 0xb2, 0xde, 0xb5, 0xb5, 0xd1, 0x75, 0xf5, 0x6f, 0xae, 0xed, 0x4d, 0xae, 0x6b, 0xe7,
+	0x5c, 0x87, 0x80, 0x97, 0x4d, 0x4b, 0xc1, 0x53, 0x49, 0xb5, 0xeb, 0x88, 0xc7, 0x85, 0x6b, 0x3b,
+	0x34, 0x6b, 0xec, 0x40, 0x7d, 0x4c, 0xa5, 0x24, 0xa3, 0x72, 0x04, 0x65, 0x38, 0x9f, 0x94, 0x55,
+	0x4e, 0xca, 0x4b, 0xe1, 0xca, 0x13, 0x6a, 0x08, 0xa5, 0x9e, 0x64, 0xd9, 0x8a, 0xdb, 0x60, 0xb1,
+	0x58, 0x3a, 0x68, 0xcf, 0xda, 0x6f, 0xf6, 0xdb, 0xbf, 0xfa, 0x3b, 0x6f, 0xd1, 0x76, 0x03, 0x5d,
+	0xfe, 0x51, 0x77, 0x90, 0x67, 0x67, 0xd6, 0x29, 0xba, 0x15, 0xea, 0x0d, 0x5a, 0x5c, 0x94, 0x2a,
+	0x76, 0x68, 0xd6, 0x78, 0x17, 0x9a, 0xfa, 0x3b, 0x90, 0xec, 0x84, 0x1a, 0x25, 0x3b, 0x6c, 0x68,
+	0xe0, 0x90, 0x9d, 0x50, 0xef, 0x27, 0x82, 0xf6, 0xaa, 0xe0, 0x7f, 0x95, 0x71, 0x1f, 0xaa, 0x31,
+	0x51, 0xc4, 0xd0, 0xb7, 0x7a, 0x37, 0xfd, 0xf2, 0xb6, 0xfb, 0xeb, 0xb8, 0xfd, 0xc7, 0x44, 0x91,
+	0xd0, 0x1c, 0xe8, 0xbc, 0x80, 0xaa, 0x8e, 0xf0, 0x01, 0x80, 0x3e, 0x23, 0x07, 0x2c, 0x1d, 0x72,
+	0x53, 0x67, 0xab, 0x87, 0x17, 0x34, 0xe5, 0xcd, 0x0e, 0x9b, 0x79, 0xc9, 0xf6, 0xcf, 0xb5, 0xf6,
+	0xbe, 0x20, 0x68, 0x69, 0xa2, 0xc3, 0xe2, 0xcf, 0xc4, 0x04, 0x60, 0x31, 0x3f, 0xbc, 0xbb, 0xa4,
+	0x76, 0xfe, 0x2a, 0x76, 0xba, 0xeb, 0x93, 0x45, 0x3d, 0x9e, 0xf3, 0xe6, 0xf3, 0xf7, 0x77, 0x15,
+	0xec, 0x5d, 0x34, 0x3f, 0xf5, 0xe4, 0x20, 0x30, 0x26, 0x1f, 0xa0, 0x3b, 0x38, 0x86, 0xad, 0xe5,
+	0x0e, 0xe0, 0x1b, 0x7f, 0xea, 0x4c, 0x21, 0xe3, 0x6e, 0x6e, 0x9c, 0x77, 0xd5, 0x08, 0x5d, 0xc2,
+	0xab, 0x42, 0xfd, 0x47, 0x1f, 0x67, 0x2e, 0xfa, 0x34, 0x73, 0xd1, 0xd7, 0x99, 0x8b, 0x4e, 0xbf,
+	0xb9, 0x17, 0x9e, 0xdd, 0xa5, 0xc9, 0x6b, 0xc9, 0xf2, 0xb1, 0x1f, 0xf1, 0x71, 0x40, 0x84, 0x48,
+	0x58, 0x54, 0x3c, 0x33, 0xe6, 0xc4, 0x60, 0xfe, 0x36, 0x69, 0x96, 0x87, 0x44, 0xb0, 0xe3, 0x9a,
+	0x79, 0x43, 0xee, 0xfd, 0x0e, 0x00, 0x00, 0xff, 0xff, 0x4b, 0x72, 0x0d, 0x28, 0xba, 0x04, 0x00,
+	0x00,
 }
 
 func (m *UserInfo) Marshal() (dAtA []byte, err error) {
@@ -586,6 +680,13 @@ func (m *UpsertUserResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.Message) > 0 {
 		i -= len(m.Message)
 		copy(dAtA[i:], m.Message)
@@ -625,6 +726,16 @@ func (m *GetUsersInfoRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
+	if m.PageSize != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.PageSize))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Page != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.Page))
+		i--
+		dAtA[i] = 0x10
+	}
 	if len(m.Ids) > 0 {
 		for iNdEx := len(m.Ids) - 1; iNdEx >= 0; iNdEx-- {
 			i -= len(m.Ids[iNdEx])
@@ -661,19 +772,17 @@ func (m *GetUsersInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.UsersInfo) > 0 {
-		for iNdEx := len(m.UsersInfo) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.UsersInfo[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintService(dAtA, i, uint64(size))
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
 			}
-			i--
-			dAtA[i] = 0x1a
+			i -= size
+			i = encodeVarintService(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.Message) > 0 {
 		i -= len(m.Message)
@@ -686,6 +795,57 @@ func (m *GetUsersInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintService(dAtA, i, uint64(m.Code))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetUsersInfoResponse_Data) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetUsersInfoResponse_Data) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetUsersInfoResponse_Data) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.PageSize != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.PageSize))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Page != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.Page))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.UsersInfo) > 0 {
+		for iNdEx := len(m.UsersInfo) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.UsersInfo[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintService(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -790,6 +950,10 @@ func (m *UpsertUserResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -807,6 +971,12 @@ func (m *GetUsersInfoRequest) Size() (n int) {
 			l = len(s)
 			n += 1 + l + sovService(uint64(l))
 		}
+	}
+	if m.Page != 0 {
+		n += 1 + sovService(uint64(m.Page))
+	}
+	if m.PageSize != 0 {
+		n += 1 + sovService(uint64(m.PageSize))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -827,11 +997,33 @@ func (m *GetUsersInfoResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovService(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *GetUsersInfoResponse_Data) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	if len(m.UsersInfo) > 0 {
 		for _, e := range m.UsersInfo {
 			l = e.Size()
 			n += 1 + l + sovService(uint64(l))
 		}
+	}
+	if m.Page != 0 {
+		n += 1 + sovService(uint64(m.Page))
+	}
+	if m.PageSize != 0 {
+		n += 1 + sovService(uint64(m.PageSize))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1449,6 +1641,38 @@ func (m *UpsertUserResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
@@ -1535,6 +1759,44 @@ func (m *GetUsersInfoRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Ids = append(m.Ids, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PageSize", wireType)
+			}
+			m.PageSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PageSize |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
@@ -1642,6 +1904,96 @@ func (m *GetUsersInfoResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &GetUsersInfoResponse_Data{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetUsersInfoResponse_Data) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Data: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Data: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field UsersInfo", wireType)
 			}
 			var msglen int
@@ -1674,6 +2026,44 @@ func (m *GetUsersInfoResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PageSize", wireType)
+			}
+			m.PageSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PageSize |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])

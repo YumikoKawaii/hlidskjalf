@@ -205,6 +205,8 @@ func (m *UpsertUserResponse) Validate() error {
 
 	// no validation rules for Message
 
+	// no validation rules for Id
+
 	return nil
 }
 
@@ -303,6 +305,10 @@ func (m *GetUsersInfoRequest) Validate() error {
 
 	}
 
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
 	return nil
 }
 
@@ -374,19 +380,14 @@ func (m *GetUsersInfoResponse) Validate() error {
 
 	// no validation rules for Message
 
-	for idx, item := range m.GetUsersInfo() {
-		_, _ = idx, item
-
-		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return GetUsersInfoResponseValidationError{
-					field:  fmt.Sprintf("UsersInfo[%v]", idx),
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetUsersInfoResponseValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
-
 	}
 
 	return nil
@@ -447,3 +448,89 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetUsersInfoResponseValidationError{}
+
+// Validate checks the field values on GetUsersInfoResponse_Data with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *GetUsersInfoResponse_Data) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	for idx, item := range m.GetUsersInfo() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetUsersInfoResponse_DataValidationError{
+					field:  fmt.Sprintf("UsersInfo[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	return nil
+}
+
+// GetUsersInfoResponse_DataValidationError is the validation error returned by
+// GetUsersInfoResponse_Data.Validate if the designated constraints aren't met.
+type GetUsersInfoResponse_DataValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetUsersInfoResponse_DataValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetUsersInfoResponse_DataValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetUsersInfoResponse_DataValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetUsersInfoResponse_DataValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetUsersInfoResponse_DataValidationError) ErrorName() string {
+	return "GetUsersInfoResponse_DataValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetUsersInfoResponse_DataValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetUsersInfoResponse_Data.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetUsersInfoResponse_DataValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetUsersInfoResponse_DataValidationError{}
