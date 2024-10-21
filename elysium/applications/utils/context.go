@@ -8,6 +8,7 @@ import (
 
 const (
 	UserIdKey = "id"
+	XAPIKey   = "x-api-key"
 )
 
 func ExtractValueFromContext(ctx context.Context, key string) (interface{}, error) {

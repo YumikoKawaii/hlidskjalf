@@ -24,12 +24,15 @@ func Serve(cfg *config.Application) {
 	prometheus := grpc_prometheus.NewServerMetrics()
 	jwtInterceptor := jwt.NewInterceptor(jwt.NewResolver(&cfg.JWTConfig))
 
+	zapLogger := zap.S().Desugar()
+	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
+
 	sv := server.NewServer(
 		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
 		grpc.ChainUnaryInterceptor(
 			grpc_validator.UnaryServerInterceptor(),
 			prometheus.UnaryServerInterceptor(),
-			grpc_zap.UnaryServerInterceptor(zap.L()),
+			grpc_zap.UnaryServerInterceptor(zapLogger),
 			jwtInterceptor.Unary(),
 		),
 	)

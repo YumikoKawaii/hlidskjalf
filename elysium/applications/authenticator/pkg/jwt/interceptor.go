@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"context"
+	"elysium.com/applications/authenticator/pkg/api_key"
 	"elysium.com/applications/utils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -10,7 +11,14 @@ import (
 )
 
 type Interceptor struct {
-	resolver Resolver
+	resolver       Resolver
+	apiKeyResolver api_key.Resolver
+}
+
+var ignoreMap = map[string]bool{
+	"/authenticator.api.Authenticator/Signup":            true,
+	"/authenticator.api.Authenticator/Login":             true,
+	"/authenticator.api.Authenticator/UpdatePermissions": true,
 }
 
 func NewInterceptor(resolver Resolver) Interceptor {
@@ -21,6 +29,10 @@ func NewInterceptor(resolver Resolver) Interceptor {
 
 func (i *Interceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+		if ignoreMap[info.FullMethod] {
+			return handler(ctx, req)
+		}
+
 		claim, _, err := i.authenticate(ctx)
 		if err != nil {
 			return nil, err
