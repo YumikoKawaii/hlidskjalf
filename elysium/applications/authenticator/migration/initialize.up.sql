@@ -10,5 +10,5 @@ CREATE TABLE `accounts` (
 CREATE TABLE `permissions` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `account_id` VARCHAR(255),
-    `route` VARCHAR(255),
+    `route` VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
