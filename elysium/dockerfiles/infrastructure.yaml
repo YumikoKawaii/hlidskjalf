@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.3
+    container_name: elysium-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Yumiko1@
+      MYSQL_DATABASE: elysium
+      MYSQL_USER: yumiko
+      MYSQL_PASSWORD: Yumiko1@
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../../hlidskjalf/mysql:/var/lib/mysql
+    networks:
+      - elysium
+
+  redis:
+    image: redis:latest
+    container_name: elysium-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ../../hlidskjalf/redis:/data
+    networks:
+      - elysium
+
+networks:
+  elysium:
+    driver: bridge
