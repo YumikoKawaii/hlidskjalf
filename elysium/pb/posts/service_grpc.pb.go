@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PostServiceClient interface {
 	UpsertPost(ctx context.Context, in *UpsertPostRequest, opts ...grpc.CallOption) (*UpsertPostResponse, error)
 	GetPosts(ctx context.Context, in *GetPostsRequest, opts ...grpc.CallOption) (*GetPostResponse, error)
+	Discovery(ctx context.Context, in *DiscoveryRequest, opts ...grpc.CallOption) (*DiscoveryResponse, error)
 }
 
 type postServiceClient struct {
@@ -47,12 +48,22 @@ func (c *postServiceClient) GetPosts(ctx context.Context, in *GetPostsRequest, o
 	return out, nil
 }
 
+func (c *postServiceClient) Discovery(ctx context.Context, in *DiscoveryRequest, opts ...grpc.CallOption) (*DiscoveryResponse, error) {
+	out := new(DiscoveryResponse)
+	err := c.cc.Invoke(ctx, "/post.api.PostService/Discovery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
 type PostServiceServer interface {
 	UpsertPost(context.Context, *UpsertPostRequest) (*UpsertPostResponse, error)
 	GetPosts(context.Context, *GetPostsRequest) (*GetPostResponse, error)
+	Discovery(context.Context, *DiscoveryRequest) (*DiscoveryResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -65,6 +76,9 @@ func (UnimplementedPostServiceServer) UpsertPost(context.Context, *UpsertPostReq
 }
 func (UnimplementedPostServiceServer) GetPosts(context.Context, *GetPostsRequest) (*GetPostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
+}
+func (UnimplementedPostServiceServer) Discovery(context.Context, *DiscoveryRequest) (*DiscoveryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Discovery not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -115,6 +129,24 @@ func _PostService_GetPosts_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_Discovery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DiscoveryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).Discovery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post.api.PostService/Discovery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).Discovery(ctx, req.(*DiscoveryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _PostService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "post.api.PostService",
 	HandlerType: (*PostServiceServer)(nil),
@@ -126,6 +158,10 @@ var _PostService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPosts",
 			Handler:    _PostService_GetPosts_Handler,
+		},
+		{
+			MethodName: "Discovery",
+			Handler:    _PostService_Discovery_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,6 +1,4 @@
 configs:
-  - route: a
+  - route: /authenticator.api.Authenticator/UpdatePermissions
     keys:
-      - x
-      - y
-      - z
+      - xyz

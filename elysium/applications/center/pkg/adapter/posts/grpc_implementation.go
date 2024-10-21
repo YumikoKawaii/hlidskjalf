@@ -6,6 +6,7 @@ import (
 	pb "elysium.com/pb/posts"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"net/http"
 )
 
 type grpcClient struct {
@@ -46,9 +47,7 @@ func (c *grpcClient) UpsertPost(ctx context.Context, request UpsertPostRequest) 
 
 func (c *grpcClient) GetPosts(ctx context.Context, request GetPostsRequest) (GetPostsResponse, error) {
 	resp, err := c.rpc.GetPosts(ctx, &pb.GetPostsRequest{
-		Ids:      request.Ids,
-		Page:     request.Page,
-		PageSize: request.PageSize,
+		Ids: request.Ids,
 	})
 	if err != nil {
 		return GetPostsResponse{}, err
@@ -59,12 +58,10 @@ func (c *grpcClient) GetPosts(ctx context.Context, request GetPostsRequest) (Get
 		Message: resp.Message,
 		Data: struct {
 			Posts    []Post `json:"posts,omitempty"`
-			Page     int32  `json:"page,omitempty"`
-			PageSize int32  `json:"pageSize,omitempty"`
+			Page     uint32 `json:"page,omitempty"`
+			PageSize uint32 `json:"pageSize,omitempty"`
 		}{
-			Posts:    c.convertProtosToPosts(resp.Data.Posts),
-			Page:     resp.Data.Page,
-			PageSize: resp.Data.PageSize,
+			Posts: c.convertProtosToPosts(resp.Data.Posts),
 		},
 	}, nil
 }
@@ -81,4 +78,23 @@ func (c *grpcClient) convertProtosToPosts(protos []*pb.Post) []Post {
 		})
 	}
 	return posts
+}
+
+func (c *grpcClient) Discovery(ctx context.Context, request DiscoveryRequest) (DiscoveryResponse, error) {
+
+	resp, err := c.rpc.Discovery(ctx, &pb.DiscoveryRequest{
+		Author:    request.Author,
+		SortOrder: pb.SortOrder(int32(request.SortOrder)),
+		Page:      request.Page,
+		PageSize:  request.PageSize,
+	})
+	if err != nil {
+		return DiscoveryResponse{}, err
+	}
+
+	return DiscoveryResponse{
+		Code:    http.StatusOK,
+		Message: "Success",
+		PostIds: resp.Data.PostIds,
+	}, nil
 }

@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package center.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/centerservice/api;api";
+
+// CenterService ...
+service CenterService {
+  // should add discovery api to get posts list first
+
+  rpc GetPostsDetail(GetPostsDetailRequest) returns (GetPostsDetailResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/posts-detail"
+    };
+  }
+}
+
+message Author {
+  string id = 1;
+  string name = 2;
+  string alias = 3;
+  string avatar = 4;
+}
+
+message Interaction {
+  uint32 id = 1;
+  Author author = 2;
+  string type = 3;
+  string content = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message PostDetail {
+  uint32 id = 1;
+  Author author = 2;
+  string content = 3;
+  int32 created_at = 4;
+  int32 updated_at = 5;
+  repeated Interaction interactions = 6;
+}
+
+message GetPostsDetailRequest {
+  repeated uint32 post_ids = 1;
+  uint32 page = 2;
+  uint32 page_size = 3;
+}
+
+message GetPostsDetailResponse {
+  uint32 code = 1;
+  string message = 2;
+  Data data = 3;
+
+  message Data {
+    repeated PostDetail posts_detail = 1;
+    uint32 page = 2;
+    uint32 page_size = 3;
+  }
+}

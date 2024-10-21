@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"elysium.com/applications/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -30,11 +31,23 @@ func (r *repoImpl) GetPosts(ctx context.Context, params *GetPostsParams) ([]Post
 	if len(params.Ids) != 0 {
 		query = query.Where("id in (?)", params.Ids)
 	}
-	offset := (params.Page - 1) * params.PageSize
 
-	query = query.Limit(params.PageSize).Offset(offset)
+	if len(params.Author) != 0 {
+		query = query.Where("author = ?", params.Author)
+	}
+
+	if params.Page != 0 && params.PageSize != 0 {
+		offset := (params.Page - 1) * params.PageSize
+		query = query.Limit(int(params.PageSize)).Offset(int(offset))
+	}
+
 	posts := make([]Post, 0)
 
-	err := query.Scan(&posts).Error
+	err := query.Order(clause.OrderByColumn{
+		Column: clause.Column{
+			Name: "created_at",
+		},
+		Desc: params.Order == utils.DESC,
+	}).Scan(&posts).Error
 	return posts, err
 }

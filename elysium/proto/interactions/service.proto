@@ -27,42 +27,42 @@ service InteractionService {
 
 message Interaction {
   uint32 id = 1;
-  int32 post_id = 2;
+  uint32 post_id = 2;
   string author = 3;
   string type = 4;
   string content = 5;
-  int64 created_at = 6;
-  int64 updated_at = 7;
+  int32 created_at = 6;
+  int32 updated_at = 7;
 }
 
 message UpsertInteractionRequest {
   google.protobuf.UInt32Value id = 1;
-  int32 post_id = 2;
+  uint32 post_id = 2;
   string author = 3;
   string type = 4;
   string content = 5;
 }
 
 message UpsertInteractionResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
-  int32 interaction_id = 3;
+  uint32 interaction_id = 3;
 }
 
 message GetInteractionsRequest {
-  repeated int32 post_ids = 1;
-  int32 page = 2;
-  int32 page_size = 3;
+  repeated uint32 post_ids = 1;
+  uint32 page = 2;
+  uint32 page_size = 3;
 }
 
 message GetInteractionResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
   Data data = 3;
 
   message Data {
     repeated Interaction interactions = 1;
-    int32 page = 2;
-    int32 page_size = 3;
+    uint32 page = 2;
+    uint32 page_size = 3;
   }
 }

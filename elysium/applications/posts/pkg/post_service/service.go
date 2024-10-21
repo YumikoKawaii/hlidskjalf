@@ -28,12 +28,5 @@ func (s *serviceImpl) UpsertPost(ctx context.Context, post *repository.Post) err
 }
 
 func (s *serviceImpl) GetPosts(ctx context.Context, params *repository.GetPostsParams) ([]repository.Post, error) {
-	if params.Page == 0 {
-		params.Page = defaultGetPostsPage
-	}
-	if params.PageSize == 0 {
-		params.PageSize = defaultGetPostsPageSize
-	}
-
 	return s.repo.GetPosts(ctx, params)
 }

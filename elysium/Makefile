@@ -21,3 +21,12 @@ install-protoc-go:
 
 install-buf:
 	sudo curl -sSL "https://github.com/bufbuild/buf/releases/download/v$(BUF_VERSION)/$(BUF_BINARY_NAME)-$(shell uname -s)-$(shell uname -m)"  -o "/usr/local/bin/$(BUF_BINARY_NAME)" && sudo chmod +x "/usr/local/bin/$(BUF_BINARY_NAME)"
+
+
+.PHONY: start-infra stop-infra
+
+start-infra:
+	docker compose -f ./dockerfiles/infrastructure.yaml up -d
+
+stop-infra:
+	docker compose -f ./dockerfiles/infrastructure.yaml down

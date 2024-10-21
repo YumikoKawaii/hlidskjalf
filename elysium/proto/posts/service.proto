@@ -23,6 +23,17 @@ service PostService {
       get: "/api/v1/posts"
     };
   }
+
+  rpc Discovery(DiscoveryRequest) returns (DiscoveryResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/posts/discovery"
+    };
+  }
+}
+
+enum SortOrder {
+  ASC = 0;
+  DESC = 1;
 }
 
 message Post {
@@ -41,25 +52,40 @@ message UpsertPostRequest {
 }
 
 message UpsertPostResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
   uint32 id = 3;
 }
 
 message GetPostsRequest {
-  repeated int32 ids = 1;
-  int32 page = 2;
-  int32 page_size = 3;
+  repeated uint32 ids = 1;
 }
 
 message GetPostResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
   Data data = 3;
 
   message Data {
     repeated Post posts = 1;
-    int32 page = 2;
-    int32 page_size = 3;
+  }
+}
+
+message DiscoveryRequest {
+  string author = 1;
+  SortOrder sort_order = 2;
+  uint32 page = 3;
+  uint32 page_size = 4;
+}
+
+message DiscoveryResponse {
+  uint32 code = 1;
+  string message = 2;
+  Data data = 3;
+  
+  message Data {
+    repeated uint32 post_ids = 1;
+    uint32 page = 2;
+    uint32 page_size = 3;
   }
 }

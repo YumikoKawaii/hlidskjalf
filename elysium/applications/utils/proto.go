@@ -2,6 +2,13 @@ package utils
 
 import "github.com/gogo/protobuf/types"
 
+type SortOrder int
+
+const (
+	ASC  = 0
+	DESC = 1
+)
+
 func UInt32PointerToProto(value *uint32) *types.UInt32Value {
 	if value == nil {
 		return nil

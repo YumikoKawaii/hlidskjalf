@@ -1,6 +1,9 @@
 package repository
 
-import "time"
+import (
+	"elysium.com/applications/utils"
+	"time"
+)
 
 type Post struct {
 	Id        *uint32   `json:"id,omitempty"`
@@ -11,7 +14,9 @@ type Post struct {
 }
 
 type GetPostsParams struct {
-	Ids      []int32
-	Page     int
-	PageSize int
+	Ids      []uint32
+	Author   string
+	Page     uint32
+	PageSize uint32
+	Order    utils.SortOrder
 }

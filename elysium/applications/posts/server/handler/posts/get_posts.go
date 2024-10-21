@@ -9,9 +9,7 @@ import (
 
 func (s *Handler) GetPosts(ctx context.Context, request *pb.GetPostsRequest) (*pb.GetPostResponse, error) {
 	params := &repository.GetPostsParams{
-		Ids:      request.Ids,
-		Page:     int(request.Page),
-		PageSize: int(request.PageSize),
+		Ids: request.Ids,
 	}
 
 	posts, err := s.postService.GetPosts(ctx, params)
@@ -23,9 +21,7 @@ func (s *Handler) GetPosts(ctx context.Context, request *pb.GetPostsRequest) (*p
 		Code:    http.StatusOK,
 		Message: "Success",
 		Data: &pb.GetPostResponse_Data{
-			Posts:    s.transformPostToProto(posts),
-			Page:     int32(params.Page),
-			PageSize: int32(params.PageSize),
+			Posts: s.transformPostToProto(posts),
 		},
 	}, nil
 }
