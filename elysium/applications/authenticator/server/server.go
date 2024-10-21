@@ -12,16 +12,26 @@ import (
 	server "elysium.com/applications/authenticator/service"
 	"elysium.com/shared/mysql"
 	"elysium.com/shared/redis"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/validator"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"time"
 )
 
 func Serve(cfg *config.Application) {
+	prometheus := grpc_prometheus.NewServerMetrics()
+	jwtInterceptor := jwt.NewInterceptor(jwt.NewResolver(&cfg.JWTConfig))
 
 	sv := server.NewServer(
 		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
-		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
+		grpc.ChainUnaryInterceptor(
+			grpc_validator.UnaryServerInterceptor(),
+			prometheus.UnaryServerInterceptor(),
+			grpc_zap.UnaryServerInterceptor(zap.L()),
+			jwtInterceptor.Unary(),
+		),
 	)
 
 	gormDB := mysql.Initialize(&cfg.MysqlCfg)
@@ -29,10 +39,9 @@ func Serve(cfg *config.Application) {
 	authService := auth.NewService(repo, cfg.Secret)
 	jwtResolver := jwt.NewResolver(&cfg.JWTConfig)
 	apiKeyResolver := api_key.NewResolver(cfg.ApiKeyMapConfigPath)
-	authHandler := authenticator.NewService(authService, jwtResolver, apiKeyResolver)
-
 	redisClient := redis.Initialize(cfg.RedisCfg)
 	storage := discovery.NewStorage(redisClient, repo)
+	authHandler := authenticator.NewService(authService, jwtResolver, apiKeyResolver, storage)
 
 	if err := sv.Register(authHandler); err != nil {
 		panic(err)

@@ -16,10 +16,11 @@ type Handler struct {
 	storage        discovery.Storage
 }
 
-func NewService(service auth.Service, jwtResolver jwt.Resolver, apiKeyResolver api_key.Resolver) *Handler {
+func NewService(service auth.Service, jwtResolver jwt.Resolver, apiKeyResolver api_key.Resolver, storage discovery.Storage) *Handler {
 	return &Handler{
 		authService:    service,
 		jwtResolver:    jwtResolver,
 		apiKeyResolver: apiKeyResolver,
+		storage:        storage,
 	}
 }

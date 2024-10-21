@@ -152,6 +152,11 @@ func (s *Server) Serve() error {
 			errch <- err
 			return
 		}
+
+		logrus.Infof("[Authenticator] - HTTP: %d", s.cfg.HTTP.Port)
+		logrus.Infof("[Authenticator] - GRPC: %d", s.cfg.GRPC.Port)
+		logrus.Info("[Authenticator] - Serving")
+
 		if err := s.gRPC.Serve(listener); err != nil {
 			errch <- fmt.Errorf("error serve gRPC server: %w", err)
 		}
