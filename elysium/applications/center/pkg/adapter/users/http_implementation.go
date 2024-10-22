@@ -18,6 +18,13 @@ type httpClient struct {
 	client *http.Client
 }
 
+func NewHttpClient(config Config) Client {
+	return &httpClient{
+		host:   config.Host,
+		client: &http.Client{},
+	}
+}
+
 func (c *httpClient) UpsertUser(ctx context.Context, request UpsertUserRequest) (UpsertUserResponse, error) {
 	buffer, err := json.Marshal(request)
 	if err != nil {

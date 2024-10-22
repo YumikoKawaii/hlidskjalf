@@ -5,7 +5,7 @@ import (
 	"elysium.com/applications/interactions/pkg/interaction_service"
 	"elysium.com/applications/interactions/pkg/repository"
 	"elysium.com/applications/interactions/server/handler/interactions"
-	server "elysium.com/applications/interactions/service"
+	"elysium.com/applications/interactions/service"
 	"elysium.com/shared/mysql"
 	"github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
@@ -13,8 +13,8 @@ import (
 
 func Serve(cfg *config.Application) {
 
-	sv := server.NewServer(
-		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
+	sv := service.NewServer(
+		service.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
 		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
 	)
 

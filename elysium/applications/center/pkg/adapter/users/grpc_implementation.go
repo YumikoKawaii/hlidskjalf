@@ -3,10 +3,25 @@ package users
 import (
 	"context"
 	pb "elysium.com/pb/user"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type grpcClient struct {
 	rpc pb.UserServiceClient
+}
+
+func NewRpcClient(config Config) Client {
+
+	conn, err := grpc.NewClient(config.Host, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+
+	rpc := pb.NewUserServiceClient(conn)
+	return &grpcClient{
+		rpc: rpc,
+	}
 }
 
 func (c *grpcClient) UpsertUser(ctx context.Context, request UpsertUserRequest) (UpsertUserResponse, error) {

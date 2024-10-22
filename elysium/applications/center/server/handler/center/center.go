@@ -13,3 +13,11 @@ type Handler struct {
 	interactionClient interactions.Client
 	userClient        users.Client
 }
+
+func NewHandler(postClient posts.Client, interactionClient interactions.Client, userClient users.Client) *Handler {
+	return &Handler{
+		postClient:        postClient,
+		interactionClient: interactionClient,
+		userClient:        userClient,
+	}
+}

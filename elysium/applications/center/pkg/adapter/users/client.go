@@ -13,6 +13,18 @@ type Client interface {
 	GetUsers(ctx context.Context, request GetUsersRequest) (GetUsersResponse, error)
 }
 
+func NewClient(config Config, isUseHttp bool) Client {
+	if isUseHttp {
+		return NewHttpClient(config)
+	}
+
+	return NewRpcClient(config)
+}
+
+type Config struct {
+	Host string `env:"USER_SERVICE_HOST"`
+}
+
 type UserInfo struct {
 	Id           string `json:"id,omitempty"`
 	Name         string `json:"name,omitempty"`
