@@ -48,7 +48,7 @@ func (c *grpcClient) UpsertInteraction(ctx context.Context, request UpsertIntera
 func (c *grpcClient) GetInteractions(ctx context.Context, request GetInteractionRequest) (GetInteractionResponse, error) {
 
 	resp, err := c.rpc.GetInteractions(ctx, &pb.GetInteractionsRequest{
-		PostIds:  request.PostIds,
+		PostId:   request.PostId,
 		Page:     request.Page,
 		PageSize: request.PageSize,
 	})

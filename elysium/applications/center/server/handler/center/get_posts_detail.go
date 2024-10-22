@@ -7,20 +7,23 @@ import (
 	pb "elysium.com/pb/center"
 	golang_set "github.com/deckarep/golang-set/v2"
 	"golang.org/x/net/context"
+	"net/http"
+)
+
+const (
+	defaultGetInteractionPage     = 1
+	defaultGetInteractionPageSize = 100
 )
 
 func (c *Handler) GetPostsDetail(ctx context.Context, request *pb.GetPostsDetailRequest) (*pb.GetPostsDetailResponse, error) {
 
-	// context will contains id
-	// get posts
 	postsResp, err := c.postClient.GetPosts(ctx, posts.GetPostsRequest{
-		Ids:      request.PostIds,
-		Page:     request.Page,
-		PageSize: request.PageSize,
+		Ids: []uint32{request.PostId},
 	})
 	if err != nil {
 		return nil, err
 	}
+	post := postsResp.Data.Posts[0]
 
 	authorIds := make([]string, 0)
 	postIds := make([]uint32, 0)
@@ -30,42 +33,65 @@ func (c *Handler) GetPostsDetail(ctx context.Context, request *pb.GetPostsDetail
 	}
 
 	// fetch interactions
-	interactionList := make([]interactions.Interaction, 0)
-	page := uint32(1)
-	pageSize := uint32(100)
-	for {
-		// fetch until done
-		interactionsResp, err := c.interactionClient.GetInteractions(ctx, interactions.GetInteractionRequest{
-			PostIds:  postIds,
-			Page:     page,
-			PageSize: pageSize,
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		interactionList = append(interactionList, interactionsResp.Data.Interactions...)
-
-		if interactionsResp.Data.PageSize < pageSize {
-			break
-		}
-		page += 1
+	interactionsResp, err := c.interactionClient.GetInteractions(ctx, interactions.GetInteractionRequest{
+		PostId:   request.PostId,
+		Page:     defaultGetInteractionPage,
+		PageSize: defaultGetInteractionPageSize,
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	// fetch users
-	for _, interaction := range interactionList {
+	for _, interaction := range interactionsResp.Data.Interactions {
 		authorIds = append(authorIds, interaction.Author)
 	}
 
 	authorIds = golang_set.NewSet[string](authorIds...).ToSlice()
-	page = 1
-	for {
-		authorResp, err := c.userClient.GetUsers(ctx, users.GetUsersRequest{
-			Ids:      authorIds,
-			Page:     0,
-			PageSize: 0,
+	authorResp, err := c.userClient.GetUsers(ctx, users.GetUsersRequest{
+		Ids:      authorIds,
+		Page:     1,
+		PageSize: int32(len(authorIds)),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// create author map
+	authorMap := make(map[string]*pb.Author)
+	for _, author := range authorResp.Data.UsersInfo {
+		authorMap[author.Id] = &pb.Author{
+			Id:     author.Id,
+			Name:   author.Name,
+			Alias:  author.Alias,
+			Avatar: author.Avatar,
+		}
+	}
+
+	protoInteractions := make([]*pb.Interaction, 0)
+	for _, interaction := range interactionsResp.Data.Interactions {
+		protoInteractions = append(protoInteractions, &pb.Interaction{
+			Id:        interaction.Id,
+			Author:    authorMap[interaction.Author],
+			Type:      interaction.Type,
+			Content:   interaction.Content,
+			CreatedAt: interaction.CreatedAt,
+			UpdatedAt: interaction.UpdatedAt,
 		})
 	}
 
-	return nil, nil
+	return &pb.GetPostsDetailResponse{
+		Code:    http.StatusOK,
+		Message: "Success",
+		Data: &pb.GetPostsDetailResponse_Data{
+			PostsDetail: &pb.PostDetail{
+				Id:           post.Id,
+				Author:       authorMap[post.Author],
+				Content:      post.Content,
+				CreatedAt:    post.CreatedAt,
+				UpdatedAt:    post.UpdatedAt,
+				Interactions: protoInteractions,
+			},
+		},
+	}, nil
 }

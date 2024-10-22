@@ -25,14 +25,19 @@ service InteractionService {
   }
 }
 
+enum SortOrder {
+  ASC = 0;
+  DESC = 1;
+}
+
 message Interaction {
   uint32 id = 1;
   uint32 post_id = 2;
   string author = 3;
   string type = 4;
   string content = 5;
-  int32 created_at = 6;
-  int32 updated_at = 7;
+  uint32 created_at = 6;
+  uint32 updated_at = 7;
 }
 
 message UpsertInteractionRequest {
@@ -50,9 +55,10 @@ message UpsertInteractionResponse {
 }
 
 message GetInteractionsRequest {
-  repeated uint32 post_ids = 1;
-  uint32 page = 2;
-  uint32 page_size = 3;
+  uint32 post_id = 1 [(validate.rules).uint32 = {gte: 1}];;
+  SortOrder sort_order = 2;
+  uint32 page = 3;
+  uint32 page_size = 4;
 }
 
 message GetInteractionResponse {

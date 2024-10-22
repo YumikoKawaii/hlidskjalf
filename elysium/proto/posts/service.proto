@@ -40,8 +40,8 @@ message Post {
   uint32 id = 1;
   string author = 2;
   string content = 3;
-  int32 created_at = 4;
-  int32 updated_at = 5;
+  uint32 created_at = 4;
+  uint32 updated_at = 5;
 }
 
 message UpsertPostRequest {

@@ -31,23 +31,21 @@ message Interaction {
   Author author = 2;
   string type = 3;
   string content = 4;
-  int64 created_at = 5;
-  int64 updated_at = 6;
+  uint32 created_at = 5;
+  uint32 updated_at = 6;
 }
 
 message PostDetail {
   uint32 id = 1;
   Author author = 2;
   string content = 3;
-  int32 created_at = 4;
-  int32 updated_at = 5;
+  uint32 created_at = 4;
+  uint32 updated_at = 5;
   repeated Interaction interactions = 6;
 }
 
 message GetPostsDetailRequest {
-  repeated uint32 post_ids = 1;
-  uint32 page = 2;
-  uint32 page_size = 3;
+  uint32 post_id = 1;
 }
 
 message GetPostsDetailResponse {
@@ -56,8 +54,6 @@ message GetPostsDetailResponse {
   Data data = 3;
 
   message Data {
-    repeated PostDetail posts_detail = 1;
-    uint32 page = 2;
-    uint32 page_size = 3;
+    PostDetail posts_detail = 1;
   }
 }

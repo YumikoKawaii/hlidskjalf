@@ -2,10 +2,10 @@ package interactions
 
 import (
 	"context"
+	"elysium.com/applications/utils"
 	"fmt"
 	"net/url"
 	"strconv"
-	"strings"
 )
 
 type Client interface {
@@ -40,20 +40,15 @@ type UpsertInteractionResponse struct {
 }
 
 type GetInteractionRequest struct {
-	PostIds  []uint32 `json:"postIds,omitempty"`
-	Page     uint32   `json:"page,omitempty"`
-	PageSize uint32   `json:"pageSize,omitempty"`
+	PostId    uint32          `json:"postId,omitempty"`
+	SortOrder utils.SortOrder `json:"order,omitempty"`
+	Page      uint32          `json:"page,omitempty"`
+	PageSize  uint32          `json:"pageSize,omitempty"`
 }
 
 func (r *GetInteractionRequest) Query() string {
 	query := url.Values{}
-	if len(r.PostIds) != 0 {
-		ids := make([]string, 0)
-		for _, id := range r.PostIds {
-			ids = append(ids, strconv.Itoa(int(id)))
-		}
-		query.Add("postIds", strings.Join(ids, ","))
-	}
+	query.Add("postId", strconv.Itoa(int(r.PostId)))
 
 	if r.Page != 0 {
 		query.Add("page", strconv.Itoa(int(r.Page)))
@@ -63,6 +58,7 @@ func (r *GetInteractionRequest) Query() string {
 		query.Add("pageSize", strconv.Itoa(int(r.PageSize)))
 	}
 
+	query.Add("sortOrder", r.SortOrder.Value())
 	return fmt.Sprintf("?%s", query.Encode())
 }
 
@@ -82,6 +78,6 @@ type Interaction struct {
 	Author    string `json:"author,omitempty"`
 	Type      string `json:"type,omitempty"`
 	Content   string `json:"content,omitempty"`
-	CreatedAt int32  `json:"createdAt,omitempty"`
-	UpdatedAt int32  `json:"updatedAt,omitempty"`
+	CreatedAt uint32 `json:"createdAt,omitempty"`
+	UpdatedAt uint32 `json:"updatedAt,omitempty"`
 }

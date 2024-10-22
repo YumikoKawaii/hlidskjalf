@@ -298,9 +298,7 @@ func (m *GetPostsDetailRequest) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Page
-
-	// no validation rules for PageSize
+	// no validation rules for PostId
 
 	return nil
 }
@@ -450,24 +448,15 @@ func (m *GetPostsDetailResponse_Data) Validate() error {
 		return nil
 	}
 
-	for idx, item := range m.GetPostsDetail() {
-		_, _ = idx, item
-
-		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return GetPostsDetailResponse_DataValidationError{
-					field:  fmt.Sprintf("PostsDetail[%v]", idx),
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
+	if v, ok := interface{}(m.GetPostsDetail()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetPostsDetailResponse_DataValidationError{
+				field:  "PostsDetail",
+				reason: "embedded message failed validation",
+				cause:  err,
 			}
 		}
-
 	}
-
-	// no validation rules for Page
-
-	// no validation rules for PageSize
 
 	return nil
 }

@@ -16,7 +16,7 @@ type Post struct {
 type GetPostsParams struct {
 	Ids      []uint32
 	Author   string
+	Order    utils.SortOrder
 	Page     uint32
 	PageSize uint32
-	Order    utils.SortOrder
 }

@@ -84,7 +84,7 @@ func (c *grpcClient) Discovery(ctx context.Context, request DiscoveryRequest) (D
 
 	resp, err := c.rpc.Discovery(ctx, &pb.DiscoveryRequest{
 		Author:    request.Author,
-		SortOrder: pb.SortOrder(int32(request.SortOrder)),
+		SortOrder: pb.SortOrder(request.SortOrder),
 		Page:      request.Page,
 		PageSize:  request.PageSize,
 	})

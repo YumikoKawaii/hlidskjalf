@@ -3,15 +3,17 @@ package interactions
 import (
 	"context"
 	"elysium.com/applications/interactions/pkg/repository"
+	"elysium.com/applications/utils"
 	pb "elysium.com/pb/interactions"
 	"net/http"
 )
 
 func (s *Handler) GetInteractions(ctx context.Context, request *pb.GetInteractionsRequest) (*pb.GetInteractionResponse, error) {
 	params := &repository.GetInteractionsParams{
-		PostIds:  request.PostIds,
-		Page:     int(request.Page),
-		PageSize: int(request.PageSize),
+		PostId:   request.PostId,
+		Order:    utils.ToSortOrder(int32(request.SortOrder)),
+		Page:     request.Page,
+		PageSize: request.PageSize,
 	}
 
 	interactions, err := s.interactionService.GetInteractions(ctx, params)
@@ -24,8 +26,8 @@ func (s *Handler) GetInteractions(ctx context.Context, request *pb.GetInteractio
 		Message: "Success",
 		Data: &pb.GetInteractionResponse_Data{
 			Interactions: s.transformInteractionsToProtos(interactions),
-			Page:         int32(params.Page),
-			PageSize:     int32(params.PageSize),
+			Page:         params.Page,
+			PageSize:     params.PageSize,
 		},
 	}, nil
 }
@@ -39,8 +41,8 @@ func (s *Handler) transformInteractionsToProtos(interactions []repository.Intera
 			Author:    i.Author,
 			Type:      i.Type,
 			Content:   i.Content,
-			CreatedAt: i.CreatedAt.Unix(),
-			UpdatedAt: i.UpdatedAT.Unix(),
+			CreatedAt: int32(i.CreatedAt.Unix()),
+			UpdatedAt: int32(i.UpdatedAT.Unix()),
 		})
 	}
 	return protos

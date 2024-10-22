@@ -1,10 +1,13 @@
 package repository
 
-import "time"
+import (
+	"elysium.com/applications/utils"
+	"time"
+)
 
 type Interaction struct {
 	Id        *uint32   `json:"id,omitempty"`
-	PostId    int32     `json:"postId,omitempty"`
+	PostId    uint32    `json:"postId,omitempty"`
 	Author    string    `json:"author,omitempty"`
 	Type      string    `json:"type,omitempty"`
 	Content   string    `json:"content,omitempty"`
@@ -13,7 +16,8 @@ type Interaction struct {
 }
 
 type GetInteractionsParams struct {
-	PostIds  []int32
-	Page     int
-	PageSize int
+	PostId   uint32
+	Order    utils.SortOrder
+	Page     uint32
+	PageSize uint32
 }

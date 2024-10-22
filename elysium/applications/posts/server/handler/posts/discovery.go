@@ -3,6 +3,7 @@ package posts
 import (
 	"context"
 	"elysium.com/applications/posts/pkg/repository"
+	"elysium.com/applications/utils"
 	pb "elysium.com/pb/posts"
 	"net/http"
 )
@@ -11,6 +12,7 @@ func (s *Handler) Discovery(ctx context.Context, request *pb.DiscoveryRequest) (
 
 	params := &repository.GetPostsParams{
 		Author:   request.Author,
+		Order:    utils.ToSortOrder(int32(request.SortOrder)),
 		Page:     request.Page,
 		PageSize: request.PageSize,
 	}

@@ -82,15 +82,15 @@ type Post struct {
 	Author    string   `json:"author,omitempty"`
 	Content   string   `json:"content,omitempty"`
 	Medias    []string `json:"medias,omitempty"`
-	CreatedAt int32    `json:"createdAt,omitempty"`
-	UpdatedAt int32    `json:"updatedAt,omitempty"`
+	CreatedAt uint32   `json:"createdAt,omitempty"`
+	UpdatedAt uint32   `json:"updatedAt,omitempty"`
 }
 
 type DiscoveryRequest struct {
 	Author    string          `json:"author,omitempty"`
+	SortOrder utils.SortOrder `json:"order,omitempty"`
 	Page      uint32          `json:"page,omitempty"`
 	PageSize  uint32          `json:"pageSize,omitempty"`
-	SortOrder utils.SortOrder `json:"order,omitempty"`
 }
 
 type DiscoveryResponse struct {
@@ -112,10 +112,7 @@ func (r *DiscoveryRequest) Query() string {
 	if r.PageSize != 0 {
 		query.Add("pageSize", strconv.Itoa(int(r.PageSize)))
 	}
-	sortOrder := "ASC"
-	if r.SortOrder == utils.DESC {
-		sortOrder = "DESC"
-	}
-	query.Add("sortOrder", sortOrder)
+
+	query.Add("sortOrder", r.SortOrder.Value())
 	return fmt.Sprintf("?%s", query.Encode())
 }

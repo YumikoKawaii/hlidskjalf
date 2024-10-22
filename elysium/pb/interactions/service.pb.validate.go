@@ -281,6 +281,15 @@ func (m *GetInteractionsRequest) Validate() error {
 		return nil
 	}
 
+	if m.GetPostId() < 1 {
+		return GetInteractionsRequestValidationError{
+			field:  "PostId",
+			reason: "value must be greater than or equal to 1",
+		}
+	}
+
+	// no validation rules for SortOrder
+
 	// no validation rules for Page
 
 	// no validation rules for PageSize

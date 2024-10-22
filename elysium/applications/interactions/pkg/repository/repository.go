@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"elysium.com/applications/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -27,12 +28,20 @@ func (r *repoImpl) UpsertInteraction(ctx context.Context, interaction *Interacti
 
 func (r *repoImpl) GetInteractions(ctx context.Context, params *GetInteractionsParams) ([]Interaction, error) {
 	query := r.db.Model(&Interaction{})
-	if len(params.PostIds) != 0 {
-		query = query.Where("post_id in (?)", params.PostIds)
+	query = query.Where("post_id = ?", params.PostId)
+
+	if params.Page != 0 && params.PageSize != 0 {
+		offset := (params.Page - 1) * params.PageSize
+		query = query.Limit(int(params.PageSize)).Offset(int(offset))
 	}
 
-	offset := (params.Page - 1) * params.PageSize
-	query = query.Limit(params.PageSize).Offset(offset)
+	query = query.Order(clause.OrderByColumn{
+		Column: clause.Column{
+			Name: "created_at",
+		},
+		Desc: params.Order == utils.DESC,
+	})
+
 	interactions := make([]Interaction, 0)
 	err := query.Scan(&interactions).Error
 	return interactions, err
