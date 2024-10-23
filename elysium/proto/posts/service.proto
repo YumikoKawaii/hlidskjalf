@@ -58,7 +58,7 @@ message UpsertPostResponse {
 }
 
 message GetPostsRequest {
-  repeated uint32 ids = 1;
+  repeated uint32 ids = 1 [(validate.rules).repeated = {ignore_empty: true, items: {uint32: {gt: 0}}}];
 }
 
 message GetPostResponse {

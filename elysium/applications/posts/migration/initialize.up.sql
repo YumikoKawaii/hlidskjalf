@@ -1,6 +1,6 @@
 CREATE TABLE `posts`
 (
-    `id`         INT PRIMARY KEY AUTO INCREMENT,
+    `id`         INT PRIMARY KEY AUTO_INCREMENT,
     `author`     VARCHAR(255),
     `content`    TEXT,
     `created_at` DATETIME NOT NULL,
