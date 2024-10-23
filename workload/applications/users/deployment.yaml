@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authenticator
+  name: users
   namespace: elysium
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authenticator
+      app: users
   template:
     metadata:
       labels:
-        app: authenticator
+        app: users
     spec:
       containers:
-        - name: authenticator
-          image: yumikokawaii/authenticator:latest          
+        - name: users
+          image: yumikokawaii/users:latest          
           ports:            
             - containerPort: 8080
           env:
