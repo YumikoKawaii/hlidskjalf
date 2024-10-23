@@ -8,8 +8,7 @@ import (
 
 type Repository interface {
 	UpsertUser(ctx context.Context, user *User) error
-	GetUserById(ctx context.Context, id string) (*User, error)
-	GetUsersByIds(ctx context.Context, ids []string) ([]User, error)
+	GetUsers(ctx context.Context, params *GetUsersParams) ([]User, error)
 }
 
 type repoImpl struct {
@@ -26,14 +25,17 @@ func (r *repoImpl) UpsertUser(ctx context.Context, user *User) error {
 	return r.db.Model(&User{}).Clauses(clause.OnConflict{UpdateAll: true}).Create(user).Error
 }
 
-func (r *repoImpl) GetUserById(ctx context.Context, id string) (*User, error) {
-	user := new(User)
-	err := r.db.Model(&User{}).Where("id = ?", id).First(user).Error
-	return user, err
-}
-
-func (r *repoImpl) GetUsersByIds(ctx context.Context, ids []string) ([]User, error) {
+func (r *repoImpl) GetUsers(ctx context.Context, params *GetUsersParams) ([]User, error) {
 	users := make([]User, 0)
-	err := r.db.Model(&User{}).Where("id in (?)", ids).Scan(&users).Error
+	query := r.db.Model(&User{})
+	if len(params.Ids) != 0 {
+		query = query.Where("id in (?)", params.Ids)
+	}
+
+	if params.Page != 0 && params.PageSize != 0 {
+		offset := (params.Page - 1) * params.PageSize
+		query = query.Offset(int(offset)).Limit(int(params.PageSize))
+	}
+	err := query.Scan(&users).Error
 	return users, err
 }

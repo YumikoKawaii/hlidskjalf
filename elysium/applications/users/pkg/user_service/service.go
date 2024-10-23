@@ -25,5 +25,7 @@ func (s *serviceImpl) UpsertUser(ctx context.Context, user *repository.User) err
 }
 
 func (s *serviceImpl) GetUsersInfoByIds(ctx context.Context, ids []string) ([]repository.User, error) {
-	return s.repo.GetUsersByIds(ctx, ids)
+	return s.repo.GetUsers(ctx, &repository.GetUsersParams{
+		Ids: ids,
+	})
 }

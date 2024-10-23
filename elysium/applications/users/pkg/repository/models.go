@@ -13,3 +13,9 @@ type User struct {
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"cpdatedAt"`
 }
+
+type GetUsersParams struct {
+	Ids      []string
+	Page     uint32
+	PageSize uint32
+}
