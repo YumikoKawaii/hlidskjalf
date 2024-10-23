@@ -26,6 +26,15 @@ services:
     networks:
       - elysium
 
+  authenticator:
+    image: local/authenticator:latest
+    container_name: authenticator
+    ports:
+      - 8080
+      - 8081
+    networks:
+      - elysium
+
 networks:
   elysium:
     driver: bridge
