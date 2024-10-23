@@ -14,7 +14,7 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 helm install my-release oci://registry-1.docker.io/bitnamicharts/mysql
 ```
 
-Looking to use MySQL in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
+Looking to use MySQL in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
 
 ## Introduction
 
@@ -73,16 +73,12 @@ When using a `.sh` script, you may wish to perform a "one-time" action like crea
 ```yaml
 initdbScripts:
   my_init_script.sh: |
-    #!/bin/bash
-    if [[ $(hostname) == *primary* ]]; then
-      echo "Primary node"
-      password_aux="${MYSQL_ROOT_PASSWORD:-}"
-      if [[ -f "${MYSQL_ROOT_PASSWORD_FILE:-}" ]]; then
-          password_aux=$(cat "$MYSQL_ROOT_PASSWORD_FILE")
-      fi
-      mysql -P 3306 -uroot -p"$password_aux" -e "create database new_database";
+    #!/bin/sh
+    if [[ $(hostname) == *master* ]]; then
+      echo "Master node"
+      mysql -P 3306 -uroot -prandompassword -e "create database new_database";
     else
-      echo "Secondary node"
+      echo "No master node"
     fi
 ```
 
@@ -149,8 +145,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`   |
 | `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`   |
-| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`   |
-| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`   |
+| `global.storageClass`                                 | Global StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                        | `""`   |
 | `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto` |
 
 ### Common parameters
@@ -172,30 +167,30 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 
 ### MySQL common parameters
 
-| Name                        | Description                                                                                                                                                                         | Value                   |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `image.registry`            | MySQL image registry                                                                                                                                                                | `REGISTRY_NAME`         |
-| `image.repository`          | MySQL image repository                                                                                                                                                              | `REPOSITORY_NAME/mysql` |
-| `image.digest`              | MySQL image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                               | `""`                    |
-| `image.pullPolicy`          | MySQL image pull policy                                                                                                                                                             | `IfNotPresent`          |
-| `image.pullSecrets`         | Specify docker-registry secret names as an array                                                                                                                                    | `[]`                    |
-| `image.debug`               | Specify if debug logs should be enabled                                                                                                                                             | `false`                 |
-| `architecture`              | MySQL architecture (`standalone` or `replication`)                                                                                                                                  | `standalone`            |
-| `auth.rootPassword`         | Password for the `root` user. Ignored if existing secret is provided                                                                                                                | `""`                    |
-| `auth.createDatabase`       | Whether to create the .Values.auth.database or not                                                                                                                                  | `true`                  |
-| `auth.database`             | Name for a custom database to create                                                                                                                                                | `my_database`           |
-| `auth.username`             | Name for a custom user to create                                                                                                                                                    | `""`                    |
-| `auth.password`             | Password for the new user. Ignored if existing secret is provided                                                                                                                   | `""`                    |
-| `auth.replicationUser`      | MySQL replication user                                                                                                                                                              | `replicator`            |
-| `auth.replicationPassword`  | MySQL replication user password. Ignored if existing secret is provided                                                                                                             | `""`                    |
-| `auth.existingSecret`       | Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`                               | `""`                    |
-| `auth.usePasswordFiles`     | Mount credentials as files instead of using an environment variable                                                                                                                 | `false`                 |
-| `auth.customPasswordFiles`  | Use custom password files when `auth.usePasswordFiles` is set to `true`. Define path for keys `root` and `user`, also define `replicator` if `architecture` is set to `replication` | `{}`                    |
-| `auth.authenticationPolicy` | Sets the authentication policy, by default it will use `* ,,`                                                                                                                       | `""`                    |
-| `initdbScripts`             | Dictionary of initdb scripts                                                                                                                                                        | `{}`                    |
-| `initdbScriptsConfigMap`    | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                                                                                 | `""`                    |
-| `startdbScripts`            | Dictionary of startdb scripts                                                                                                                                                       | `{}`                    |
-| `startdbScriptsConfigMap`   | ConfigMap with the startdb scripts (Note: Overrides `startdbScripts`)                                                                                                               | `""`                    |
+| Name                               | Description                                                                                                                                                                         | Value                   |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `image.registry`                   | MySQL image registry                                                                                                                                                                | `REGISTRY_NAME`         |
+| `image.repository`                 | MySQL image repository                                                                                                                                                              | `REPOSITORY_NAME/mysql` |
+| `image.digest`                     | MySQL image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                               | `""`                    |
+| `image.pullPolicy`                 | MySQL image pull policy                                                                                                                                                             | `IfNotPresent`          |
+| `image.pullSecrets`                | Specify docker-registry secret names as an array                                                                                                                                    | `[]`                    |
+| `image.debug`                      | Specify if debug logs should be enabled                                                                                                                                             | `false`                 |
+| `architecture`                     | MySQL architecture (`standalone` or `replication`)                                                                                                                                  | `standalone`            |
+| `auth.rootPassword`                | Password for the `root` user. Ignored if existing secret is provided                                                                                                                | `""`                    |
+| `auth.createDatabase`              | Whether to create the .Values.auth.database or not                                                                                                                                  | `true`                  |
+| `auth.database`                    | Name for a custom database to create                                                                                                                                                | `my_database`           |
+| `auth.username`                    | Name for a custom user to create                                                                                                                                                    | `""`                    |
+| `auth.password`                    | Password for the new user. Ignored if existing secret is provided                                                                                                                   | `""`                    |
+| `auth.replicationUser`             | MySQL replication user                                                                                                                                                              | `replicator`            |
+| `auth.replicationPassword`         | MySQL replication user password. Ignored if existing secret is provided                                                                                                             | `""`                    |
+| `auth.existingSecret`              | Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`                               | `""`                    |
+| `auth.usePasswordFiles`            | Mount credentials as files instead of using an environment variable                                                                                                                 | `false`                 |
+| `auth.customPasswordFiles`         | Use custom password files when `auth.usePasswordFiles` is set to `true`. Define path for keys `root` and `user`, also define `replicator` if `architecture` is set to `replication` | `{}`                    |
+| `auth.defaultAuthenticationPlugin` | Sets the default authentication plugin, by default it will use `mysql_native_password`                                                                                              | `""`                    |
+| `initdbScripts`                    | Dictionary of initdb scripts                                                                                                                                                        | `{}`                    |
+| `initdbScriptsConfigMap`           | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                                                                                 | `""`                    |
+| `startdbScripts`                   | Dictionary of startdb scripts                                                                                                                                                       | `{}`                    |
+| `startdbScriptsConfigMap`          | ConfigMap with the startdb scripts (Note: Overrides `startdbScripts`)                                                                                                               | `""`                    |
 
 ### MySQL Primary parameters
 
@@ -300,9 +295,9 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `primary.service.sessionAffinity`                           | Session Affinity for Kubernetes service, can be "None" or "ClientIP"                                                                                                                                                              | `None`              |
 | `primary.service.sessionAffinityConfig`                     | Additional settings for the sessionAffinity                                                                                                                                                                                       | `{}`                |
 | `primary.service.headless.annotations`                      | Additional custom annotations for headless MySQL primary service.                                                                                                                                                                 | `{}`                |
-| `primary.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for MySQL primary pods                                                                                                                                                            | `true`              |
-| `primary.pdb.minAvailable`                                  | Minimum number/percentage of MySQL primary pods that should remain scheduled                                                                                                                                                      | `""`                |
-| `primary.pdb.maxUnavailable`                                | Maximum number/percentage of MySQL primary pods that may be made unavailable. Defaults to `1` if both `primary.pdb.minAvailable` and `primary.pdb.maxUnavailable` are empty.                                                      | `""`                |
+| `primary.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for MySQL primary pods                                                                                                                                                            | `false`             |
+| `primary.pdb.minAvailable`                                  | Minimum number/percentage of MySQL primary pods that should remain scheduled                                                                                                                                                      | `1`                 |
+| `primary.pdb.maxUnavailable`                                | Maximum number/percentage of MySQL primary pods that may be made unavailable                                                                                                                                                      | `""`                |
 | `primary.podLabels`                                         | MySQL Primary pod label. If labels are same as commonLabels , this will take precedence                                                                                                                                           | `{}`                |
 
 ### MySQL Secondary parameters
@@ -409,9 +404,9 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `secondary.service.sessionAffinity`                           | Session Affinity for Kubernetes service, can be "None" or "ClientIP"                                                                                                                                                                  | `None`              |
 | `secondary.service.sessionAffinityConfig`                     | Additional settings for the sessionAffinity                                                                                                                                                                                           | `{}`                |
 | `secondary.service.headless.annotations`                      | Additional custom annotations for headless MySQL secondary service.                                                                                                                                                                   | `{}`                |
-| `secondary.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for MySQL secondary pods                                                                                                                                                              | `true`              |
-| `secondary.pdb.minAvailable`                                  | Minimum number/percentage of MySQL secondary pods that should remain scheduled                                                                                                                                                        | `""`                |
-| `secondary.pdb.maxUnavailable`                                | Maximum number/percentage of MySQL secondary pods that may be made unavailable. Defaults to `1` if both `secondary.pdb.minAvailable` and `secondary.pdb.maxUnavailable` are empty.                                                    | `""`                |
+| `secondary.pdb.create`                                        | Enable/disable a Pod Disruption Budget creation for MySQL secondary pods                                                                                                                                                              | `false`             |
+| `secondary.pdb.minAvailable`                                  | Minimum number/percentage of MySQL secondary pods that should remain scheduled                                                                                                                                                        | `1`                 |
+| `secondary.pdb.maxUnavailable`                                | Maximum number/percentage of MySQL secondary pods that may be made unavailable                                                                                                                                                        | `""`                |
 | `secondary.podLabels`                                         | Additional pod labels for MySQL secondary pods                                                                                                                                                                                        | `{}`                |
 
 ### RBAC parameters
@@ -546,10 +541,6 @@ helm upgrade my-release oci://REGISTRY_NAME/REPOSITORY_NAME/mysql --set auth.roo
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
 
 | Note: you need to substitute the placeholder _[ROOT_PASSWORD]_ with the value obtained in the installation notes.
-
-### To 11.0.0
-
-This major bump uses mysql `8.4` image, that includes several [removal of deprecated](https://dev.mysql.com/doc/relnotes/mysql/8.4/en/news-8-4-0.html#mysqld-8-4-0-deprecation-removal) configuration settings, for example the parameter `auth.defaultAuthenticationPlugin` has been removed in favor of `auth.authenticationPolicy`. This could potentially break your deployment and you would need to adjust the config settings accordingly.
 
 ### To 10.0.0
 
