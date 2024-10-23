@@ -10,7 +10,7 @@ RUN go build -o application ./applications/authenticator/cmd/main.go
 
 FROM ubuntu:latest
 
-WORKDIR /root/
+WORKDIR /
 
 COPY --from=builder ./application ./bin/application
 COPY --from=builder ./applications/authenticator/api_keys_cfg.yaml ./media/api_keys_cfg.yaml
