@@ -33,8 +33,8 @@ func (s *Handler) transformPostToProto(posts []repository.Post) []*pb.Post {
 			Id:        *post.Id,
 			Author:    post.Author,
 			Content:   post.Content,
-			CreatedAt: int32(post.CreatedAt.UTC().Unix()),
-			UpdatedAt: int32(post.UpdatedAt.UTC().Unix()),
+			CreatedAt: uint32(post.CreatedAt.UTC().Unix()),
+			UpdatedAt: uint32(post.UpdatedAt.UTC().Unix()),
 		})
 	}
 	return protos
