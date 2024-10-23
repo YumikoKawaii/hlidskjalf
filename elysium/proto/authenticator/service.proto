@@ -77,8 +77,6 @@ message UpdatePermissionsRequest {
       items: {string: {min_len : 1}}
     }
   ];
-
-  string api_key = 3 [(validate.rules).string = {min_len: 1}];
 }
 
 message UpdatePermissionsResponse {

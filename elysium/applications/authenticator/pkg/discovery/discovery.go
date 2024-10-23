@@ -27,6 +27,8 @@ func NewStorage(client *redis.Client, repo repository.Repository) Storage {
 
 func (s *storageImpl) Operate(ctx context.Context, interval time.Duration) {
 
+	s.updateCache(ctx)
+
 	ticker := time.NewTicker(interval)
 	for {
 		select {
@@ -56,8 +58,10 @@ func (s *storageImpl) updateCache(ctx context.Context) {
 
 	// update redis
 	for accountId, pers := range permissionMap {
-		if err := s.redisClient.SAdd(ctx, accountId, pers); err != nil {
+		if err := s.redisClient.SAdd(ctx, accountId, pers).Err(); err != nil {
 			logrus.Errorf("error setting value to redis: %s", err)
 		}
 	}
+
+	logrus.Infof("[Authenticator] - Update permissions")
 }

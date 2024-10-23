@@ -59,7 +59,7 @@ func (s *serviceImpl) Signup(ctx context.Context, email, password string) (*repo
 	account := &repository.Account{
 		Id:             uuid.New().String(),
 		HashedEmail:    hashedEmail,
-		EncryptEmail:   string(encryptEmail),
+		EncryptEmail:   encryptEmail,
 		HashedPassword: hashedPassword,
 	}
 

@@ -16,8 +16,9 @@ type Interceptor struct {
 }
 
 var ignoreMap = map[string]bool{
-	"/authenticator.api.Authenticator/Signup": true,
-	"/authenticator.api.Authenticator/Login":  true,
+	"/authenticator.api.Authenticator/Signup":            true,
+	"/authenticator.api.Authenticator/Login":             true,
+	"/authenticator.api.Authenticator/UpdatePermissions": true,
 }
 
 func NewInterceptor(resolver Resolver) Interceptor {
