@@ -36,16 +36,17 @@ message UserInfo {
 }
 
 message UpsertUserRequest {
-  string name = 1;
-  string alias = 2;
-  string avatar = 3;
-  string introduction = 4;
-  string workplace = 5;
-  string hometown = 6;
+  google.protobuf.StringValue id = 1 [(validate.rules).string = {ignore_empty: true, len: 36}];
+  string name = 2;
+  string alias = 3;
+  string avatar = 4;
+  string introduction = 5;
+  string workplace = 6;
+  string hometown = 7;
 }
 
 message UpsertUserResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
   string id = 3;
 }
@@ -59,18 +60,18 @@ message GetUsersInfoRequest {
       items: {string: {len : 36}}
     }
   ];
-  int32 page = 2;
-  int32 page_size = 3;
+  uint32 page = 2;
+  uint32 page_size = 3;
 }
 
 message GetUsersInfoResponse {
-  int32 code = 1;
+  uint32 code = 1;
   string message = 2;
   Data data = 3;
 
   message Data {
     repeated UserInfo users_info = 1;
-    int32 page = 2;
-    int32 page_size = 3;
+    uint32 page = 2;
+    uint32 page_size = 3;
   }
 }

@@ -7,15 +7,25 @@ import (
 	"elysium.com/applications/users/server/handler/user"
 	server "elysium.com/applications/users/service"
 	"elysium.com/shared/mysql"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/validator"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 func Serve(cfg *config.Application) {
+	prometheus := grpc_prometheus.NewServerMetrics()
+	zapLogger := zap.S().Desugar()
+	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
 
 	sv := server.NewServer(
 		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
-		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
+		grpc.ChainUnaryInterceptor(
+			grpc_validator.UnaryServerInterceptor(),
+			prometheus.UnaryServerInterceptor(),
+			grpc_zap.UnaryServerInterceptor(zapLogger),
+		),
 	)
 
 	gormDB := mysql.Initialize(&cfg.MysqlCfg)

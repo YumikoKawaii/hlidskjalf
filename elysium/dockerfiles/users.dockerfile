@@ -10,7 +10,7 @@ RUN go build -o application ./applications/users/cmd/main.go
 
 FROM ubuntu:latest
 
-WORKDIR /root/
+WORKDIR /
 
 COPY --from=builder ./application ./bin/application
 

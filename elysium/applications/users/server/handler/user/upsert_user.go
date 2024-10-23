@@ -10,22 +10,8 @@ import (
 
 func (s *Handler) UpsertUser(ctx context.Context, request *pb.UpsertUserRequest) (*pb.UpsertUserResponse, error) {
 
-	idData, err := utils.ExtractValueFromContext(ctx, utils.UserIdKey)
-	if err != nil {
-		return &pb.UpsertUserResponse{
-			Code: http.StatusUnauthorized,
-		}, nil
-	}
-
-	id, ok := idData.(string)
-	if !ok {
-		return &pb.UpsertUserResponse{
-			Code: http.StatusUnauthorized,
-		}, nil
-	}
-
 	if err := s.userService.UpsertUser(ctx, &repository.User{
-		Id:           &id,
+		Id:           utils.ProtoToStringPointer(request.Id),
 		Name:         request.Name,
 		Alias:        request.Alias,
 		Avatar:       request.Avatar,

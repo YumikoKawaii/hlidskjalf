@@ -34,6 +34,6 @@ func (r *repoImpl) GetUserById(ctx context.Context, id string) (*User, error) {
 
 func (r *repoImpl) GetUsersByIds(ctx context.Context, ids []string) ([]User, error) {
 	users := make([]User, 0)
-	err := r.db.Model(&User{}).Where("id in (?)", ids).Scan(users).Error
+	err := r.db.Model(&User{}).Where("id in (?)", ids).Scan(&users).Error
 	return users, err
 }

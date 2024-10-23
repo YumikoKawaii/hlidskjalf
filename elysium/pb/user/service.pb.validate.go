@@ -122,6 +122,18 @@ func (m *UpsertUserRequest) Validate() error {
 		return nil
 	}
 
+	if wrapper := m.GetId(); wrapper != nil {
+
+		if utf8.RuneCountInString(wrapper.GetValue()) != 36 {
+			return UpsertUserRequestValidationError{
+				field:  "Id",
+				reason: "value length must be 36 runes",
+			}
+
+		}
+
+	}
+
 	// no validation rules for Name
 
 	// no validation rules for Alias
