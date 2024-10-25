@@ -16,4 +16,4 @@ COPY --from=builder ./application ./bin/application
 
 EXPOSE 8080
 
-CMD ["./bin/application"]
+CMD ["./bin/application", "serve"]
