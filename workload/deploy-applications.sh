@@ -15,3 +15,5 @@ kubectl apply -f ./applications/interactions/deployment.yaml
 kubectl apply -f ./applications/interactions/service.yaml
 
 # deploy center
+kubectl apply -f ./applications/center/deployment.yaml
+kubectl apply -f ./applications/center/service.yaml

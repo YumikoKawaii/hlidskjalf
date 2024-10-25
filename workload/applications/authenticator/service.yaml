@@ -9,10 +9,10 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 80
+      targetPort: 80      
     - name: grpc
       protocol: TCP
-      port: 8081
-      targetPort: 8081  
-  type: LoadBalancer
+      port: 443
+      targetPort: 443
+  type: ClusterIP

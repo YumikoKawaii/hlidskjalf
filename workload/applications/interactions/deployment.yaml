@@ -17,13 +17,13 @@ spec:
         - name: interactions
           image: yumikokawaii/interactions:latest          
           ports:            
-            - containerPort: 8080
-            - containerPort: 8081
+            - containerPort: 80            
+            - containerPort: 443
           env:
             - name: HTTP_PORT
-              value: "8080"
+              value: "80"
             - name: GRPC_PORT
-              value: "8081"
+              value: "443"
             - name: MYSQL_USERNAME
               value: yumiko
             - name: MYSQL_PASSWORD

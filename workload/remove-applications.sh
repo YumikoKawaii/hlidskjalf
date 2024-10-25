@@ -13,3 +13,7 @@ kubectl delete service users
 # remove interactions
 kubectl delete deployment interactions
 kubectl delete service interactions
+
+# remove center
+kubectl delete deployment center
+kubectl delete service center
