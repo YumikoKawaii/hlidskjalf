@@ -51,7 +51,7 @@ func (c *Handler) GetPostsDetail(ctx context.Context, request *pb.GetPostsDetail
 	authorResp, err := c.userClient.GetUsers(ctx, users.GetUsersRequest{
 		Ids:      authorIds,
 		Page:     1,
-		PageSize: int32(len(authorIds)),
+		PageSize: uint32(len(authorIds)),
 	})
 	if err != nil {
 		return nil, err

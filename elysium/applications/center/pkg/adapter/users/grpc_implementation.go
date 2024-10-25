@@ -61,8 +61,8 @@ func (c *grpcClient) GetUsers(ctx context.Context, request GetUsersRequest) (Get
 		Message: resp.Message,
 		Data: struct {
 			UsersInfo []UserInfo `json:"usersInfo,omitempty"`
-			Page      int32      `json:"page,omitempty"`
-			PageSize  int32      `json:"pageSize,omitempty"`
+			Page      uint32     `json:"page,omitempty"`
+			PageSize  uint32     `json:"pageSize,omitempty"`
 		}{
 			UsersInfo: nil,
 			Page:      resp.Data.Page,

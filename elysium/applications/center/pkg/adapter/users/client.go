@@ -22,7 +22,7 @@ func NewClient(config Config, isUseHttp bool) Client {
 }
 
 type Config struct {
-	Host string `env:"USER_SERVICE_HOST"`
+	Host string `env:"USER_SERVICE_HOST" kong:"-"`
 }
 
 type UserInfo struct {
@@ -45,15 +45,15 @@ type UpsertUserRequest struct {
 }
 
 type UpsertUserResponse struct {
-	Code    int32  `json:"code,omitempty"`
+	Code    uint32 `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
 	Id      string `json:"id,omitempty"`
 }
 
 type GetUsersRequest struct {
 	Ids      []string `json:"ids,omitempty"`
-	Page     int32    `json:"page,omitempty"`
-	PageSize int32    `json:"pageSize,omitempty"`
+	Page     uint32   `json:"page,omitempty"`
+	PageSize uint32   `json:"pageSize,omitempty"`
 }
 
 func (r *GetUsersRequest) Query() string {
@@ -74,11 +74,11 @@ func (r *GetUsersRequest) Query() string {
 }
 
 type GetUsersResponse struct {
-	Code    int32  `json:"code,omitempty"`
+	Code    uint32 `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
 	Data    struct {
 		UsersInfo []UserInfo `json:"usersInfo,omitempty"`
-		Page      int32      `json:"page,omitempty"`
-		PageSize  int32      `json:"pageSize,omitempty"`
+		Page      uint32     `json:"page,omitempty"`
+		PageSize  uint32     `json:"pageSize,omitempty"`
 	} `json:"data"`
 }

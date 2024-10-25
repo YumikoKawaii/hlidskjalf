@@ -18,7 +18,7 @@ type Application struct {
 	UserServiceCfg        users.Config        `kong:"embed"`
 	AuthenticatorHost     string              `env:"AUTHENTICATOR_HOST"`
 
-	UseHTTPProtocol bool `env:"USE_GRPC_PROTOCOL" default:"false"`
+	UseGRPCProtocol bool `env:"USE_GRPC_PROTOCOL" default:"true"`
 }
 
 func Initialize() (*Application, *kong.Context) {

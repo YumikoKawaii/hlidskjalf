@@ -18,9 +18,9 @@ func Serve(cfg *config.Application) {
 		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
 	)
 
-	postClient := posts.NewClient(cfg.PostServiceCfg, cfg.UseHTTPProtocol)
-	interactionClient := interactions.NewClient(cfg.InteractionServiceCfg, cfg.UseHTTPProtocol)
-	userClient := users.NewClient(cfg.UserServiceCfg, cfg.UseHTTPProtocol)
+	postClient := posts.NewClient(cfg.PostServiceCfg, cfg.UseGRPCProtocol)
+	interactionClient := interactions.NewClient(cfg.InteractionServiceCfg, cfg.UseGRPCProtocol)
+	userClient := users.NewClient(cfg.UserServiceCfg, cfg.UseGRPCProtocol)
 	handler := center.NewHandler(postClient, interactionClient, userClient)
 
 	if err := sv.Register(handler); err != nil {

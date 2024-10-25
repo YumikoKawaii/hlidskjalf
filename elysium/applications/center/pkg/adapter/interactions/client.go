@@ -22,7 +22,7 @@ func NewClient(config Config, isUseGrpc bool) Client {
 }
 
 type Config struct {
-	Host string `env:"INTERACTIONS_SERVICE_HOST"`
+	Host string `env:"INTERACTION_SERVICE_HOST" kong:"-"`
 }
 
 type UpsertInteractionRequest struct {
