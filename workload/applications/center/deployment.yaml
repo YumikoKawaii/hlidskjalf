@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: center
+  namespace: elysium
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: center
+  template:
+    metadata:
+      labels:
+        app: center
+    spec:
+      containers:
+        - name: center
+          image: yumikokawaii/center:latest          
+          ports:            
+            - containerPort: 8080            
+            - containerPort: 8081
+          env:
+            - name: HTTP_PORT
+              value: "8080"
+            - name: GRPC_PORT
+              value: "8081"
+            - name: MYSQL_USERNAME
+              value: yumiko
+            - name: MYSQL_PASSWORD
+              value: "Yumiko1@"
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_DATABASE
+              value: elysium
+            - name: REDIS_ADDRESS
+              value: redis-master:6379
+            - name: API_KEY_MAP_CONFIG_PATH
+              value: /media/api_keys_cfg.yaml
+            - name: HASH_KEY
+              value: "123"
+            - name: ENCRYPT_KEY
+              value: YumikoYumiko1234
+            - name: OPERATE_INTERVAL_IN_SEC
+              value: "300"
