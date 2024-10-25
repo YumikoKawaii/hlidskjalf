@@ -65,3 +65,13 @@ jobs:
           tags: |
             yumikokawaii/interactions:${{env.IMAGE_TAG}}
             yumikokawaii/interactions:latest                              
+
+      - name: publish center
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/center.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/center:${{env.IMAGE_TAG}}
+            yumikokawaii/center:latest      
