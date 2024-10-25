@@ -4,7 +4,7 @@ metadata:
   name: posts
   namespace: elysium
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: posts
@@ -32,14 +32,4 @@ spec:
             - name: MYSQL_PORT
               value: "3306"
             - name: MYSQL_DATABASE
-              value: elysium
-            - name: REDIS_ADDRESS
-              value: redis-master:6379
-            - name: API_KEY_MAP_CONFIG_PATH
-              value: /media/api_keys_cfg.yaml
-            - name: HASH_KEY
-              value: "123"
-            - name: ENCRYPT_KEY
-              value: YumikoYumiko1234
-            - name: OPERATE_INTERVAL_IN_SEC
-              value: "300"
+              value: elysium            
