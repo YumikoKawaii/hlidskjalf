@@ -24,7 +24,7 @@ func NewClient(config Config, isUseGrpc bool) Client {
 }
 
 type Config struct {
-	Host string `env:"POST_SERVICE_HOST" kong:"-"`
+	Host string `env:"POST_SERVICE_HOST" name:"post-service-host"`
 }
 
 type UpsertPostRequest struct {

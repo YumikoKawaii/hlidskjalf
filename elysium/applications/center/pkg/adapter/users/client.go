@@ -22,7 +22,7 @@ func NewClient(config Config, isUseHttp bool) Client {
 }
 
 type Config struct {
-	Host string `env:"USER_SERVICE_HOST" kong:"-"`
+	Host string `env:"USER_SERVICE_HOST" name:"user-service-host"`
 }
 
 type UserInfo struct {
