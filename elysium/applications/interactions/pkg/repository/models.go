@@ -12,7 +12,7 @@ type Interaction struct {
 	Type      string    `json:"type,omitempty"`
 	Content   string    `json:"content,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAT time.Time `json:"updatedAT"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type GetInteractionsParams struct {

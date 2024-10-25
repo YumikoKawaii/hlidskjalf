@@ -147,6 +147,11 @@ func (s *Server) Serve() error {
 		}
 	}()
 	go func() {
+
+		logrus.Infof("[Interaction] - HTTP: %d", s.cfg.HTTP.Port)
+		logrus.Infof("[Interaction] - GRPC: %d", s.cfg.GRPC.Port)
+		logrus.Info("[Interaction] - Serving")
+
 		listener, err := net.Listen("tcp", s.cfg.GRPC.String())
 		if err != nil {
 			errch <- err

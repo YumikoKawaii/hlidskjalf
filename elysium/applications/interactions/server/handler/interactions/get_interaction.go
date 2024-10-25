@@ -42,7 +42,7 @@ func (s *Handler) transformInteractionsToProtos(interactions []repository.Intera
 			Type:      i.Type,
 			Content:   i.Content,
 			CreatedAt: uint32(i.CreatedAt.Unix()),
-			UpdatedAt: uint32(i.UpdatedAT.Unix()),
+			UpdatedAt: uint32(i.UpdatedAt.Unix()),
 		})
 	}
 	return protos

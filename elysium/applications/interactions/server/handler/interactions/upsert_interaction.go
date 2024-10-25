@@ -16,8 +16,9 @@ func (s *Handler) UpsertInteraction(ctx context.Context, request *pb.UpsertInter
 	}
 
 	return &pb.UpsertInteractionResponse{
-		Code:    http.StatusOK,
-		Message: "Success",
+		Code:          http.StatusOK,
+		Message:       "Success",
+		InteractionId: *interaction.Id,
 	}, nil
 }
 
