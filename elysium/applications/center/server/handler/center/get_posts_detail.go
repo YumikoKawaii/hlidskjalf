@@ -23,6 +23,13 @@ func (c *Handler) GetPostsDetail(ctx context.Context, request *pb.GetPostsDetail
 	if err != nil {
 		return nil, err
 	}
+
+	if len(postsResp.Data.Posts) != 1 {
+		return &pb.GetPostsDetailResponse{
+			Code:    http.StatusNotFound,
+			Message: "Post not found",
+		}, nil
+	}
 	post := postsResp.Data.Posts[0]
 
 	authorIds := make([]string, 0)

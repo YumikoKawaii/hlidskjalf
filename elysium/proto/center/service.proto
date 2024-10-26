@@ -17,6 +17,13 @@ service CenterService {
       get: "/api/v1/posts-detail"
     };
   }
+
+  rpc UpsertPost(UpsertPostRequest) returns (UpsertPostResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/posts"
+      body: "*"
+    };
+  }
 }
 
 message Author {
@@ -56,4 +63,16 @@ message GetPostsDetailResponse {
   message Data {
     PostDetail posts_detail = 1;
   }
+}
+
+message UpsertPostRequest {
+  google.protobuf.UInt32Value id = 1;
+  string content = 2;
+  repeated string medias = 3;
+}
+
+message UpsertPostResponse {
+  uint32 code = 1;
+  string message = 2;
+  uint32 id = 3;
 }

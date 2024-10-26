@@ -440,6 +440,158 @@ var _ interface {
 	ErrorName() string
 } = GetPostsDetailResponseValidationError{}
 
+// Validate checks the field values on UpsertPostRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, an
+// error is returned.
+func (m *UpsertPostRequest) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if v, ok := interface{}(m.GetId()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpsertPostRequestValidationError{
+				field:  "Id",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	// no validation rules for Content
+
+	return nil
+}
+
+// UpsertPostRequestValidationError is the validation error returned by
+// UpsertPostRequest.Validate if the designated constraints aren't met.
+type UpsertPostRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpsertPostRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpsertPostRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpsertPostRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpsertPostRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpsertPostRequestValidationError) ErrorName() string {
+	return "UpsertPostRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpsertPostRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpsertPostRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpsertPostRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpsertPostRequestValidationError{}
+
+// Validate checks the field values on UpsertPostResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *UpsertPostResponse) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	// no validation rules for Id
+
+	return nil
+}
+
+// UpsertPostResponseValidationError is the validation error returned by
+// UpsertPostResponse.Validate if the designated constraints aren't met.
+type UpsertPostResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpsertPostResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpsertPostResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpsertPostResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpsertPostResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpsertPostResponseValidationError) ErrorName() string {
+	return "UpsertPostResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpsertPostResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpsertPostResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpsertPostResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpsertPostResponseValidationError{}
+
 // Validate checks the field values on GetPostsDetailResponse_Data with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, an error is returned.

@@ -13,12 +13,12 @@ type Client interface {
 	GetUsers(ctx context.Context, request GetUsersRequest) (GetUsersResponse, error)
 }
 
-func NewClient(config Config, isUseHttp bool) Client {
-	if isUseHttp {
-		return NewHttpClient(config)
+func NewClient(config Config, isUseGrpc bool) Client {
+	if isUseGrpc {
+		return NewRpcClient(config)
 	}
 
-	return NewRpcClient(config)
+	return NewHttpClient(config)
 }
 
 type Config struct {

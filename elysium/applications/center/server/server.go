@@ -7,15 +7,21 @@ import (
 	"elysium.com/applications/center/pkg/adapter/users"
 	"elysium.com/applications/center/server/handler/center"
 	"elysium.com/applications/center/service"
+	"elysium.com/applications/interceptor"
 	"github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
 )
 
 func Serve(cfg *config.Application) {
 
+	authInterceptor := interceptor.NewInterceptor(cfg.AuthenticatorHost, cfg.UseGRPCProtocol)
+
 	sv := service.NewServer(
 		service.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
-		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
+		grpc.ChainUnaryInterceptor(
+			grpc_validator.UnaryServerInterceptor(),
+			authInterceptor.Unary(),
+		),
 	)
 
 	postClient := posts.NewClient(cfg.PostServiceCfg, cfg.UseGRPCProtocol)

@@ -30,7 +30,7 @@ func (i *Interceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 		id, authorized, err := i.auth.Verify(ctx, info.FullMethod)
 		if err != nil {
-			logrus.Errorf("error authenticator: %s", err.Error())
+			logrus.Errorf("error authenticator: %s, userId: %s, method: %s", err.Error(), id, info.FullMethod)
 		}
 		if err != nil || !authorized {
 			return nil, status.Errorf(codes.Unauthenticated, "Unauthorized")

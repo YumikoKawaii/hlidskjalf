@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CenterServiceClient interface {
 	GetPostsDetail(ctx context.Context, in *GetPostsDetailRequest, opts ...grpc.CallOption) (*GetPostsDetailResponse, error)
+	UpsertPost(ctx context.Context, in *UpsertPostRequest, opts ...grpc.CallOption) (*UpsertPostResponse, error)
 }
 
 type centerServiceClient struct {
@@ -37,11 +38,21 @@ func (c *centerServiceClient) GetPostsDetail(ctx context.Context, in *GetPostsDe
 	return out, nil
 }
 
+func (c *centerServiceClient) UpsertPost(ctx context.Context, in *UpsertPostRequest, opts ...grpc.CallOption) (*UpsertPostResponse, error) {
+	out := new(UpsertPostResponse)
+	err := c.cc.Invoke(ctx, "/center.api.CenterService/UpsertPost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CenterServiceServer is the server API for CenterService service.
 // All implementations must embed UnimplementedCenterServiceServer
 // for forward compatibility
 type CenterServiceServer interface {
 	GetPostsDetail(context.Context, *GetPostsDetailRequest) (*GetPostsDetailResponse, error)
+	UpsertPost(context.Context, *UpsertPostRequest) (*UpsertPostResponse, error)
 	mustEmbedUnimplementedCenterServiceServer()
 }
 
@@ -51,6 +62,9 @@ type UnimplementedCenterServiceServer struct {
 
 func (UnimplementedCenterServiceServer) GetPostsDetail(context.Context, *GetPostsDetailRequest) (*GetPostsDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPostsDetail not implemented")
+}
+func (UnimplementedCenterServiceServer) UpsertPost(context.Context, *UpsertPostRequest) (*UpsertPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpsertPost not implemented")
 }
 func (UnimplementedCenterServiceServer) mustEmbedUnimplementedCenterServiceServer() {}
 
@@ -83,6 +97,24 @@ func _CenterService_GetPostsDetail_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CenterService_UpsertPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpsertPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CenterServiceServer).UpsertPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/center.api.CenterService/UpsertPost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CenterServiceServer).UpsertPost(ctx, req.(*UpsertPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _CenterService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "center.api.CenterService",
 	HandlerType: (*CenterServiceServer)(nil),
@@ -90,6 +122,10 @@ var _CenterService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPostsDetail",
 			Handler:    _CenterService_GetPostsDetail_Handler,
+		},
+		{
+			MethodName: "UpsertPost",
+			Handler:    _CenterService_UpsertPost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

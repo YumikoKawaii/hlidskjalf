@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	authorizationHeader = "Authorization"
+	authorizationHeader = "authorization"
 )
 
 func (s *Handler) Verify(ctx context.Context, request *pb.VerifyRequest) (*pb.VerifyResponse, error) {
