@@ -67,7 +67,7 @@ message GetPostsDetailResponse {
 
 message UpsertPostRequest {
   google.protobuf.UInt32Value id = 1;
-  string content = 2;
+  string content = 2 [(validate.rules).string = {min_len: 1}];
   repeated string medias = 3;
 }
 
