@@ -19,6 +19,7 @@ var ignoreMap = map[string]bool{
 	"/authenticator.api.Authenticator/Signup":            true,
 	"/authenticator.api.Authenticator/Login":             true,
 	"/authenticator.api.Authenticator/UpdatePermissions": true,
+	"/authenticator.api.Authenticator/Verify":            true,
 }
 
 func NewInterceptor(resolver Resolver) Interceptor {

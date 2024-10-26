@@ -22,7 +22,7 @@ import (
 
 func Serve(cfg *config.Application) {
 	prometheus := grpc_prometheus.NewServerMetrics()
-	jwtInterceptor := jwt.NewInterceptor(jwt.NewResolver(&cfg.JWTConfig))
+	//jwtInterceptor := jwt.NewInterceptor(jwt.NewResolver(&cfg.JWTConfig))
 
 	zapLogger := zap.S().Desugar()
 	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
@@ -33,7 +33,7 @@ func Serve(cfg *config.Application) {
 			grpc_validator.UnaryServerInterceptor(),
 			prometheus.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger),
-			jwtInterceptor.Unary(),
+			//jwtInterceptor.Unary(),
 		),
 	)
 

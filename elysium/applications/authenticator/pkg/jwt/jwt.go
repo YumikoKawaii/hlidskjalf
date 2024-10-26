@@ -12,17 +12,17 @@ type Config struct {
 }
 
 type Info struct {
-	Id   string
-	User string
+	Id   string `json:"id"`
+	User string `json:"user"`
 }
 
 type Claim struct {
 	jwtPkg.StandardClaims
-	info Info
+	Info Info `json:"info"`
 }
 
 func (c *Claim) GetInfo() Info {
-	return c.info
+	return c.Info
 }
 
 type Resolver interface {
@@ -44,7 +44,7 @@ func (r *resolverImpl) GenerateToken(info Info) (string, error) {
 		StandardClaims: jwtPkg.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(r.cfg.TokenDurationInSec) * time.Second).UnixNano(),
 		},
-		info: info,
+		Info: info,
 	}
 
 	token := jwtPkg.NewWithClaims(jwtPkg.SigningMethodHS256, claim)
