@@ -670,7 +670,14 @@ func (m *VerifyRequest) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Route
+	// no validation rules for Token
+
+	if utf8.RuneCountInString(m.GetRoute()) < 1 {
+		return VerifyRequestValidationError{
+			field:  "Route",
+			reason: "value length must be at least 1 runes",
+		}
+	}
 
 	return nil
 }
@@ -738,6 +745,8 @@ func (m *VerifyResponse) Validate() error {
 	}
 
 	// no validation rules for Code
+
+	// no validation rules for Message
 
 	// no validation rules for Id
 

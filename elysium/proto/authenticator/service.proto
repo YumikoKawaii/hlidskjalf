@@ -99,10 +99,12 @@ message GetPermissionsResponse {
 }
 
 message VerifyRequest {
-  string route = 1;
+  string token = 1;
+  string route = 2 [(validate.rules).string = {min_len: 1}];
 }
 
 message VerifyResponse {
   int32 code = 1;
-  string id = 2;
+  string message = 2;
+  string id = 3;
 }

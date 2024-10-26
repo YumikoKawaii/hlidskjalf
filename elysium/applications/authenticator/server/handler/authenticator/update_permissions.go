@@ -15,7 +15,7 @@ const updatePermissionRoute = "/authenticator.api.Authenticator/UpdatePermission
 func (s *Handler) UpdatePermissions(ctx context.Context, request *pb.UpdatePermissionsRequest) (*pb.UpdatePermissionsResponse, error) {
 
 	// get api key from context
-	apiKeyData, err := utils.ExtractValueFromContext(ctx, utils.XAPIKey)
+	apiKeyData, err := utils.ExtractValueFromIncomingContext(ctx, utils.XAPIKey)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid api key")
 	}

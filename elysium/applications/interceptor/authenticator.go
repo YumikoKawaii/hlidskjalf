@@ -15,11 +15,12 @@ import (
 const (
 	getPermissionsEndpoint = "/api/v1/permissions/"
 	verifyEndpoint         = "/api/v1/verify"
+	authorizationHeader    = "authorization"
 )
 
 type Authenticator interface {
 	GetPermissions(ctx context.Context, id string) ([]string, error)
-	Verify(ctx context.Context, route string) (string, bool, error)
+	Verify(ctx context.Context, token, route string) (string, bool, error)
 }
 
 type grpcImpl struct {
@@ -57,9 +58,10 @@ type httpImpl struct {
 	host   string
 }
 
-func (i *grpcImpl) Verify(ctx context.Context, route string) (string, bool, error) {
+func (i *grpcImpl) Verify(ctx context.Context, token, route string) (string, bool, error) {
 
 	resp, err := i.client.Verify(ctx, &pb.VerifyRequest{
+		Token: token,
 		Route: route,
 	})
 	if err != nil {
@@ -115,7 +117,7 @@ func (i *httpImpl) GetPermissions(ctx context.Context, id string) ([]string, err
 	return resp.Data.Permissions, nil
 }
 
-func (i *httpImpl) Verify(ctx context.Context, route string) (string, bool, error) {
+func (i *httpImpl) Verify(ctx context.Context, token, route string) (string, bool, error) {
 
 	type Request struct {
 		Route string `json:"route,omitempty"`

@@ -11,7 +11,7 @@ const (
 	XAPIKey   = "x-api-key"
 )
 
-func ExtractValueFromContext(ctx context.Context, key string) (interface{}, error) {
+func ExtractValueFromIncomingContext(ctx context.Context, key string) (interface{}, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return nil, xerrors.Errorf("not found")

@@ -11,15 +11,7 @@ import (
 
 func (c *Handler) UpsertPost(ctx context.Context, request *pb.UpsertPostRequest) (*pb.UpsertPostResponse, error) {
 
-	userIdData, err := utils.ExtractValueFromContext(ctx, utils.UserIdKey)
-	if err != nil {
-		logrus.Error(err.Error())
-		return &pb.UpsertPostResponse{
-			Code:    http.StatusUnauthorized,
-			Message: err.Error(),
-		}, nil
-	}
-
+	userIdData := ctx.Value(utils.UserIdKey)
 	userId, ok := userIdData.(string)
 	if !ok {
 		logrus.Errorf("error invalid userId convert")

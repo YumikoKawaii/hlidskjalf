@@ -2,10 +2,8 @@ package authenticator
 
 import (
 	"context"
-	"elysium.com/applications/utils"
 	pb "elysium.com/pb/authenticator"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/xerrors"
 	"net/http"
 )
 
@@ -15,18 +13,7 @@ const (
 
 func (s *Handler) Verify(ctx context.Context, request *pb.VerifyRequest) (*pb.VerifyResponse, error) {
 
-	// parse token
-	data, err := utils.ExtractValueFromContext(ctx, authorizationHeader)
-	if err != nil {
-		return nil, err
-	}
-
-	token, ok := data.(string)
-	if !ok {
-		return nil, xerrors.Errorf("unavailable")
-	}
-
-	claim, err := s.jwtResolver.VerifyToken(token)
+	claim, err := s.jwtResolver.VerifyToken(request.Token)
 	if err != nil {
 		return nil, err
 	}
