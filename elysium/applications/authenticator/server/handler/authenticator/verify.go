@@ -4,6 +4,7 @@ import (
 	"context"
 	"elysium.com/applications/utils"
 	pb "elysium.com/pb/authenticator"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 	"net/http"
 )
@@ -33,17 +34,9 @@ func (s *Handler) Verify(ctx context.Context, request *pb.VerifyRequest) (*pb.Ve
 	userId := claim.GetInfo().Id
 
 	// verify route
-	permissions, err := s.storage.GetPermissionsById(ctx, userId)
+	authorized, err := s.storage.IsAccessible(ctx, userId, request.Route)
 	if err != nil {
-		return nil, err
-	}
-
-	authorized := false
-	for _, p := range permissions {
-		if p == request.Route {
-			authorized = true
-			break
-		}
+		logrus.Errorf("error verify: %s, id: %s, route: %s", err.Error(), userId, request.Route)
 	}
 
 	if !authorized {

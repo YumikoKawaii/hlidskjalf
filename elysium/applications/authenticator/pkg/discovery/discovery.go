@@ -10,6 +10,7 @@ import (
 
 type Storage interface {
 	Operate(ctx context.Context, interval time.Duration)
+	IsAccessible(ctx context.Context, id string, route string) (bool, error)
 	GetPermissionsById(ctx context.Context, id string) ([]string, error)
 }
 
@@ -37,6 +38,10 @@ func (s *storageImpl) Operate(ctx context.Context, interval time.Duration) {
 		}
 	}
 
+}
+
+func (s *storageImpl) IsAccessible(ctx context.Context, id string, route string) (bool, error) {
+	return s.redisClient.SIsMember(ctx, id, route).Result()
 }
 
 func (s *storageImpl) GetPermissionsById(ctx context.Context, id string) ([]string, error) {
