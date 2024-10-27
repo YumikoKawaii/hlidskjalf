@@ -17,6 +17,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CenterServiceClient interface {
+	DiscoveryPosts(ctx context.Context, in *DiscoveryPostsRequest, opts ...grpc.CallOption) (*DiscoveryPostsResponse, error)
 	GetPostsDetail(ctx context.Context, in *GetPostsDetailRequest, opts ...grpc.CallOption) (*GetPostsDetailResponse, error)
 	UpsertPost(ctx context.Context, in *UpsertPostRequest, opts ...grpc.CallOption) (*UpsertPostResponse, error)
 }
@@ -27,6 +28,15 @@ type centerServiceClient struct {
 
 func NewCenterServiceClient(cc grpc.ClientConnInterface) CenterServiceClient {
 	return &centerServiceClient{cc}
+}
+
+func (c *centerServiceClient) DiscoveryPosts(ctx context.Context, in *DiscoveryPostsRequest, opts ...grpc.CallOption) (*DiscoveryPostsResponse, error) {
+	out := new(DiscoveryPostsResponse)
+	err := c.cc.Invoke(ctx, "/center.api.CenterService/DiscoveryPosts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *centerServiceClient) GetPostsDetail(ctx context.Context, in *GetPostsDetailRequest, opts ...grpc.CallOption) (*GetPostsDetailResponse, error) {
@@ -51,6 +61,7 @@ func (c *centerServiceClient) UpsertPost(ctx context.Context, in *UpsertPostRequ
 // All implementations must embed UnimplementedCenterServiceServer
 // for forward compatibility
 type CenterServiceServer interface {
+	DiscoveryPosts(context.Context, *DiscoveryPostsRequest) (*DiscoveryPostsResponse, error)
 	GetPostsDetail(context.Context, *GetPostsDetailRequest) (*GetPostsDetailResponse, error)
 	UpsertPost(context.Context, *UpsertPostRequest) (*UpsertPostResponse, error)
 	mustEmbedUnimplementedCenterServiceServer()
@@ -60,6 +71,9 @@ type CenterServiceServer interface {
 type UnimplementedCenterServiceServer struct {
 }
 
+func (UnimplementedCenterServiceServer) DiscoveryPosts(context.Context, *DiscoveryPostsRequest) (*DiscoveryPostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DiscoveryPosts not implemented")
+}
 func (UnimplementedCenterServiceServer) GetPostsDetail(context.Context, *GetPostsDetailRequest) (*GetPostsDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPostsDetail not implemented")
 }
@@ -77,6 +91,24 @@ type UnsafeCenterServiceServer interface {
 
 func RegisterCenterServiceServer(s grpc.ServiceRegistrar, srv CenterServiceServer) {
 	s.RegisterService(&_CenterService_serviceDesc, srv)
+}
+
+func _CenterService_DiscoveryPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DiscoveryPostsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CenterServiceServer).DiscoveryPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/center.api.CenterService/DiscoveryPosts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CenterServiceServer).DiscoveryPosts(ctx, req.(*DiscoveryPostsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _CenterService_GetPostsDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -119,6 +151,10 @@ var _CenterService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "center.api.CenterService",
 	HandlerType: (*CenterServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DiscoveryPosts",
+			Handler:    _CenterService_DiscoveryPosts_Handler,
+		},
 		{
 			MethodName: "GetPostsDetail",
 			Handler:    _CenterService_GetPostsDetail_Handler,

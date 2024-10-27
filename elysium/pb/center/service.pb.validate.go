@@ -458,7 +458,12 @@ func (m *UpsertPostRequest) Validate() error {
 		}
 	}
 
-	// no validation rules for Content
+	if utf8.RuneCountInString(m.GetContent()) < 1 {
+		return UpsertPostRequestValidationError{
+			field:  "Content",
+			reason: "value length must be at least 1 runes",
+		}
+	}
 
 	return nil
 }
@@ -592,6 +597,172 @@ var _ interface {
 	ErrorName() string
 } = UpsertPostResponseValidationError{}
 
+// Validate checks the field values on DiscoveryPostsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *DiscoveryPostsRequest) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Author
+
+	// no validation rules for SortOrder
+
+	if m.GetPage() < 1 {
+		return DiscoveryPostsRequestValidationError{
+			field:  "Page",
+			reason: "value must be greater than or equal to 1",
+		}
+	}
+
+	if m.GetPageSize() < 10 {
+		return DiscoveryPostsRequestValidationError{
+			field:  "PageSize",
+			reason: "value must be greater than or equal to 10",
+		}
+	}
+
+	return nil
+}
+
+// DiscoveryPostsRequestValidationError is the validation error returned by
+// DiscoveryPostsRequest.Validate if the designated constraints aren't met.
+type DiscoveryPostsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DiscoveryPostsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DiscoveryPostsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DiscoveryPostsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DiscoveryPostsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DiscoveryPostsRequestValidationError) ErrorName() string {
+	return "DiscoveryPostsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DiscoveryPostsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDiscoveryPostsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DiscoveryPostsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DiscoveryPostsRequestValidationError{}
+
+// Validate checks the field values on DiscoveryPostsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *DiscoveryPostsResponse) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return DiscoveryPostsResponseValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	return nil
+}
+
+// DiscoveryPostsResponseValidationError is the validation error returned by
+// DiscoveryPostsResponse.Validate if the designated constraints aren't met.
+type DiscoveryPostsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DiscoveryPostsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DiscoveryPostsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DiscoveryPostsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DiscoveryPostsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DiscoveryPostsResponseValidationError) ErrorName() string {
+	return "DiscoveryPostsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DiscoveryPostsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDiscoveryPostsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DiscoveryPostsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DiscoveryPostsResponseValidationError{}
+
 // Validate checks the field values on GetPostsDetailResponse_Data with the
 // rules defined in the proto definition for this message. If any rules are
 // violated, an error is returned.
@@ -669,3 +840,75 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetPostsDetailResponse_DataValidationError{}
+
+// Validate checks the field values on DiscoveryPostsResponse_Data with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *DiscoveryPostsResponse_Data) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	return nil
+}
+
+// DiscoveryPostsResponse_DataValidationError is the validation error returned
+// by DiscoveryPostsResponse_Data.Validate if the designated constraints
+// aren't met.
+type DiscoveryPostsResponse_DataValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DiscoveryPostsResponse_DataValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DiscoveryPostsResponse_DataValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DiscoveryPostsResponse_DataValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DiscoveryPostsResponse_DataValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DiscoveryPostsResponse_DataValidationError) ErrorName() string {
+	return "DiscoveryPostsResponse_DataValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DiscoveryPostsResponse_DataValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDiscoveryPostsResponse_Data.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DiscoveryPostsResponse_DataValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DiscoveryPostsResponse_DataValidationError{}

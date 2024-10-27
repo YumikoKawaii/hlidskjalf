@@ -1,6 +1,7 @@
 package server
 
 import (
+	"elysium.com/applications/interceptor"
 	"elysium.com/applications/users/config"
 	"elysium.com/applications/users/pkg/repository"
 	"elysium.com/applications/users/pkg/user_service"
@@ -18,6 +19,7 @@ func Serve(cfg *config.Application) {
 	prometheus := grpc_prometheus.NewServerMetrics()
 	zapLogger := zap.S().Desugar()
 	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
+	logger := interceptor.Logger{}
 
 	sv := server.NewServer(
 		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
@@ -25,6 +27,7 @@ func Serve(cfg *config.Application) {
 			grpc_validator.UnaryServerInterceptor(),
 			prometheus.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger),
+			logger.Unary("Users"),
 		),
 	)
 

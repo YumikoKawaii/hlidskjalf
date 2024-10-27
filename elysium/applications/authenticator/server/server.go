@@ -10,6 +10,7 @@ import (
 	"elysium.com/applications/authenticator/pkg/repository"
 	"elysium.com/applications/authenticator/server/handler/authenticator"
 	server "elysium.com/applications/authenticator/service"
+	"elysium.com/applications/interceptor"
 	"elysium.com/shared/mysql"
 	"elysium.com/shared/redis"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -26,6 +27,7 @@ func Serve(cfg *config.Application) {
 
 	zapLogger := zap.S().Desugar()
 	grpc_zap.ReplaceGrpcLoggerV2(zapLogger)
+	logger := interceptor.Logger{}
 
 	sv := server.NewServer(
 		server.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
@@ -33,7 +35,7 @@ func Serve(cfg *config.Application) {
 			grpc_validator.UnaryServerInterceptor(),
 			prometheus.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(zapLogger),
-			//jwtInterceptor.Unary(),
+			logger.Unary("Authenticator"),
 		),
 	)
 

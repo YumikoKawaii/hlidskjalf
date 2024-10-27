@@ -32,6 +32,42 @@ var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
 var (
+	filter_CenterService_DiscoveryPosts_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_CenterService_DiscoveryPosts_0(ctx context.Context, marshaler runtime.Marshaler, client CenterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DiscoveryPostsRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CenterService_DiscoveryPosts_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.DiscoveryPosts(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_CenterService_DiscoveryPosts_0(ctx context.Context, marshaler runtime.Marshaler, server CenterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DiscoveryPostsRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CenterService_DiscoveryPosts_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.DiscoveryPosts(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
 	filter_CenterService_GetPostsDetail_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
@@ -106,6 +142,26 @@ func local_request_CenterService_UpsertPost_0(ctx context.Context, marshaler run
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterCenterServiceHandlerFromEndpoint instead.
 func RegisterCenterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CenterServiceServer) error {
+
+	mux.Handle("GET", pattern_CenterService_DiscoveryPosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_CenterService_DiscoveryPosts_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CenterService_DiscoveryPosts_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
 
 	mux.Handle("GET", pattern_CenterService_GetPostsDetail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -188,6 +244,26 @@ func RegisterCenterServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 // "CenterServiceClient" to call the correct interceptors.
 func RegisterCenterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CenterServiceClient) error {
 
+	mux.Handle("GET", pattern_CenterService_DiscoveryPosts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_CenterService_DiscoveryPosts_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CenterService_DiscoveryPosts_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("GET", pattern_CenterService_GetPostsDetail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -232,12 +308,16 @@ func RegisterCenterServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
+	pattern_CenterService_DiscoveryPosts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "posts", "discovery"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_CenterService_GetPostsDetail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "posts-detail"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_CenterService_UpsertPost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "posts"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
+	forward_CenterService_DiscoveryPosts_0 = runtime.ForwardResponseMessage
+
 	forward_CenterService_GetPostsDetail_0 = runtime.ForwardResponseMessage
 
 	forward_CenterService_UpsertPost_0 = runtime.ForwardResponseMessage

@@ -15,11 +15,13 @@ import (
 func Serve(cfg *config.Application) {
 
 	authInterceptor := interceptor.NewInterceptor(cfg.AuthenticatorHost, cfg.UseGRPCProtocol)
+	logger := interceptor.Logger{}
 
 	sv := service.NewServer(
 		service.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
 		grpc.ChainUnaryInterceptor(
 			grpc_validator.UnaryServerInterceptor(),
+			logger.Unary("Center"),
 			authInterceptor.Unary(),
 		),
 	)

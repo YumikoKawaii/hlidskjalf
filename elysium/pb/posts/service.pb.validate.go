@@ -128,9 +128,20 @@ func (m *UpsertPostRequest) Validate() error {
 		}
 	}
 
-	// no validation rules for Author
+	if utf8.RuneCountInString(m.GetAuthor()) != 36 {
+		return UpsertPostRequestValidationError{
+			field:  "Author",
+			reason: "value length must be 36 runes",
+		}
 
-	// no validation rules for Content
+	}
+
+	if utf8.RuneCountInString(m.GetContent()) < 1 {
+		return UpsertPostRequestValidationError{
+			field:  "Content",
+			reason: "value length must be at least 1 runes",
+		}
+	}
 
 	return nil
 }

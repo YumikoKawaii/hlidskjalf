@@ -6,6 +6,7 @@ import (
 	"elysium.com/applications/interactions/pkg/repository"
 	"elysium.com/applications/interactions/server/handler/interactions"
 	"elysium.com/applications/interactions/service"
+	"elysium.com/applications/interceptor"
 	"elysium.com/shared/mysql"
 	"github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
@@ -13,9 +14,14 @@ import (
 
 func Serve(cfg *config.Application) {
 
+	logger := interceptor.Logger{}
+
 	sv := service.NewServer(
 		service.NewConfig(cfg.GRPCPort, cfg.HTTPPort),
-		grpc.ChainUnaryInterceptor(grpc_validator.UnaryServerInterceptor()),
+		grpc.ChainUnaryInterceptor(
+			grpc_validator.UnaryServerInterceptor(),
+			logger.Unary("Interactions"),
+		),
 	)
 
 	gormDB := mysql.Initialize(&cfg.MysqlCfg)
