@@ -64,7 +64,7 @@ func (c *grpcClient) GetUsers(ctx context.Context, request GetUsersRequest) (Get
 			Page      uint32     `json:"page,omitempty"`
 			PageSize  uint32     `json:"pageSize,omitempty"`
 		}{
-			UsersInfo: nil,
+			UsersInfo: c.convertProtosToUsers(resp.Data.UsersInfo),
 			Page:      resp.Data.Page,
 			PageSize:  resp.Data.PageSize,
 		},

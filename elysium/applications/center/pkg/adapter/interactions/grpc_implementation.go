@@ -64,7 +64,7 @@ func (c *grpcClient) GetInteractions(ctx context.Context, request GetInteraction
 			Page         uint32        `json:"page,omitempty"`
 			PageSize     uint32        `json:"pageSize,omitempty"`
 		}{
-			Interactions: nil,
+			Interactions: c.convertInteractionsProtoToInteractions(resp.Data.Interactions),
 			Page:         resp.Data.Page,
 			PageSize:     resp.Data.PageSize,
 		},
