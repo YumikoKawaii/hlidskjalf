@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
@@ -54,7 +55,7 @@ func (c *httpClient) UpsertInteraction(ctx context.Context, request UpsertIntera
 
 func (c *httpClient) GetInteractions(ctx context.Context, request GetInteractionRequest) (GetInteractionResponse, error) {
 
-	requestUrl, _ := url.JoinPath(c.host, request.Query())
+	requestUrl := fmt.Sprintf("%s%s%s", c.host, upsertInteractionEndpoint, request.Query())
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestUrl, nil)
 	if err != nil {
 		return GetInteractionResponse{}, err

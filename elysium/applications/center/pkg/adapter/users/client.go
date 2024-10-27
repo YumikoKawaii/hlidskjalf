@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
-	"strings"
 )
 
 type Client interface {
@@ -59,7 +58,9 @@ type GetUsersRequest struct {
 func (r *GetUsersRequest) Query() string {
 	query := url.Values{}
 	if len(r.Ids) != 0 {
-		query.Add("ids", strings.Join(r.Ids, ","))
+		for _, id := range r.Ids {
+			query.Add("ids", id)
+		}
 	}
 
 	if r.Page != 0 {

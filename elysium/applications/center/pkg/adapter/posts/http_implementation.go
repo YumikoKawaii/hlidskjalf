@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
@@ -56,7 +57,7 @@ func (c *httpClient) UpsertPost(ctx context.Context, request UpsertPostRequest) 
 
 func (c *httpClient) GetPosts(ctx context.Context, request GetPostsRequest) (GetPostsResponse, error) {
 
-	requestUrl, _ := url.JoinPath(c.host, upsertPostEndpoint, request.Query())
+	requestUrl := fmt.Sprintf("%s%s%s", c.host, upsertPostEndpoint, request.Query())
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestUrl, nil)
 	if err != nil {
 		return GetPostsResponse{}, err

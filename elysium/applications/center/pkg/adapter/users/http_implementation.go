@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
@@ -54,7 +55,7 @@ func (c *httpClient) UpsertUser(ctx context.Context, request UpsertUserRequest) 
 
 func (c *httpClient) GetUsers(ctx context.Context, request GetUsersRequest) (GetUsersResponse, error) {
 
-	requestUrl, _ := url.JoinPath(c.host, upsertUserInfoEndpoint, request.Query())
+	requestUrl := fmt.Sprintf("%s%s%s", c.host, upsertUserInfoEndpoint, request.Query())
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, requestUrl, nil)
 	if err != nil {
 		return GetUsersResponse{}, err
@@ -70,8 +71,7 @@ func (c *httpClient) GetUsers(ctx context.Context, request GetUsersRequest) (Get
 		return GetUsersResponse{}, xerrors.Errorf("http status: %d", resp.StatusCode)
 	}
 
-	decoder := json.NewDecoder(resp.Body)
 	response := GetUsersResponse{}
-	err = decoder.Decode(&resp)
+	err = json.NewDecoder(resp.Body).Decode(&response)
 	return response, err
 }

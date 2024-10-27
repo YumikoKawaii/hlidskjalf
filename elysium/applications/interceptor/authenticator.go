@@ -120,18 +120,19 @@ func (i *httpImpl) GetPermissions(ctx context.Context, id string) ([]string, err
 func (i *httpImpl) Verify(ctx context.Context, token, route string) (string, bool, error) {
 
 	type Request struct {
+		Token string `json:"token"`
 		Route string `json:"route,omitempty"`
 	}
 
-	buffer, _ := json.Marshal(&Request{Route: route})
+	buffer, _ := json.Marshal(&Request{Token: token, Route: route})
 
 	requestURL, _ := url.JoinPath(i.host, verifyEndpoint)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, requestURL, bytes.NewBuffer(buffer))
 	respData, err := i.client.Do(req)
-	defer respData.Body.Close()
 	if err != nil {
 		return "", false, err
 	}
+	defer respData.Body.Close()
 
 	type Response struct {
 		Code int32  `json:"code,omitempty"`
