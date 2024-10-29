@@ -6,6 +6,14 @@ type Client interface {
 	Fictio(ctx context.Context) (Response, error)
 }
 
+func NewClient(host string, isUseGrpc bool) Client {
+	if isUseGrpc {
+		return NewRpcClient(host)
+	}
+
+	return NewHttpClient(host)
+}
+
 type Primary struct {
 	First       uint32      `json:"first,omitempty"`
 	Second      uint32      `json:"second,omitempty"`

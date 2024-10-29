@@ -6,6 +6,14 @@ type Client interface {
 	Echo(ctx context.Context) (Response, error)
 }
 
+func NewClient(host string, isUseGrpc bool) Client {
+	if isUseGrpc {
+		return NewRpcClient(host)
+	}
+
+	return NewHttpClient(host)
+}
+
 type Stat struct {
 	First   string `json:"first,omitempty"`
 	Second  string `json:"second,omitempty"`

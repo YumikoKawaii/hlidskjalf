@@ -1,9 +1,17 @@
-package mimic
+package virtual
 
 import "context"
 
 type Client interface {
-	Mimic(ctx context.Context) (Response, error)
+	Virtual(ctx context.Context) (Response, error)
+}
+
+func NewClient(host string, isUseGrpc bool) Client {
+	if isUseGrpc {
+		return NewRpcClient(host)
+	}
+
+	return NewHttpClient(host)
 }
 
 type Primary struct {
@@ -30,11 +38,20 @@ type Secondary struct {
 }
 
 type Tertiary struct {
-	First  float64 `json:"first,omitempty"`
-	Second float64 `json:"second,omitempty"`
-	Third  float64 `json:"third,omitempty"`
-	Fourth float64 `json:"fourth,omitempty"`
-	Fifth  float64 `json:"fifth,omitempty"`
+	First        float64      `json:"first,omitempty"`
+	Second       float64      `json:"second,omitempty"`
+	Third        float64      `json:"third,omitempty"`
+	Fourth       float64      `json:"fourth,omitempty"`
+	Fifth        float64      `json:"fifth,omitempty"`
+	Quaternaries []Quaternary `json:"quaternaries,omitempty"`
+}
+
+type Quaternary struct {
+	First  bool `json:"first,omitempty"`
+	Second bool `json:"second,omitempty"`
+	Third  bool `json:"third,omitempty"`
+	Fourth bool `json:"fourth,omitempty"`
+	Fifth  bool `json:"fifth,omitempty"`
 }
 
 type Stat struct {

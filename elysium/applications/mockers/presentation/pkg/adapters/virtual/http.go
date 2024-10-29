@@ -12,6 +12,13 @@ type httpImpl struct {
 	host   string
 }
 
+func NewHttpClient(host string) Client {
+	return &httpImpl{
+		client: &http.Client{},
+		host:   host,
+	}
+}
+
 func (c *httpImpl) Virtual(ctx context.Context) (Response, error) {
 
 	requestUrl := fmt.Sprintf("%s/api/v1/virtual", c.host)
