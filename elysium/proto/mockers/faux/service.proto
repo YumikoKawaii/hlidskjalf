@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package faux.api;
+
+import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "validate/validate.proto";
+
+option go_package = "elysium.com/applications/faux_service/api;api";
+
+// FauxService ...
+service FauxService {
+  rpc Faux(FauxRequest) returns (FauxResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/faux"
+    };
+  }
+}
+
+message FauxRequest {}
+
+message Primary {
+  uint32 first = 1;
+  uint32 second = 2;
+  uint32 third = 3;
+  uint32 fourth = 4;
+  uint32 fifth = 5;
+  uint32 sixth = 6;
+  uint32 seventh = 7;
+  uint32 eighth = 8;
+  uint32 ninth = 9;
+  uint32 tenth = 10;
+}
+
+message Stat {
+  string first = 1;
+  string second = 2;
+  string third = 3;
+  string fourth = 4;
+  string fifth = 5;
+  repeated Primary primaries = 6;
+}
+
+message FauxResponse {
+  uint32 code = 1;
+  string message = 2;
+  Data data = 3;
+
+  message Data {
+    repeated Stat stats = 1;
+  }
+}
