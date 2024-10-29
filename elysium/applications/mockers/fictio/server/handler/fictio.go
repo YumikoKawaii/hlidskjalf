@@ -11,7 +11,9 @@ import (
 
 func (c *Handler) Fictio(ctx context.Context, request *pb.FictioRequest) (*pb.FictioResponse, error) {
 
-	time.Sleep(time.Duration(c.cfg.TrafficDelayInMilliSec) * time.Millisecond)
+	if c.cfg.TrafficDelayConfig.Enable {
+		time.Sleep(time.Duration(c.cfg.TrafficDelayConfig.ValueInMilliSecond) * time.Millisecond)
+	}
 
 	return &pb.FictioResponse{
 		Code:    http.StatusOK,

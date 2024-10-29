@@ -5,9 +5,15 @@ import (
 	"elysium.com/applications/utils"
 	pb "elysium.com/pb/mockers/echo"
 	"net/http"
+	"time"
 )
 
 func (c *Handler) Echo(ctx context.Context, request *pb.EchoRequest) (*pb.EchoResponse, error) {
+
+	if c.cfg.TrafficDelayConfig.Enable {
+		time.Sleep(time.Duration(c.cfg.TrafficDelayConfig.ValueInMilliSecond) * time.Millisecond)
+	}
+
 	return &pb.EchoResponse{
 		Code:    http.StatusOK,
 		Message: "Success",

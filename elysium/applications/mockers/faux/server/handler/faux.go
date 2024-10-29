@@ -11,7 +11,9 @@ import (
 
 func (c *Handler) Faux(ctx context.Context, request *pb.FauxRequest) (*pb.FauxResponse, error) {
 
-	time.Sleep(time.Duration(c.cfg.TrafficDelayInMilliSec) * time.Millisecond)
+	if c.cfg.TrafficDelayConfig.Enable {
+		time.Sleep(time.Duration(c.cfg.TrafficDelayConfig.ValueInMilliSecond) * time.Millisecond)
+	}
 
 	return &pb.FauxResponse{
 		Code:    http.StatusOK,
