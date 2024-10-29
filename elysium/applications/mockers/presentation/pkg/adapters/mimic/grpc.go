@@ -20,6 +20,7 @@ func NewRpcClient(host string) Client {
 		panic(err)
 	}
 
+	conn.Connect()
 	return &grpcImpl{
 		client: pb.NewMimicServiceClient(conn),
 	}

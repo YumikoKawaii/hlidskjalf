@@ -20,6 +20,7 @@ func NewRpcClient(host string) Client {
 		panic(err)
 	}
 
+	conn.Connect()
 	return &grpcImpl{
 		client: pb.NewVirtualServiceClient(conn),
 	}
@@ -40,22 +41,3 @@ func (c *grpcImpl) Virtual(ctx context.Context) (Response, error) {
 		Message: resp.Message,
 	}, nil
 }
-
-//func (c *grpcImpl) protoStats(protos []*pb.Stat) []Stat {
-//	stats := make([]Stat, 0)
-//	for _, proto := range protos {
-//		stats = append(stats, Stat{
-//			First:   proto.First,
-//			Second:  proto.Second,
-//			Third:   proto.Third,
-//			Fourth:  proto.Fourth,
-//			Fifth:   proto.Fifth,
-//			Sixth:   proto.Sixth,
-//			Seventh: proto.Seventh,
-//			Eighth:  proto.Eighth,
-//			Ninth:   proto.Ninth,
-//			Tenth:   proto.Tenth,
-//		})
-//	}
-//	return stats
-//}
