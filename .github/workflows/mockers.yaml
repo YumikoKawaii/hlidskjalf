@@ -75,3 +75,13 @@ jobs:
           tags: |
             yumikokawaii/virtual:${{env.IMAGE_TAG}}
             yumikokawaii/virtual:latest
+
+      - name: publish presentation
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/presentation.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/presentation:${{env.IMAGE_TAG}}
+            yumikokawaii/presentation:latest      
