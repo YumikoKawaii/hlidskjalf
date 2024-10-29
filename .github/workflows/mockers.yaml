@@ -1,0 +1,77 @@
+name: publish images
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: login docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: extract image tag
+        id: vars
+        run: echo "IMAGE_TAG=${GITHUB_SHA::12}" >> $GITHUB_ENV
+
+      - name: publish echo
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/echo.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/echo:${{env.IMAGE_TAG}}
+            yumikokawaii/echo:latest
+
+      - name: publish faux
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/faux.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/faux:${{env.IMAGE_TAG}}
+            yumikokawaii/faux:latest
+
+      - name: publish fictio
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/fictio.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/fictio:${{env.IMAGE_TAG}}
+            yumikokawaii/fictio:latest
+
+      - name: publish mimic
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/mimic.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/mimic:${{env.IMAGE_TAG}}
+            yumikokawaii/mimic:latest
+
+      - name: publish virtual
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./elysium/dockerfiles/mockers/virtual.dockerfile
+          push: true
+          tags: |
+            yumikokawaii/virtual:${{env.IMAGE_TAG}}
+            yumikokawaii/virtual:latest
