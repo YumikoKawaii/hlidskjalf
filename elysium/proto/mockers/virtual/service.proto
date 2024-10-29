@@ -33,6 +33,7 @@ message Tertiary {
   double third = 3;
   double fourth = 4;
   double fifth = 5;
+  repeated Quaternary quaternaries = 6;
 }
 
 message Secondary {

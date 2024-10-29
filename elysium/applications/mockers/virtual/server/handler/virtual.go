@@ -3,22 +3,22 @@ package handler
 import (
 	"context"
 	"elysium.com/applications/utils"
-	pb "elysium.com/pb/mockers/mimic"
+	pb "elysium.com/pb/mockers/virtual"
 	"math"
 	"net/http"
 	"time"
 )
 
-func (c *Handler) Mimic(ctx context.Context, request *pb.MimicRequest) (*pb.MimicResponse, error) {
+func (c *Handler) Virtual(ctx context.Context, request *pb.VirtualRequest) (*pb.VirtualResponse, error) {
 
 	if c.cfg.TrafficDelayConfig.Enable {
 		time.Sleep(time.Duration(c.cfg.TrafficDelayConfig.ValueInMilliSecond) * time.Millisecond)
 	}
 
-	return &pb.MimicResponse{
+	return &pb.VirtualResponse{
 		Code:    http.StatusOK,
 		Message: "Success",
-		Data: &pb.MimicResponse_Data{
+		Data: &pb.VirtualResponse_Data{
 			Stats: c.generateStats(utils.FakeInt(c.cfg.StatsRange.Lower, c.cfg.StatsRange.Upper)),
 		},
 	}, nil
@@ -79,12 +79,27 @@ func (c *Handler) generateTertiary(quantity int) []*pb.Tertiary {
 	tertiaries := make([]*pb.Tertiary, 0)
 	for _ = range quantity {
 		tertiaries = append(tertiaries, &pb.Tertiary{
-			First:  utils.FakeDouble(0, math.MaxFloat64),
-			Second: utils.FakeDouble(0, math.MaxFloat64),
-			Third:  utils.FakeDouble(0, math.MaxFloat64),
-			Fourth: utils.FakeDouble(0, math.MaxFloat64),
-			Fifth:  utils.FakeDouble(0, math.MaxFloat64),
+			First:        utils.FakeDouble(0, math.MaxFloat64),
+			Second:       utils.FakeDouble(0, math.MaxFloat64),
+			Third:        utils.FakeDouble(0, math.MaxFloat64),
+			Fourth:       utils.FakeDouble(0, math.MaxFloat64),
+			Fifth:        utils.FakeDouble(0, math.MaxFloat64),
+			Quaternaries: c.generateQuaternaries(utils.FakeInt(c.cfg.QuaternaryRange.Lower, c.cfg.QuaternaryRange.Upper)),
 		})
 	}
 	return tertiaries
+}
+
+func (c *Handler) generateQuaternaries(quantity int) []*pb.Quaternary {
+	quaternaries := make([]*pb.Quaternary, 0)
+	for _ = range quantity {
+		quaternaries = append(quaternaries, &pb.Quaternary{
+			First:  utils.FakeBoolean(),
+			Second: utils.FakeBoolean(),
+			Third:  utils.FakeBoolean(),
+			Fourth: utils.FakeBoolean(),
+			Fifth:  utils.FakeBoolean(),
+		})
+	}
+	return quaternaries
 }
