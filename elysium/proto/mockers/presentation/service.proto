@@ -39,54 +39,30 @@ service PresentationService {
       get: "/api/v1/virtual"
     };
   }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
-//
-//  rpc Echo(Request) returns (Response) {
-//    option (google.api.http) = {
-//      get: "/api/v1/echo"
-//    };
-//  }
+
+  rpc Primary(Request) returns (Response) {
+    option (google.api.http) = {
+      get: "/api/v1/primary"
+    };
+  }
+
+  rpc Secondary(Request) returns (Response) {
+    option (google.api.http) = {
+      get: "/api/v1/secondary"
+    };
+  }
+
+  rpc Tertiary(Request) returns (Response) {
+    option (google.api.http) = {
+      get: "/api/v1/tertiary"
+    };
+  }
+
+  rpc Quaternary(Request) returns (Response) {
+    option (google.api.http) = {
+      get: "/api/v1/quaternary"
+    };
+  }
 }
 
 message Request {}

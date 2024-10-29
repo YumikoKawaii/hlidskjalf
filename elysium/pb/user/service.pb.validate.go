@@ -15,7 +15,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"google.golang.org/protobuf/types/known/anypb"
+	"github.com/golang/protobuf/ptypes"
 )
 
 // ensure the imports are used
@@ -30,8 +30,11 @@ var (
 	_ = time.Duration(0)
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
-	_ = anypb.Any{}
+	_ = ptypes.DynamicAny{}
 )
+
+// define the regex for a UUID once up-front
+var _service_uuidPattern = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
 // Validate checks the field values on UserInfo with the rules defined in the
 // proto definition for this message. If any rules are violated, an error is returned.
@@ -121,14 +124,10 @@ func (m *UpsertUserRequest) Validate() error {
 
 	if wrapper := m.GetId(); wrapper != nil {
 
-		if wrapper.GetValue() != "" {
-
-			if utf8.RuneCountInString(wrapper.GetValue()) != 36 {
-				return UpsertUserRequestValidationError{
-					field:  "Id",
-					reason: "value length must be 36 runes",
-				}
-
+		if utf8.RuneCountInString(wrapper.GetValue()) != 36 {
+			return UpsertUserRequestValidationError{
+				field:  "Id",
+				reason: "value length must be 36 runes",
 			}
 
 		}

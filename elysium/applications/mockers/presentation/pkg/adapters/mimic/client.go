@@ -6,12 +6,12 @@ type Client interface {
 	Mimic(ctx context.Context) (Response, error)
 }
 
-func NewClient(host string, isUseGrpc bool) Client {
+func NewClient(host string, isUseGrpc, isSkipMarshalResponse bool) Client {
 	if isUseGrpc {
 		return NewRpcClient(host)
 	}
 
-	return NewHttpClient(host)
+	return NewHttpClient(host, isSkipMarshalResponse)
 }
 
 type Primary struct {

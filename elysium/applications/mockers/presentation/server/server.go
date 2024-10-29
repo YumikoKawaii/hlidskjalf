@@ -26,11 +26,11 @@ func Serve(cfg *config.Application) {
 		),
 	)
 
-	echoClient := echo.NewClient(cfg.EchoHost, cfg.UseGrpcProtocol)
-	fauxClient := faux.NewClient(cfg.FauxHost, cfg.UseGrpcProtocol)
-	fictioClient := fictio.NewClient(cfg.FictioHost, cfg.UseGrpcProtocol)
-	mimicClient := mimic.NewClient(cfg.MimicHost, cfg.UseGrpcProtocol)
-	virtualClient := virtual.NewClient(cfg.VirtualHost, cfg.UseGrpcProtocol)
+	echoClient := echo.NewClient(cfg.EchoHost, cfg.UseGrpcProtocol, cfg.SkipMarshalResponse)
+	fauxClient := faux.NewClient(cfg.FauxHost, cfg.UseGrpcProtocol, cfg.SkipMarshalResponse)
+	fictioClient := fictio.NewClient(cfg.FictioHost, cfg.UseGrpcProtocol, cfg.SkipMarshalResponse)
+	mimicClient := mimic.NewClient(cfg.MimicHost, cfg.UseGrpcProtocol, cfg.SkipMarshalResponse)
+	virtualClient := virtual.NewClient(cfg.VirtualHost, cfg.UseGrpcProtocol, cfg.SkipMarshalResponse)
 
 	h := handler.NewHandler(*cfg, echoClient, fauxClient, fictioClient, mimicClient, virtualClient)
 

@@ -19,7 +19,8 @@ type Application struct {
 	MimicHost   string `env:"MIMIC_HOST"`
 	VirtualHost string `env:"VIRTUAL_HOST"`
 
-	UseGrpcProtocol bool `env:"USE_GRPC_PROTOCOL"`
+	UseGrpcProtocol     bool `env:"USE_GRPC_PROTOCOL" default:"true"`
+	SkipMarshalResponse bool `env:"SKIP_MARSHAL_RESPONSE" default:"false"`
 }
 
 func Initialize() (*Application, *kong.Context) {
