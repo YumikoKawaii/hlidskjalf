@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: faux
+  namespace: elysium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: faux
+  template:
+    metadata:
+      labels:
+        app: faux
+    spec:
+      containers:
+        - name: faux
+          image: yumikokawaii/faux:latest
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: HTTP_PORT
+              value: "80"
+            - name: GRPC_PORT
+              value: "443"
+            - name: STATS_RANGE_LOWER
+              value: "10"
+            - name: STATS_RANGE_UPPER
+              value: "20"
+            - name: STRING_RANGE_LOWER
+              value: "100"
+            - name: STRING_RANGE_UPPER
+              value: "500"
+            - name: PRIMARY_RANGE_LOWER
+              value: "10"
+            - name: PRIMARY_RANGE_UPPER
+              value: "20"
+            - name: ENABLE_TRAFFIC_DELAY
+              value: "FALSE"
+            - name: TRAFFIC_DELAY_IN_MILLI_SEC
+              value: "200"
