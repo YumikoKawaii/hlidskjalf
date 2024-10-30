@@ -4,7 +4,7 @@ metadata:
   name: fictio
   namespace: elysium
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: fictio
