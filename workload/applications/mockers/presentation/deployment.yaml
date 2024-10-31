@@ -16,6 +16,13 @@ spec:
       containers:
         - name: presentation
           image: yumikokawaii/presentation:latest
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
           ports:
             - containerPort: 80
             - containerPort: 443
@@ -35,8 +42,8 @@ spec:
             - name: VIRTUAL_HOST
               value: virtual:443
             - name: USE_GRPC_PROTOCOL
-              value: "TRUE"   
+              value: "TRUE"
             - name: SKIP_MARSHAL_RESPONSE
-              value: "TRUE"  
+              value: "TRUE"
             - name: TRAFFIC_DELAY_IN_MILLI_SEC
               value: "200"
