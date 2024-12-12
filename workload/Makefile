@@ -1,9 +1,7 @@
-CLICKHOUSE_RELEASE=clickhouse
-
-.phony: init-cluster start-cluster stop-cluster remove-cluster deploy-clickhouse deploy-pawn
+.phony: init-cluster start-cluster stop-cluster remove-cluster
 
 init-cluster:
-	./init-cluster.sh
+	./scripts/init-cluster.sh
 
 start-cluster:
 	k3d cluster start hlidskjalf
@@ -14,12 +12,17 @@ stop-cluster:
 remove-cluster:
 	k3d cluster delete hlidskjalf
 
-deploy-clickhouse:
-	helm install $(CLICKHOUSE_RELEASE) clickhouse/chart
+set-context:
+	kubectl config set-context --current --namespace=elysium
 
-remove-clickhouse:
-	helm install $(CLICKHOUSE_RELEASE)
+start-deployments:
+	./scripts/start-deployments.sh
 
-deploy-pawn:
-	kubectl apply -f $(pwd)/pawn/deployment.yaml
-	kubectl apply -f $(pwd)/pawn/service.yaml
+start-servies:
+	./scripts/start-services.sh
+
+stop-deployments:
+	./scripts/stop-deployments.sh
+
+stop-services:
+	./scripts/stop-services.sh	
