@@ -26,3 +26,6 @@ stop-deployments:
 
 stop-services:
 	./scripts/stop-services.sh	
+
+start-locust:
+	./scripts/start-locust.sh
