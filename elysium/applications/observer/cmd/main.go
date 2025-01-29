@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	cfg, kongCtx := config.Initialize()
 	switch cmd := kongCtx.Command(); cmd {
 	case "serve":
