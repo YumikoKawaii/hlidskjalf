@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/YumikoKawaii/rpc.com v0.0.20260130164553
-	github.com/YumikoKawaii/shared v0.0.20260130175850
+	github.com/YumikoKawaii/shared v0.0.20260131062924
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/integralist/go-findroot v0.0.0-20160518114804-ac90681525dc

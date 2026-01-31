@@ -12,10 +12,7 @@ type Application struct {
 
 func loadDefault() *Application {
 	return &Application{
-		Server: &server.Config{
-			GRPC: "localhost:10443",
-			HTTP: "localhost:10080",
-		},
+		Server:       server.DefaultConfig(),
 		TracerConfig: tracer.DefaultConfig(),
 	}
 }
