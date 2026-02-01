@@ -1,6 +1,2 @@
-/elysium./.idea/
-/elysium/etl/data
-/elysium/etl/faker/data
-/elysium/etl/results
-/elysium/venv
 .idea
+config.yaml

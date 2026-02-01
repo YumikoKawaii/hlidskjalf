@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: echo
+  name: acoustics
   labels:
-    app: echo
+    app: acoustics
 spec:
   replicas: 3
   strategy:
@@ -13,13 +13,11 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: echo
+      app: acoustics
   template:
     metadata:
       labels:
-        app: echo
-      annotations:
-        reloader.stakater.com/auto: "true"
+        app: acoustics
     spec:
       terminationGracePeriodSeconds: 30
       affinity:
@@ -29,11 +27,11 @@ spec:
               podAffinityTerm:
                 labelSelector:
                   matchLabels:
-                    app: echo
+                    app: acoustics
                 topologyKey: kubernetes.io/hostname
       containers:
-        - name: echo
-          image: docker.io/yumikokawaii/echo:f296398
+        - name: acoustics
+          image: docker.io/yumikokawaii/acoustics:f296398
           imagePullPolicy: Always
           lifecycle:
             preStop:
@@ -79,4 +77,4 @@ spec:
               memory: 256Mi
           envFrom:
             - configMapRef:
-                name: echo-config
+                name: acoustics-config

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: acoustics
+  labels:
+    app: acoustics
+spec:
+  type: ClusterIP
+  selector:
+    app: acoustics
+  ports:
+    - name: grpc
+      port: 10443
+      targetPort: grpc
+      protocol: TCP
+    - name: http
+      port: 10080
+      targetPort: http
+      protocol: TCP

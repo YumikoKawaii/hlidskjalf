@@ -7,9 +7,9 @@ import (
 )
 
 type Application struct {
-	Server       *server.Config
-	TracerConfig *tracer.Configuration
-	Acoustics    *acoustics.Config
+	Server       *server.Config        `json:"server" mapstructure:"server" yaml:"server"`
+	TracerConfig *tracer.Configuration `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
+	Acoustics    *acoustics.Config     `json:"acoustics" mapstructure:"acoustics" yaml:"acoustics"`
 }
 
 func loadDefault() *Application {
