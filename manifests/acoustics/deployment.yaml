@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: acoustics
+  namespace: hlidskjalf
   labels:
     app: acoustics
 spec:
@@ -31,7 +32,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: acoustics
-          image: docker.io/yumikokawaii/acoustics:f296398
+          image: docker.io/yumikokawaii/acoustics:03fd36b
           imagePullPolicy: Always
           lifecycle:
             preStop:

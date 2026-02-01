@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: echo
+  namespace: hlidskjalf
   labels:
     app: echo
 spec:
@@ -33,7 +34,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: echo
-          image: docker.io/yumikokawaii/echo:f296398
+          image: docker.io/yumikokawaii/echo:03fd36b
           imagePullPolicy: Always
           lifecycle:
             preStop:
