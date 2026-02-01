@@ -15,10 +15,10 @@
 
 **A Kubernetes Laboratory Monorepo**
 
-[![Author](https://img.shields.io/badge/Author-Yumiko%20Sturluson%20☆-ff69b4?style=for-the-badge)](https://github.com/yumikokawaii)
+[![Author](https://img.shields.io/badge/Author-Yumiko%20Sturluson-ff69b4?style=for-the-badge)](https://github.com/yumikokawaii)
 [![License](https://img.shields.io/badge/License-Private-9370DB?style=for-the-badge)]()
 [![K8s](https://img.shields.io/badge/Kubernetes-k3d-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)]()
-[![Coffee](https://img.shields.io/badge/Powered%20by-Coffee%20☕-brown?style=for-the-badge)]()
+[![Coffee](https://img.shields.io/badge/Powered%20by-Coffee-brown?style=for-the-badge)]()
 
 </div>
 
@@ -26,13 +26,13 @@
 
 ## About
 
-> *"From Hlidskjalf, Odin gazes upon all the nine worlds..."* ✧･ﾟ: *✧
+> *"From Hlidskjalf, Odin gazes upon all the nine worlds..."*
 
-Welcome to **Hlidskjalf**! (ノ´ヮ`)ノ*: ・゚✧
+Welcome to **Hlidskjalf**!
 
-A monorepo containing multiple mock services and Kubernetes workloads designed for experimentation, learning, and development purposes~ Powered by **k3d**, this project provides a lightweight yet powerful local Kubernetes environment.
+A monorepo containing multiple mock services and Kubernetes workloads designed for experimentation, learning, and development purposes. Powered by **k3d**, this project provides a lightweight yet powerful local Kubernetes environment.
 
-Think of it as your own little world to orchestrate containers! ♪
+Think of it as your own little world to orchestrate containers!
 
 ---
 
@@ -40,11 +40,11 @@ Think of it as your own little world to orchestrate containers! ♪
 
 <div align="center">
 
-☆ﾟ.*･｡ﾟ **Yumiko Sturluson** ﾟ｡･*.ﾟ☆
+**~ Yumiko Sturluson ~**
 
-*～ Software Engineer ～*
+*Software Engineer*
 
-「コードは私の魔法です」
+*コードよ、わがまほうとなれ*
 
 </div>
 
@@ -52,9 +52,9 @@ Think of it as your own little world to orchestrate containers! ♪
 
 ## Getting Started
 
-Interested in exploring the nine worlds? (๑•̀ㅂ•́)و✧
+Interested in exploring the nine worlds?
 
-Reach out for more information~
+Reach out for more information:
 
 **Contact:** [yumiko.stl@gmail.com](mailto:yumiko.stl@gmail.com)
 
@@ -62,9 +62,7 @@ Reach out for more information~
 
 <div align="center">
 
-*～ Built with mass amounts of mass coffee ～*
-
-`♪(´ε` )`
+*~ Built with mass amounts of coffee ~*
 
 </div>
 
