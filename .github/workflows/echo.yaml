@@ -8,7 +8,7 @@ on:
       - 'applications/echo/**'
       - 'go.mod'
       - 'go.sum'
-      - '.github/workflows/publish.yaml'
+      - '.github/workflows/echo.yaml'
   workflow_dispatch:
 
 env:

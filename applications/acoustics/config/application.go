@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/YumikoKawaii/hlidskjalf/applications/echo/adapters/acoustics"
 	"github.com/YumikoKawaii/shared/server"
 	"github.com/YumikoKawaii/shared/tracer"
 )
@@ -9,13 +8,11 @@ import (
 type Application struct {
 	Server       *server.Config
 	TracerConfig *tracer.Configuration
-	Acoustics    *acoustics.Config
 }
 
 func loadDefault() *Application {
 	return &Application{
 		Server:       server.DefaultConfig(),
 		TracerConfig: tracer.DefaultConfig(),
-		Acoustics:    &acoustics.Config{},
 	}
 }

@@ -1,6 +1,7 @@
 package serve
 
 import (
+	"github.com/YumikoKawaii/hlidskjalf/applications/echo/adapters/acoustics"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/handlers/echo"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/handlers/health"
@@ -64,9 +65,23 @@ func Server(_ *cobra.Command, _ []string) {
 	healthHandler := health.Initialize()
 
 	logger.Info("[えこー] - へるすはんどらーさくせいかんりょう")
+	logger.Info("[えこー] - あこーすてぃくすくらいあんとをしょきかちゅう")
+
+	var acousticsClient acoustics.Client
+	switch cfg.Acoustics.Protocol {
+	case "http":
+		acousticsClient, err = acoustics.NewHTTPClient(cfg.Acoustics.Endpoint)
+	default:
+		acousticsClient, err = acoustics.NewGRPCClient(cfg.Acoustics.Endpoint)
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Info("[えこー] - あこーすてぃくすくらいあんとさくせいかんりょう")
 	logger.Info("[えこー] - えこーはんどらーをしょきかちゅう")
 
-	echoHandler := echo.Initialize()
+	echoHandler := echo.Initialize(acousticsClient)
 
 	logger.Info("[えこー] - えこーはんどらーさくせいかんりょう")
 	logger.Info("[えこー] - へるすはんどらーをとうろくちゅう")

@@ -1,5 +1,7 @@
 github.com/YumikoKawaii/rpc.com v0.0.20260130164553 h1:B6z6QslI8pCCNVZLoelHv65pY0at/3ScT5NPvR8tbnA=
 github.com/YumikoKawaii/rpc.com v0.0.20260130164553/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
+github.com/YumikoKawaii/rpc.com v0.0.20260201152708 h1:qKpOm0gFejD0WphgoZKJXQVTOa+i7SrfVbd37uFu01s=
+github.com/YumikoKawaii/rpc.com v0.0.20260201152708/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
 github.com/YumikoKawaii/shared v0.0.20260130171804 h1:NEPnFX3x9f3dUAzMo7Tw+yPW35Mp7G1AE4uYBTtraSg=
 github.com/YumikoKawaii/shared v0.0.20260130171804/go.mod h1:0P3bh3VcOHHe8577uF8H73Yh4N7oV048drl2OBT809s=
 github.com/YumikoKawaii/shared v0.0.20260130175441 h1:hI2l+O+H9lAuKcQhczlpUJYfLw84qe7TdHQYfnxKigI=
