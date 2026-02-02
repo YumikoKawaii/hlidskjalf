@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+  namespace: logging
+  labels:
+    app.kubernetes.io/name: promtail
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 10080
+      grpc_listen_port: 10443
+
+    positions:
+      filename: /run/promtail/positions.yaml
+
+    clients:
+      - url: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          # Drop pods with promtail.io/scrape=false annotation
+          - source_labels: [ __meta_kubernetes_pod_annotation_promtail_io_scrape ]
+            action: drop
+            regex: "false"
+          # Drop pods not on this node (CRITICAL - must match node name)
+          - source_labels: [ __meta_kubernetes_pod_node_name ]
+            action: keep
+            regex: ${HOSTNAME}
+          # Set __path__ to the log file location
+          - source_labels: [ __meta_kubernetes_pod_uid, __meta_kubernetes_pod_container_name ]
+            target_label: __path__
+            separator: /
+            replacement: /var/log/pods/*$1/*.log
+          # Add useful labels
+          - source_labels: [ __meta_kubernetes_pod_name ]
+            target_label: pod
+          - source_labels: [ __meta_kubernetes_namespace ]
+            target_label: namespace
+          - source_labels: [ __meta_kubernetes_pod_container_name ]
+            target_label: container
+          - source_labels: [ __meta_kubernetes_pod_label_app ]
+            target_label: app
+          - source_labels: [ __meta_kubernetes_pod_label_app_kubernetes_io_name ]
+            target_label: app
+            regex: (.+)
+
+  TRIGGER: '2'
