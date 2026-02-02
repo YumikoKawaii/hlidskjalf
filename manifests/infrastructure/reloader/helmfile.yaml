@@ -1,0 +1,12 @@
+repositories:
+  - name: stakater
+    url: https://stakater.github.io/stakater-charts
+
+releases:
+  - name: reloader
+    namespace: reloader
+    createNamespace: true
+    chart: stakater/reloader
+    version: 1.0.72
+    values:
+      - values.yaml
