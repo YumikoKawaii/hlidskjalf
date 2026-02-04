@@ -6,7 +6,7 @@ metadata:
   labels:
     app: echo
 spec:
-  replicas: 3
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -34,7 +34,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: echo
-          image: docker.io/yumikokawaii/echo:03fd36b
+          image: docker.io/yumikokawaii/echo:7215632
           imagePullPolicy: Always
           lifecycle:
             preStop:

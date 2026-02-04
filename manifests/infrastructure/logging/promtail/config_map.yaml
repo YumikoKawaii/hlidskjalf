@@ -19,6 +19,19 @@ data:
 
     scrape_configs:
       - job_name: kubernetes-pods
+        
+        pipeline_stages:
+          # Remove k8s metadata prefix
+          - cri: {}
+            
+          # Extract log level (the third field)
+          - regex:
+              expression: '^[\d\-T:.Z]+\s+(?P<level>\w+)\s+'              
+          
+          # Promote level to a label
+          - labels:
+              level:
+        
         kubernetes_sd_configs:
           - role: pod
         relabel_configs:
