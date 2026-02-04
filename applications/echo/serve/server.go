@@ -1,11 +1,14 @@
 package serve
 
 import (
+	"context"
+
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/adapters/acoustics"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/handlers/echo"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/handlers/health"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/interceptors"
+	"github.com/YumikoKawaii/hlidskjalf/applications/echo/workers"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/server"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -106,6 +109,15 @@ func Server(_ *cobra.Command, _ []string) {
 	logger.Info("[えこー] - さーばーしょきかかんりょう")
 	logger.Info("[えこー] - じーあーるぴーしーさーばーをきどうちゅう")
 	logger.Info("[えこー] - えいちてぃーてぃーぴーげーとうぇいをきどうちゅう")
+	logger.Info("[えこー] - えらーえみったーをきどうちゅう")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	errorEmitter := &workers.ErrorEmitter{Interval: cfg.ErrorEmitter.Interval}
+	errorEmitter.Start(ctx)
+
+	logger.Info("[えこー] - えらーえみったーきどうかんりょう")
 	logger.Info("[えこー] - せつぞくをまっています...")
 
 	if err := instance.Serve(); err != nil {
