@@ -34,7 +34,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: echo
-          image: docker.io/yumikokawaii/echo:7215632
+          image: docker.io/yumikokawaii/echo:8f71efb
           imagePullPolicy: Always
           lifecycle:
             preStop:

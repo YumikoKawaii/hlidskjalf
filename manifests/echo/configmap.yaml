@@ -13,4 +13,6 @@ data:
   TRIGGER: "2"
   ERROR_EMITTER__INTERVAL: "5"
   METRICS_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.monitoring.svc.cluster.local:4318"
+  METRICS_CONFIG__SERVICE_NAME: "hlidskjalf.echo"
+  METRICS_CONFIG__EXPORT_INTERVAL: "5"
   TRACER_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.monitoring.svc.cluster.local:4318"

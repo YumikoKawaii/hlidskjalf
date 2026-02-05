@@ -32,7 +32,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
         - name: acoustics
-          image: docker.io/yumikokawaii/acoustics:7215632
+          image: docker.io/yumikokawaii/acoustics:8f71efb
           imagePullPolicy: Always
           lifecycle:
             preStop:
