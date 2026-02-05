@@ -56,6 +56,8 @@ func Server(_ *cobra.Command, _ []string) {
 	logger.Info("[えこー] - ゆなりーいんたーせぷたーをせっていちゅう")
 	logger.Info("[えこー] - すとりーむいんたーせぷたーをせっていちゅう")
 
+	grpcprometheus.EnableHandlingTimeHistogram()
+
 	instance := server.Initialize(
 		cfg.Server,
 		grpc.KeepaliveParams(keepalive.ServerParameters{}),

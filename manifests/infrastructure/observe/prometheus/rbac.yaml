@@ -17,8 +17,8 @@ rules:
     resources:
 #      - nodes
 #      - nodes/proxy
-#      - services
-#      - endpoints
+      - services
+      - endpoints
       - pods
     verbs: ["get", "list", "watch"]
 #  - nonResourceURLs: ["/metrics"]
@@ -37,4 +37,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: prometheus
-    namespace: monitoring
+    namespace: observe
