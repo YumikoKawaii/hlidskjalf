@@ -12,3 +12,5 @@ data:
   ACOUSTICS__PROTOCOL: "grpc"
   TRIGGER: "2"
   ERROR_EMITTER__INTERVAL: "5"
+  METRICS_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.monitoring.svc.cluster.local:4318"
+  TRACER_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.monitoring.svc.cluster.local:4318"

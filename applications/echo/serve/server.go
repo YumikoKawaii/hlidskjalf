@@ -10,11 +10,12 @@ import (
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/interceptors"
 	"github.com/YumikoKawaii/hlidskjalf/applications/echo/workers"
 	"github.com/YumikoKawaii/shared/logger"
+	"github.com/YumikoKawaii/shared/metrics"
 	"github.com/YumikoKawaii/shared/server"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	grpcvalidator "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/validator"
-	grpcprometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/spf13/cobra"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
@@ -35,6 +36,22 @@ func Server(_ *cobra.Command, _ []string) {
 	logger.Info("[えこー] - せっていのけんしょうかんりょう")
 	logger.Info("[えこー] - とれーさーをせっていちゅう")
 	logger.Info("[えこー] - おーぷんてれめとりーとれーさーしょきかかんりょう")
+	logger.Info("[えこー] - めとりくすをせっていちゅう")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	meterProvider, err := metrics.Initialize(ctx, cfg.MetricsConfig)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if err := meterProvider.Shutdown(ctx); err != nil {
+			logger.WithFields(logger.Fields{"error": err}).Error("めーたーぷろばいだーしゃっとだうんえらー")
+		}
+	}()
+
+	logger.Info("[えこー] - めとりくすしょきかかんりょう")
 	logger.Info("[えこー] - じーあーるぴーしーさーばーをじゅんびちゅう")
 	logger.Info("[えこー] - きーぷあらいぶぱらめーたーをせっていちゅう")
 	logger.Info("[えこー] - ゆなりーいんたーせぷたーをせっていちゅう")
@@ -43,15 +60,14 @@ func Server(_ *cobra.Command, _ []string) {
 	instance := server.Initialize(
 		cfg.Server,
 		grpc.KeepaliveParams(keepalive.ServerParameters{}),
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
 			interceptors.UnaryLoggingInterceptor(),
-			grpcprometheus.UnaryServerInterceptor,
 			grpcvalidator.UnaryServerInterceptor(),
 			grpcrecovery.UnaryServerInterceptor(),
 		),
 		grpc.ChainStreamInterceptor(
 			interceptors.StreamLoggingInterceptor(),
-			grpcprometheus.StreamServerInterceptor,
 			grpcvalidator.StreamServerInterceptor(),
 			grpcrecovery.StreamServerInterceptor(),
 		),
@@ -110,9 +126,6 @@ func Server(_ *cobra.Command, _ []string) {
 	logger.Info("[えこー] - じーあーるぴーしーさーばーをきどうちゅう")
 	logger.Info("[えこー] - えいちてぃーてぃーぴーげーとうぇいをきどうちゅう")
 	logger.Info("[えこー] - えらーえみったーをきどうちゅう")
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	errorEmitter := &workers.ErrorEmitter{Interval: cfg.ErrorEmitter.Interval}
 	errorEmitter.Start(ctx)
