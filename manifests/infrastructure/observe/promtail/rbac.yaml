@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: prometheus
-  namespace: monitoring
+  name: promtail
+  namespace: observe
   labels:
-    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/name: promtail
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: prometheus
+  name: promtail
   labels:
-    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/name: promtail
 rules:
   - apiGroups: [""]
     resources:
@@ -20,21 +20,19 @@ rules:
 #      - services
 #      - endpoints
       - pods
-    verbs: ["get", "list", "watch"]
-#  - nonResourceURLs: ["/metrics"]
-#    verbs: ["get"]
+    verbs: ["get", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: prometheus
+  name: promtail
   labels:
-    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/name: promtail
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prometheus
+  name: promtail
 subjects:
   - kind: ServiceAccount
-    name: prometheus
-    namespace: monitoring
+    name: promtail
+    namespace: observe

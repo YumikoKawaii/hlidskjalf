@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana-datasources
-  namespace: logging
+  namespace: observe
   labels:
     app.kubernetes.io/name: grafana
 data:
@@ -12,12 +12,12 @@ data:
       - name: Loki
         type: loki
         access: proxy
-        url: http://loki.logging.svc.cluster.local:3100
+        url: http://loki.observe.svc.cluster.local:3100
         isDefault: true
         editable: false
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://prometheus.monitoring.svc.cluster.local:9090
+        url: http://prometheus.observe.svc.cluster.local:9090
         isDefault: false
         editable: false

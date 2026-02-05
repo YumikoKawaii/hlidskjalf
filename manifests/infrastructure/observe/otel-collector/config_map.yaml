@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: otel-collector-config
-  namespace: monitoring
+  namespace: observe
   labels:
     app.kubernetes.io/name: otel-collector
 data:
