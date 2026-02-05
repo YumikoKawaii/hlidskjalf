@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/YumikoKawaii/rpc.com v0.0.20260201152708
-	github.com/YumikoKawaii/shared v0.0.20260205100842
+	github.com/YumikoKawaii/shared v0.0.20260205102559
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0

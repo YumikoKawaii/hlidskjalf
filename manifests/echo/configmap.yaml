@@ -7,7 +7,7 @@ metadata:
     app: echo
 data:
   ENVIRONMENT: "production"
-  LOG_LEVEL: "info"
+  LOG_LEVEL: "debug"
   ACOUSTICS__ENDPOINT: "acoustics:10443"
   ACOUSTICS__PROTOCOL: "grpc"
   TRIGGER: "2"
