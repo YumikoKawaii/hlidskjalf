@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/YumikoKawaii/hlidskjalf/applications/echo/adapters/acoustics"
+	"github.com/YumikoKawaii/shared/adapters/acoustics"
 	"github.com/YumikoKawaii/shared/metrics"
 	"github.com/YumikoKawaii/shared/server"
 	"github.com/YumikoKawaii/shared/tracer"
@@ -17,6 +17,7 @@ type Application struct {
 	MetricsConfig *metrics.Configuration `json:"metrics_config" mapstructure:"metrics_config" yaml:"metrics_config"`
 	Acoustics     *acoustics.Config      `json:"acoustics" mapstructure:"acoustics" yaml:"acoustics"`
 	ErrorEmitter  *ErrorEmitterConfig    `json:"error_emitter" mapstructure:"error_emitter" yaml:"error_emitter"`
+	ErrorRate     float64                `json:"error_rate" mapstructure:"error_rate" yaml:"error_rate"`
 }
 
 func loadDefault() *Application {
@@ -26,5 +27,6 @@ func loadDefault() *Application {
 		MetricsConfig: metrics.DefaultConfig(),
 		Acoustics:     &acoustics.Config{},
 		ErrorEmitter:  &ErrorEmitterConfig{Interval: 5},
+		ErrorRate:     0,
 	}
 }

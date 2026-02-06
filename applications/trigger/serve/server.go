@@ -3,12 +3,11 @@ package serve
 import (
 	"context"
 
-	"github.com/YumikoKawaii/hlidskjalf/applications/echo/config"
-	"github.com/YumikoKawaii/hlidskjalf/applications/echo/handlers/echo"
-	"github.com/YumikoKawaii/hlidskjalf/applications/echo/workers"
+	"github.com/YumikoKawaii/hlidskjalf/applications/trigger/config"
+	"github.com/YumikoKawaii/hlidskjalf/applications/trigger/workers/chaos"
 	"github.com/YumikoKawaii/shared/adapters/acoustics"
+	"github.com/YumikoKawaii/shared/adapters/echo"
 	"github.com/YumikoKawaii/shared/health"
-	"github.com/YumikoKawaii/shared/interceptors"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/server"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -20,7 +19,7 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[えこー] - しょきかちゅう...")
+	logger.Info("[とりがー] - しょきかちゅう...")
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -36,40 +35,42 @@ func Server(_ *cobra.Command, _ []string) {
 		cfg.Server,
 		grpc.KeepaliveParams(keepalive.ServerParameters{}),
 		grpc.ChainUnaryInterceptor(
-			interceptors.UnaryLoggingInterceptor(),
 			grpcprometheus.UnaryServerInterceptor,
 			grpcvalidator.UnaryServerInterceptor(),
 			grpcrecovery.UnaryServerInterceptor(),
 		),
 		grpc.ChainStreamInterceptor(
-			interceptors.StreamLoggingInterceptor(),
 			grpcprometheus.StreamServerInterceptor,
 			grpcvalidator.StreamServerInterceptor(),
 			grpcrecovery.StreamServerInterceptor(),
 		),
 	)
 
-	healthHandler := health.Initialize()
-
 	acousticsClient, err := acoustics.Initialize(cfg.Acoustics)
 	if err != nil {
 		panic(err)
 	}
 
-	echoHandler := echo.Initialize(acousticsClient, cfg.ErrorRate)
+	echoClient, err := echo.Initialize(cfg.Echo)
+	if err != nil {
+		panic(err)
+	}
 
+	chaosWorker := chaos.Initialize(cfg.Chaos)
+	chaosWorker.Register(
+		chaos.ToTriggerFunction[acoustics.EntryRequest, acoustics.EntryResponse]("acoustics.Entry", acousticsClient.Entry),
+		chaos.ToTriggerFunction[echo.ChargeRequest, echo.ChargeResponse]("echo.Charge", echoClient.Charge),
+		chaos.ToTriggerFunction[echo.DischargeRequest, echo.DischargeResponse]("echo.Discharge", echoClient.Discharge),
+	)
+
+	healthHandler := health.Initialize()
 	if err := healthHandler.Register(instance); err != nil {
 		panic(err)
 	}
 
-	if err := echoHandler.Register(instance); err != nil {
-		panic(err)
-	}
+	chaosWorker.Start(ctx)
 
-	errorEmitter := &workers.ErrorEmitter{Interval: cfg.ErrorEmitter.Interval}
-	errorEmitter.Start(ctx)
-
-	logger.Info("[えこー] - せつぞくをまっています...")
+	logger.Info("[とりがー] - せつぞくをまっています...")
 
 	if err := instance.Serve(); err != nil {
 		logger.WithFields(logger.Fields{"error": err}).Fatalf("さーばーきどうえらー")

@@ -1,11 +1,7 @@
 github.com/YumikoKawaii/rpc.com v0.0.20260201152708 h1:qKpOm0gFejD0WphgoZKJXQVTOa+i7SrfVbd37uFu01s=
 github.com/YumikoKawaii/rpc.com v0.0.20260201152708/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
-github.com/YumikoKawaii/shared v0.0.20260205100842 h1:/yvq7hhnzg6YcuwLaTPrOrTtEsGQx4de4JbxcphyLrE=
-github.com/YumikoKawaii/shared v0.0.20260205100842/go.mod h1:c39iZYD7RP9WzqhVVHVr0xnt7vZnGIccPh2oFWHD8XY=
-github.com/YumikoKawaii/shared v0.0.20260205102559 h1:HNpXaxr/Vpgfi70b/iTSbBOTDA83Zb2HrMaLrDa5UJs=
-github.com/YumikoKawaii/shared v0.0.20260205102559/go.mod h1:c39iZYD7RP9WzqhVVHVr0xnt7vZnGIccPh2oFWHD8XY=
-github.com/YumikoKawaii/shared v0.0.20260205160741 h1:zVL+ox7B0G+zND78GGND49mwCgb8ka/3YYi5Z55NxKg=
-github.com/YumikoKawaii/shared v0.0.20260205160741/go.mod h1:pmoZzE8nJ+QWJXeW41JgOyQI1Sy0yq+4S5SXH7FUlkc=
+github.com/YumikoKawaii/shared v0.0.20260206091536 h1:2cgG4GT/ARPFFosZZosIQtc619qP87Uc3fCRSzoqhjs=
+github.com/YumikoKawaii/shared v0.0.20260206091536/go.mod h1:mpit3Kpm/NKLRssZ7/kGiutkTPkzvs5jbrm39YinyZE=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=
@@ -46,6 +42,8 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/integralist/go-findroot v0.0.0-20160518114804-ac90681525dc h1:4IZpk3M4m6ypx0IlRoEyEyY1gAdicWLMQ0NcG/gBnnA=
 github.com/integralist/go-findroot v0.0.0-20160518114804-ac90681525dc/go.mod h1:UlaC6ndby46IJz9m/03cZPKKkR9ykeIVBBDE3UDBdJk=
+github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
+github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
 github.com/kr/pretty v0.3.1/go.mod h1:hoEshYVHaxMs3cyo3Yncou5ZscifuDolrwPKZanG3xk=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
@@ -92,8 +90,6 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=
 go.opentelemetry.io/auto/sdk v1.2.1/go.mod h1:KRTj+aOaElaLi+wW1kO/DZRXwkF4C5xPbEe3ZiIhN7Y=
-go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.65.0 h1:XmiuHzgJt067+a6kwyAzkhXooYVv3/TOw9cM2VfJgUM=
-go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.65.0/go.mod h1:KDgtbWKTQs4bM+VPUr6WlL9m/WXcmkCcBlIzqxPGzmI=
 go.opentelemetry.io/otel v1.40.0 h1:oA5YeOcpRTXq6NN7frwmwFR0Cn3RhTVZvXsP4duvCms=
 go.opentelemetry.io/otel v1.40.0/go.mod h1:IMb+uXZUKkMXdPddhwAHm6UfOwJyh4ct1ybIlV14J0g=
 go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.40.0 h1:9y5sHvAxWzft1WQ4BwqcvA+IFVUJ1Ya75mSAUnFEVwE=

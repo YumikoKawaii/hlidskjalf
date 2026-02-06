@@ -4,14 +4,12 @@ go 1.25.5
 
 require (
 	github.com/YumikoKawaii/rpc.com v0.0.20260201152708
-	github.com/YumikoKawaii/shared v0.0.20260205160741
-	github.com/google/uuid v1.6.0
+	github.com/YumikoKawaii/shared v0.0.20260206091536
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/integralist/go-findroot v0.0.0-20160518114804-ac90681525dc
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.65.0
 	google.golang.org/grpc v1.78.0
 )
 
@@ -25,6 +23,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-logr/zapr v1.3.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect

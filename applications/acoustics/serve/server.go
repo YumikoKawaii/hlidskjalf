@@ -5,9 +5,9 @@ import (
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/handlers/acoustics"
-	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/handlers/health"
-	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/interceptors"
 	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/workers"
+	"github.com/YumikoKawaii/shared/health"
+	"github.com/YumikoKawaii/shared/interceptors"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/server"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -20,24 +20,11 @@ import (
 
 func Server(_ *cobra.Command, _ []string) {
 	logger.Info("[あこーすてぃくす] - しょきかちゅう...")
-	logger.Info("[あこーすてぃくす] - せっていをよみこみちゅう")
-	logger.Info("[あこーすてぃくす] - せっていふぁいるをよんでいます")
-	logger.Info("[あこーすてぃくす] - せっていちをかいせきちゅう")
 
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
-
-	logger.Info("[あこーすてぃくす] - せっていのよみこみせいこう")
-	logger.Info("[あこーすてぃくす] - せっていをけんしょうちゅう")
-	logger.Info("[あこーすてぃくす] - せっていのけんしょうかんりょう")
-	logger.Info("[あこーすてぃくす] - とれーさーをせっていちゅう")
-	logger.Info("[あこーすてぃくす] - おーぷんてれめとりーとれーさーしょきかかんりょう")
-	logger.Info("[あこーすてぃくす] - じーあーるぴーしーさーばーをじゅんびちゅう")
-	logger.Info("[あこーすてぃくす] - きーぷあらいぶぱらめーたーをせっていちゅう")
-	logger.Info("[あこーすてぃくす] - ゆなりーいんたーせぷたーをせっていちゅう")
-	logger.Info("[あこーすてぃくす] - すとりーむいんたーせぷたーをせっていちゅう")
 
 	grpcprometheus.EnableHandlingTimeHistogram()
 
@@ -58,45 +45,16 @@ func Server(_ *cobra.Command, _ []string) {
 		),
 	)
 
-	logger.Info("[あこーすてぃくす] - じーあーるぴーしーさーばーいんすたんすさくせい")
-	logger.Info("[あこーすてぃくす] - ぷろめてうすいんたーせぷたーをとうろくちゅう")
-	logger.Info("[あこーすてぃくす] - ばりでーたーいんたーせぷたーをとうろくちゅう")
-	logger.Info("[あこーすてぃくす] - りかばりーいんたーせぷたーをとうろくちゅう")
-	logger.Info("[あこーすてぃくす] - ろぎんぐいんたーせぷたーをとうろくちゅう")
-	logger.Info("[あこーすてぃくす] - すべてのいんたーせぷたーとうろくかんりょう")
-	logger.Info("[あこーすてぃくす] - へるすはんどらーをしょきかちゅう")
-
 	healthHandler := health.Initialize()
-
-	logger.Info("[あこーすてぃくす] - へるすはんどらーさくせいかんりょう")
-	logger.Info("[あこーすてぃくす] - あこーすてぃくすはんどらーをしょきかちゅう")
-
-	acousticsHandler := acoustics.Initialize()
-
-	logger.Info("[あこーすてぃくす] - あこーすてぃくすはんどらーさくせいかんりょう")
-	logger.Info("[あこーすてぃくす] - へるすはんどらーをとうろくちゅう")
+	acousticsHandler := acoustics.Initialize(cfg.ErrorRate)
 
 	if err := healthHandler.Register(instance); err != nil {
 		panic(err)
 	}
 
-	logger.Info("[あこーすてぃくす] - へるすはんどらーとうろくかんりょう")
-	logger.Info("[あこーすてぃくす] - あこーすてぃくすはんどらーをとうろくちゅう")
-
 	if err := acousticsHandler.Register(instance); err != nil {
 		panic(err)
 	}
-
-	logger.Info("[あこーすてぃくす] - あこーすてぃくすはんどらーとうろくかんりょう")
-	logger.Info("[あこーすてぃくす] - らいぶねすえんどぽいんとじゅんびかんりょう")
-	logger.Info("[あこーすてぃくす] - れでぃねすえんどぽいんとじゅんびかんりょう")
-	logger.Info("[あこーすてぃくす] - ちゃーじえんどぽいんとじゅんびかんりょう")
-	logger.Info("[あこーすてぃくす] - でぃすちゃーじえんどぽいんとじゅんびかんりょう")
-	logger.Info("[あこーすてぃくす] - すべてのはんどらーとうろくかんりょう")
-	logger.Info("[あこーすてぃくす] - さーばーしょきかかんりょう")
-	logger.Info("[あこーすてぃくす] - じーあーるぴーしーさーばーをきどうちゅう")
-	logger.Info("[あこーすてぃくす] - えいちてぃーてぃーぴーげーとうぇいをきどうちゅう")
-	logger.Info("[あこーすてぃくす] - えらーえみったーをきどうちゅう")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -104,7 +62,6 @@ func Server(_ *cobra.Command, _ []string) {
 	errorEmitter := &workers.ErrorEmitter{Interval: cfg.ErrorEmitter.Interval}
 	errorEmitter.Start(ctx)
 
-	logger.Info("[あこーすてぃくす] - えらーえみったーきどうかんりょう")
 	logger.Info("[あこーすてぃくす] - せつぞくをまっています...")
 
 	if err := instance.Serve(); err != nil {
