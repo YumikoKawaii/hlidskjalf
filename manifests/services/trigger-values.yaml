@@ -6,7 +6,7 @@ host: trigger.example.com
 
 reloader: true
 
-replicas: 3
+replicas: 10
 
 resources:
   requests:

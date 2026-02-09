@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/acoustics
-  tag: "49101f3"
+  tag: "a20eea1"
 
 host: acoustics.example.com
 
@@ -19,5 +19,7 @@ config:
   LOG_LEVEL: "info"
   ERROR_EMITTER__INTERVAL: "1"
   ERROR_RATE: 0.5
-  RANDOM_DELAY__RATE: "0.3"
-  RANDOM_DELAY__VALUE: "500000"
+  RANDOM_DELAY__RATE: 0.5
+  RANDOM_DELAY__VALUE: "1000000" # 1 ms
+
+  TRIGGER: "1"

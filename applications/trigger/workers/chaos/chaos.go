@@ -38,7 +38,7 @@ func (c *chaos) Register(functions ...TriggerFunction) {
 }
 
 func (c *chaos) Start(ctx context.Context) {
-	ticker := time.NewTicker(time.Duration(c.cfg.Interval) * time.Second)
+	ticker := time.NewTicker(time.Duration(c.cfg.Interval) * time.Microsecond)
 	go func() {
 		defer ticker.Stop()
 		for {
