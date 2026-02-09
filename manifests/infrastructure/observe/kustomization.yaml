@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: observe
+
+resources:
+  # Metrics
+  - prometheus/rbac.yaml
+  - prometheus/config_map.yaml
+  - prometheus/stateful_set.yaml
+  - prometheus/service.yaml
+
+  # Logs
+  - loki/config_map.yaml
+  - loki/stateful_set.yaml
+  - loki/service.yaml
+
+  - promtail/rbac.yaml
+  - promtail/config_map.yaml
+  - promtail/daemon_set.yaml
+
+  # Traces
+  - otel-collector/config_map.yaml
+  - otel-collector/deployment.yaml
+  - otel-collector/service.yaml
+
+  # Visualization
+  - grafana/config_map.yaml
+  - grafana/stateful_set.yaml
+  - grafana/service.yaml

@@ -1,0 +1,27 @@
+image:
+  repository: docker.io/yumikokawaii/echo
+  tag: "49101f3"
+
+host: echo.example.com
+
+reloader: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+config:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "debug"
+  ACOUSTICS__ENDPOINT: "acoustics:10443"
+  ACOUSTICS__PROTOCOL: "grpc"
+  TRIGGER: "2"
+  ERROR_EMITTER__INTERVAL: "5"
+  # METRICS_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.observe.svc.cluster.local:4318"
+  # METRICS_CONFIG__SERVICE_NAME: "hlidskjalf.echo"
+  # METRICS_CONFIG__EXPORT_INTERVAL: "5"
+  # TRACER_CONFIG__COLLECTOR_ENDPOINT: "otel-collector.observe.svc.cluster.local:4318"

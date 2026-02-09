@@ -1,0 +1,26 @@
+image:
+  repository: docker.io/yumikokawaii/trigger
+  tag: "49101f3"
+
+host: trigger.example.com
+
+reloader: true
+
+replicas: 3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+config:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
+  ACOUSTICS__ENDPOINT: "acoustics:10443"
+  ACOUSTICS__PROTOCOL: "grpc"
+  ECHO__ENDPOINT: "echo:10443"
+  ECHO__PROTOCOL: "grpc"
+  CHAOS__INTERVAL: 1

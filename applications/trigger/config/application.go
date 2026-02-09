@@ -25,5 +25,8 @@ func loadDefault() *Application {
 		MetricsConfig: metrics.DefaultConfig(),
 		Acoustics:     &acoustics.Config{},
 		Echo:          &echo.Config{},
+		Chaos: &chaos.Config{
+			Interval: 1,
+		},
 	}
 }

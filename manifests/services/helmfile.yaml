@@ -1,0 +1,18 @@
+releases:
+  - name: echo
+    namespace: hlidskjalf
+    chart: ./chart
+    values:
+      - echo-values.yaml
+
+  - name: acoustics
+    namespace: hlidskjalf
+    chart: ./chart
+    values:
+      - acoustics-values.yaml
+
+  - name: trigger
+    namespace: hlidskjalf
+    chart: ./chart
+    values:
+      - trigger-values.yaml
