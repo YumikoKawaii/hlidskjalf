@@ -3,6 +3,7 @@ package acoustics
 import (
 	"context"
 	"math/rand/v2"
+	"time"
 
 	api "github.com/YumikoKawaii/rpc.com/protobuf/acoustics"
 	"github.com/YumikoKawaii/shared/logger"
@@ -15,18 +16,26 @@ import (
 
 type Handler struct {
 	api.UnimplementedAcousticsServer
-	errorRate float64
+	errorRate  float64
+	delayRate  float64
+	delayValue int64
 }
 
-func Initialize(errorRate float64) *Handler {
+func Initialize(errorRate float64, delayRate float64, delayValue int64) *Handler {
 	logger.Info("[あこーすてぃくすはんどらー] - はんどらーをしょきか")
 	return &Handler{
-		errorRate: errorRate,
+		errorRate:  errorRate,
+		delayRate:  delayRate,
+		delayValue: delayValue,
 	}
 }
 
 func (h *Handler) Entry(ctx context.Context, request *api.EntryRequest) (*api.EntryResponse, error) {
 	logger.Info("[あこーすてぃくすはんどらー] - えんとりーりくえすとをじゅしん")
+
+	if h.delayValue > 0 && rand.Float64() < h.delayRate {
+		time.Sleep(time.Duration(rand.Int64N(h.delayValue)))
+	}
 
 	if h.errorRate > 0 && rand.Float64() < h.errorRate {
 		logger.Error("[あこーすてぃくすはんどらー] - えんとりーしみゅれーとえらー")

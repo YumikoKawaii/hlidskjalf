@@ -3,6 +3,7 @@ package echo
 import (
 	"context"
 	"math/rand/v2"
+	"time"
 
 	api "github.com/YumikoKawaii/rpc.com/protobuf/echo"
 	"github.com/YumikoKawaii/shared/adapters/acoustics"
@@ -18,18 +19,26 @@ type Handler struct {
 	api.UnimplementedEchoServer
 	acousticsClient acoustics.Client
 	errorRate       float64
+	delayRate       float64
+	delayValue      int64
 }
 
-func Initialize(acousticsClient acoustics.Client, errorRate float64) *Handler {
+func Initialize(acousticsClient acoustics.Client, errorRate float64, delayRate float64, delayValue int64) *Handler {
 	logger.Info("[えこーはんどらー] - はんどらーをしょきか")
 	return &Handler{
 		acousticsClient: acousticsClient,
 		errorRate:       errorRate,
+		delayRate:       delayRate,
+		delayValue:      delayValue,
 	}
 }
 
 func (h *Handler) Charge(ctx context.Context, request *api.ChargeRequest) (*api.ChargeResponse, error) {
 	logger.Info("[えこーはんどらー] - ちゃーじりくえすとをじゅしん")
+
+	if h.delayValue > 0 && rand.Float64() < h.delayRate {
+		time.Sleep(time.Duration(rand.Int64N(h.delayValue)))
+	}
 
 	if h.errorRate > 0 && rand.Float64() < h.errorRate {
 		logger.Error("[えこーはんどらー] - ちゃーじしみゅれーとえらー")
@@ -47,6 +56,10 @@ func (h *Handler) Charge(ctx context.Context, request *api.ChargeRequest) (*api.
 
 func (h *Handler) Discharge(ctx context.Context, request *api.DischargeRequest) (*api.DischargeResponse, error) {
 	logger.Info("[えこーはんどらー] - でぃすちゃーじりくえすとをじゅしん")
+
+	if h.delayValue > 0 && rand.Float64() < h.delayRate {
+		time.Sleep(time.Duration(rand.Int64N(h.delayValue)))
+	}
 
 	if h.errorRate > 0 && rand.Float64() < h.errorRate {
 		logger.Error("[えこーはんどらー] - でぃすちゃーじしみゅれーとえらー")

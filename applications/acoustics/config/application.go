@@ -9,10 +9,16 @@ type ErrorEmitterConfig struct {
 	Interval int `json:"interval" mapstructure:"interval" yaml:"interval"`
 }
 
+type RandomDelayConfig struct {
+	Rate  float64 `json:"rate" mapstructure:"rate" yaml:"rate"`
+	Value int64   `json:"value" mapstructure:"value" yaml:"value"`
+}
+
 type Application struct {
 	Server       *server.Config        `json:"server" mapstructure:"server" yaml:"server"`
 	TracerConfig *tracer.Configuration `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
 	ErrorEmitter *ErrorEmitterConfig   `json:"error_emitter" mapstructure:"error_emitter" yaml:"error_emitter"`
+	RandomDelay  *RandomDelayConfig    `json:"random_delay" mapstructure:"random_delay" yaml:"random_delay"`
 	ErrorRate    float64               `json:"error_rate" mapstructure:"error_rate" yaml:"error_rate"`
 }
 
@@ -21,6 +27,7 @@ func loadDefault() *Application {
 		Server:       server.DefaultConfig(),
 		TracerConfig: tracer.DefaultConfig(),
 		ErrorEmitter: &ErrorEmitterConfig{Interval: 5},
+		RandomDelay:  &RandomDelayConfig{},
 		ErrorRate:    0,
 	}
 }

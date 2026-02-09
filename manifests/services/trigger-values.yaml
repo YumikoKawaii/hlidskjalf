@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/trigger
-  tag: "49101f3"
+  tag: "53eed24"
 
 host: trigger.example.com
 
