@@ -1,12 +1,12 @@
 image:
   repository: docker.io/yumikokawaii/trigger
-  tag: "53eed24"
+  tag: "eb068f6"
 
 host: trigger.example.com
 
 reloader: true
 
-replicas: 10
+replicas: 0
 
 resources:
   requests:
@@ -23,4 +23,4 @@ config:
   ACOUSTICS__PROTOCOL: "grpc"
   ECHO__ENDPOINT: "echo:10443"
   ECHO__PROTOCOL: "grpc"
-  CHAOS__INTERVAL: 1
+  CHAOS__INTERVAL: "100000" # 0.1ms

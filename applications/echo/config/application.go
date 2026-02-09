@@ -12,6 +12,7 @@ type ErrorEmitterConfig struct {
 }
 
 type RandomDelayConfig struct {
+	Base  int64   `json:"base" mapstructure:"base" yaml:"base"`
 	Rate  float64 `json:"rate" mapstructure:"rate" yaml:"rate"`
 	Value int64   `json:"value" mapstructure:"value" yaml:"value"`
 }

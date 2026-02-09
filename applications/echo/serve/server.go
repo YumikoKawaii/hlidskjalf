@@ -56,7 +56,7 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	echoHandler := echo.Initialize(acousticsClient, cfg.ErrorRate, cfg.RandomDelay.Rate, cfg.RandomDelay.Value)
+	echoHandler := echo.Initialize(acousticsClient, cfg.ErrorRate, cfg.RandomDelay)
 
 	if err := healthHandler.Register(instance); err != nil {
 		panic(err)
