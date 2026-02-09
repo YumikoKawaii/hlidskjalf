@@ -26,7 +26,11 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	grpcprometheus.EnableHandlingTimeHistogram()
+	grpcprometheus.EnableHandlingTimeHistogram(
+		grpcprometheus.WithHistogramBuckets([]float64{
+			0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.75, 1.0, 2.5, 5.0, 10.0,
+		}),
+	)
 
 	instance := server.Initialize(
 		cfg.Server,

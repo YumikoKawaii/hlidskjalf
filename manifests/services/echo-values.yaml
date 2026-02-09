@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/echo
-  tag: "a20eea1"
+  tag: "4dfcb5d"
 
 host: echo.example.com
 

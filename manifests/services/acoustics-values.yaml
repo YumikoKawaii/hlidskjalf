@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/acoustics
-  tag: "a20eea1"
+  tag: "4dfcb5d"
 
 host: acoustics.example.com
 
