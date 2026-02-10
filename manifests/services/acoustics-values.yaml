@@ -6,6 +6,8 @@ host: acoustics.example.com
 
 reloader: true
 
+replicas: 3
+
 resources:
   requests:
     cpu: 100m

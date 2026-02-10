@@ -6,6 +6,8 @@ host: echo.example.com
 
 reloader: true
 
+replicas: 3
+
 resources:
   requests:
     cpu: 100m
