@@ -11,6 +11,9 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
+	"path/filepath"
 )
 
 type Watcher struct {
@@ -24,7 +27,12 @@ type Watcher struct {
 func NewWatcher(namespace string) (*Watcher, error) {
 	config, err := rest.InClusterConfig()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get in-cluster config: %w", err)
+		// Fall back to kubeconfig for local development
+		kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "config")
+		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get kubernetes config: %w", err)
+		}
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
