@@ -6,7 +6,7 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicas | default 1 }}
+  replicas: {{ if kindIs "invalid" .Values.replicas }}1{{ else }}{{ .Values.replicas }}{{ end }}
   strategy:
     type: RollingUpdate
     rollingUpdate:

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-proxy
+  labels:
+    app: envoy-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy-proxy
+  template:
+    metadata:
+      labels:
+        app: envoy-proxy
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:v1.32-latest
+          ports:
+            - name: grpc
+              containerPort: 10443
+              protocol: TCP
+            - name: admin
+              containerPort: 9901
+              protocol: TCP
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: admin
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: admin
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-config

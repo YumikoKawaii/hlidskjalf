@@ -19,8 +19,8 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
-  ACOUSTICS__ENDPOINT: "acoustics:10443"
-  ACOUSTICS__PROTOCOL: "grpc"
+  ACOUSTICS__ENDPOINT: "envoy-proxy:10080"
+  ACOUSTICS__PROTOCOL: "http"
   TRIGGER: "2"
   ERROR_EMITTER__INTERVAL: "5"
   ERROR_RATE: "0.5"

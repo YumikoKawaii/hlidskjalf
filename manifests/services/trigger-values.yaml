@@ -19,8 +19,8 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "info"
-  ACOUSTICS__ENDPOINT: "acoustics:10443"
-  ACOUSTICS__PROTOCOL: "grpc"
-  ECHO__ENDPOINT: "echo:10443"
-  ECHO__PROTOCOL: "grpc"
+  ACOUSTICS__ENDPOINT: "envoy-proxy:10080"
+  ACOUSTICS__PROTOCOL: "http"
+  ECHO__ENDPOINT: "envoy-proxy:10080"
+  ECHO__PROTOCOL: "http"
   CHAOS__INTERVAL: "100000" # 0.1ms
