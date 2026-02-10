@@ -1,9 +1,11 @@
 package serve
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/config"
+	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/handler"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/spf13/cobra"
@@ -19,7 +21,16 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	processor := handler.Initialize()
+	watcher, err := discovery.NewWatcher("hlidskjalf")
+	if err != nil {
+		panic(err)
+	}
+
+	ctx := context.Background()
+	go watcher.Watch(ctx, "echo")
+	go watcher.Watch(ctx, "acoustics")
+
+	processor := handler.Initialize(watcher)
 
 	h2s := &http2.Server{}
 	server := &http.Server{

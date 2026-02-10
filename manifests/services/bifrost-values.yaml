@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/bifrost
-  tag: "6c40d1e"
+  tag: "01b0641"
 
 host: bifrost.example.com
 
@@ -10,6 +10,9 @@ service:
 reloader: true
 
 replicas: 1
+
+probes:
+  port: "grpc"
 
 resources:
   requests:

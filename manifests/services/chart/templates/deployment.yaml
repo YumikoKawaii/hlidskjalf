@@ -49,10 +49,14 @@ spec:
             - name: http
               containerPort: 10080
               protocol: TCP
+          {{- $probePort := "http" }}
+          {{- if and .Values.probes .Values.probes.port }}
+          {{- $probePort = .Values.probes.port }}
+          {{- end }}
           startupProbe:
             httpGet:
               path: /api/v1/health/liveness
-              port: http
+              port: {{ $probePort }}
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 3
@@ -60,7 +64,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/v1/health/liveness
-              port: http
+              port: {{ $probePort }}
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3
@@ -68,7 +72,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /api/v1/health/readiness
-              port: http
+              port: {{ $probePort }}
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3

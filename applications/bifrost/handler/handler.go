@@ -3,14 +3,16 @@ package handler
 import (
 	"net/http"
 
+	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/shared/logger"
 )
 
 type Handler struct {
+	watcher *discovery.Watcher
 }
 
-func Initialize() *Handler {
-	return &Handler{}
+func Initialize(watcher *discovery.Watcher) *Handler {
+	return &Handler{watcher: watcher}
 }
 
 func (h *Handler) Handler() http.Handler {
