@@ -4,6 +4,9 @@ image:
 
 host: acoustics.example.com
 
+service:
+  type: "ClusterIP"
+
 reloader: true
 
 replicas: 3

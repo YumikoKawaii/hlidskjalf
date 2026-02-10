@@ -4,6 +4,9 @@ image:
 
 host: trigger.example.com
 
+service:
+  type: "ClusterIP"
+
 reloader: true
 
 replicas: 0
@@ -19,8 +22,8 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "info"
-  ACOUSTICS__ENDPOINT: "envoy-proxy:10443"
+  ACOUSTICS__ENDPOINT: "bifrost:10443"
   ACOUSTICS__PROTOCOL: "grpc"
-  ECHO__ENDPOINT: "envoy-proxy:10443"
+  ECHO__ENDPOINT: "bifrost:10443"
   ECHO__PROTOCOL: "grpc"
   CHAOS__INTERVAL: "100000" # 0.1ms

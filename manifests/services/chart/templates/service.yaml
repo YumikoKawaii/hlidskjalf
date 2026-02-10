@@ -6,7 +6,11 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 spec:
-  type: ClusterIP
+  {{- $serviceType := dig "service" "type" "ClusterIP" .Values }}
+  type: {{ $serviceType }}
+  {{- if eq $serviceType "None" }}
+  clusterIP: None
+  {{- end }}
   selector:
     app: {{ .Release.Name }}
   ports:

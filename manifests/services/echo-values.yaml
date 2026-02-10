@@ -4,6 +4,9 @@ image:
 
 host: echo.example.com
 
+service:
+  type: "ClusterIP"
+
 reloader: true
 
 replicas: 3
@@ -19,7 +22,7 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
-  ACOUSTICS__ENDPOINT: "envoy-proxy:10443"
+  ACOUSTICS__ENDPOINT: "bifrost:10443"
   ACOUSTICS__PROTOCOL: "grpc"
   TRIGGER: "2"
   ERROR_EMITTER__INTERVAL: "5"

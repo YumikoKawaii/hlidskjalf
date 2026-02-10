@@ -16,3 +16,9 @@ releases:
     chart: ./chart
     values:
       - trigger-values.yaml
+
+  - name: bifrost
+    namespace: hlidskjalf
+    chart: ./chart
+    values:
+      - bifrost-values.yaml

@@ -24,7 +24,7 @@ func Server(_ *cobra.Command, _ []string) {
 	h2s := &http2.Server{}
 	server := &http.Server{
 		Addr:    cfg.Server.GRPC,
-		Handler: h2c.NewHandler(processor.Entry(), h2s),
+		Handler: h2c.NewHandler(processor.Handler(), h2s),
 	}
 
 	logger.Infof("serving: %s...", cfg.Server.GRPC)

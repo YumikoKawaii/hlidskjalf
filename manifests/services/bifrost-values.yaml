@@ -1,0 +1,24 @@
+image:
+  repository: docker.io/yumikokawaii/bifrost
+  tag: "6c40d1e"
+
+host: bifrost.example.com
+
+service:
+  type: "ClusterIP"
+
+reloader: true
+
+replicas: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+config:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "debug"
