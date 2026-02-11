@@ -10,6 +10,7 @@ annotations:
 
 service:
   type: "ClusterIP"
+  clusterIP: "None"
 
 reloader: true
 
@@ -26,11 +27,11 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
-  ACOUSTICS__ENDPOINT: "bifrost:10443"
+  ACOUSTICS__ENDPOINT: "envoy-proxy:10443"
   ACOUSTICS__PROTOCOL: "grpc"
   TRIGGER: "2"
   ERROR_EMITTER__INTERVAL: "5"
   ERROR_RATE: "0.5"
   RANDOM_DELAY__BASE: "200000000"
-  RANDOM_DELAY__RATE: "0.1"
+  RANDOM_DELAY__RATE: "0.01"
   RANDOM_DELAY__VALUE: "100000000"

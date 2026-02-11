@@ -10,13 +10,9 @@ metadata:
     {{- toYaml .Values.annotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- $serviceType := "ClusterIP" }}
-  {{- if and .Values.service .Values.service.type }}
-  {{- $serviceType = .Values.service.type }}
-  {{- end }}
-  type: {{ $serviceType }}
-  {{- if eq $serviceType "None" }}
-  clusterIP: None
+  type: {{ if and .Values.service .Values.service.type }}{{ .Values.service.type }}{{ else }}ClusterIP{{ end }}
+  {{- if and .Values.service .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   selector:
     app: {{ .Release.Name }}

@@ -61,7 +61,7 @@ data:
                   - endpoint:
                       address:
                         socket_address:
-                          address: echo-headless.hlidskjalf.svc.cluster.local
+                          address: echo.hlidskjalf.svc.cluster.local
                           port_value: 10443
 
         - name: acoustics
@@ -80,5 +80,5 @@ data:
                   - endpoint:
                       address:
                         socket_address:
-                          address: acoustics-headless.hlidskjalf.svc.cluster.local
+                          address: acoustics.hlidskjalf.svc.cluster.local
                           port_value: 10443
