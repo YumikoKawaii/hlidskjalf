@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: observe
 
 resources:
+  - namespace.yaml
   # Metrics
   - prometheus/rbac.yaml
   - prometheus/config_map.yaml

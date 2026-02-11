@@ -1,3 +1,6 @@
+helmDefaults:
+  createNamespace: true
+
 releases:
   - name: echo
     namespace: hlidskjalf

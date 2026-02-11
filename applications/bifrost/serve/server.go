@@ -14,21 +14,20 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[ビフレスト] - きどうちゅう...")
+	logger.Info("[bifrost] starting...")
 
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
 
-	watcher, err := discovery.NewWatcher("hlidskjalf")
+	watcher, err := discovery.NewWatcher(cfg.Namespace)
 	if err != nil {
 		panic(err)
 	}
 
 	ctx := context.Background()
-	go watcher.Watch(ctx, "echo")
-	go watcher.Watch(ctx, "acoustics")
+	go watcher.DiscoverServices(ctx)
 
 	processor := handler.Initialize(watcher)
 

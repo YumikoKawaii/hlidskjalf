@@ -8,11 +8,13 @@ import (
 type Application struct {
 	Server       *server.Config        `json:"server" mapstructure:"server" yaml:"server"`
 	TracerConfig *tracer.Configuration `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
+	Namespace    string                `json:"namespace" mapstructure:"namespace" yaml:"namespace"`
 }
 
 func loadDefault() *Application {
 	return &Application{
 		Server:       server.DefaultConfig(),
 		TracerConfig: tracer.DefaultConfig(),
+		Namespace:    "hlidskjalf",
 	}
 }

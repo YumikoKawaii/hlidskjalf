@@ -19,7 +19,7 @@ func Load() (*Application, error) {
 	if testing.Testing() {
 		root, err := find.Repo()
 		if err != nil {
-			logger.Infof("[せってい] - りぽじとりーるーとのしゅとくにしっぱい: %v", err)
+			logger.Infof("[config] failed to get repository root: %v", err)
 			return nil, err
 		}
 		viper.AddConfigPath(root.Path)
@@ -30,16 +30,16 @@ func Load() (*Application, error) {
 	viper.AutomaticEnv()
 	c := loadDefault()
 	if configBuffer, err := json.Marshal(c); err != nil {
-		logger.Infof("[せってい] - でふぉるとせっていのましゃるにしっぱい: %v", err)
+		logger.Infof("[config] failed to marshal default config: %v", err)
 		return nil, err
 	} else if err := viper.ReadConfig(bytes.NewBuffer(configBuffer)); err != nil {
-		logger.Infof("[せってい] - でふぉるとせっていのよみこみにしっぱい: %v", err)
+		logger.Infof("[config] failed to read default config: %v", err)
 		return nil, err
 	}
 	if err := viper.MergeInConfig(); err != nil {
-		logger.Infof("[せってい] - せっていふぁいるのまーじにしっぱい（でふぉるとをしよう）: %v", err)
+		logger.Infof("[config] failed to merge config file (using defaults): %v", err)
 	}
 	err := viper.Unmarshal(c)
-	logger.Info("[せってい] - せっていよみこみかんりょう")
+	logger.Info("[config] config loaded successfully")
 	return c, err
 }
