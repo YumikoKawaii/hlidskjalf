@@ -27,7 +27,7 @@ type Watcher struct {
 
 	mu               sync.RWMutex
 	servicesMap      map[string]*Service // service name → Service
-	serviceRoutesMap map[string]string   // path prefix → service name
+	serviceRoutesMap map[string]string   // HTTP path prefix → service name
 }
 
 func NewWatcher(namespace string) (*Watcher, error) {
@@ -114,7 +114,7 @@ func (w *Watcher) addService(ctx context.Context, service *corev1.Service) {
 		} else {
 			for _, route := range routes {
 				w.serviceRoutesMap[route] = service.Name
-				logger.Infof("[discovery] registered route %s → %s", route, service.Name)
+				logger.Infof("[discovery] registered HTTP route %s → %s", route, service.Name)
 			}
 		}
 	}
@@ -138,7 +138,7 @@ func (w *Watcher) deleteService(serviceName string) {
 	for route, svc := range w.serviceRoutesMap {
 		if svc == serviceName {
 			delete(w.serviceRoutesMap, route)
-			logger.Infof("[discovery] unregistered route %s → %s", route, serviceName)
+			logger.Infof("[discovery] unregistered HTTP route %s → %s", route, serviceName)
 		}
 	}
 	service.Cancel()
@@ -205,13 +205,59 @@ func (w *Watcher) updateServiceIps(serviceName string, endpoints *corev1.Endpoin
 	logger.Infof("[discovery] %s: %d endpoints %v", serviceName, len(ips), ips)
 }
 
-// Resolve finds the backend service for a given request path using longest-prefix match,
+// Resolve finds the backend service for a given request path,
 // then round-robins across available pod IPs. Returns (serviceName, ip, found).
-func (w *Watcher) Resolve(path string) (string, string, bool) {
+//
+// For HTTP/2.0 (gRPC): parses the service name from the path (/{package}.{Service}/{Method})
+// and does a direct lookup in servicesMap.
+// For HTTP/1.1: uses longest-prefix match against serviceRoutesMap.
+func (w *Watcher) Resolve(path string, proto string) (string, string, bool) {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	// Longest-prefix match
+	var serviceName string
+	if proto == "HTTP/2.0" {
+		serviceName = resolveGRPCService(path)
+	} else {
+		serviceName = w.resolveHTTPService(path)
+	}
+	if serviceName == "" {
+		return "", "", false
+	}
+
+	svc, ok := w.servicesMap[serviceName]
+	if !ok {
+		return serviceName, "", false
+	}
+
+	ip, ok := svc.GetTarget()
+	if !ok {
+		return serviceName, "", false
+	}
+	return serviceName, ip, true
+}
+
+// resolveGRPCService extracts the k8s service name from a gRPC path.
+// Path format: /{package}.{Service}/{Method} → returns {package}.
+func resolveGRPCService(path string) string {
+	// Trim leading "/"
+	trimmed := strings.TrimPrefix(path, "/")
+	// Get the "{package}.{Service}" segment before the method
+	slashIdx := strings.Index(trimmed, "/")
+	if slashIdx < 0 {
+		return ""
+	}
+	fullService := trimmed[:slashIdx]
+	// Extract package name (before the first dot)
+	dotIdx := strings.Index(fullService, ".")
+	if dotIdx < 0 {
+		return ""
+	}
+	return fullService[:dotIdx]
+}
+
+// resolveHTTPService finds the service for an HTTP/1.1 path using longest-prefix match.
+func (w *Watcher) resolveHTTPService(path string) string {
 	var bestPrefix, bestService string
 	for prefix, serviceName := range w.serviceRoutesMap {
 		if strings.HasPrefix(path, prefix) && len(prefix) > len(bestPrefix) {
@@ -219,18 +265,5 @@ func (w *Watcher) Resolve(path string) (string, string, bool) {
 			bestService = serviceName
 		}
 	}
-	if bestService == "" {
-		return "", "", false
-	}
-
-	svc, ok := w.servicesMap[bestService]
-	if !ok {
-		return bestService, "", false
-	}
-
-	ip, ok := svc.GetTarget()
-	if !ok {
-		return bestService, "", false
-	}
-	return bestService, ip, true
+	return bestService
 }
