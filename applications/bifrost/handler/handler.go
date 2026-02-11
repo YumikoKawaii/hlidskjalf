@@ -1,18 +1,35 @@
 package handler
 
 import (
+	"context"
+	"crypto/tls"
+	"net"
 	"net/http"
+	"net/http/httputil"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/shared/logger"
+	"golang.org/x/net/http2"
 )
 
 type Handler struct {
-	watcher *discovery.Watcher
+	watcher     *discovery.Watcher
+	h1Transport http.RoundTripper
+	h2Transport http.RoundTripper
 }
 
 func Initialize(watcher *discovery.Watcher) *Handler {
-	return &Handler{watcher: watcher}
+	return &Handler{
+		watcher:     watcher,
+		h1Transport: http.DefaultTransport,
+		h2Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				var d net.Dialer
+				return d.DialContext(ctx, network, addr)
+			},
+		},
+	}
 }
 
 func (h *Handler) Handler() http.Handler {
@@ -30,12 +47,29 @@ func (h *Handler) healthCheck(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 	logger.Infof("received: %s %s proto=%s content-type=%s", r.Method, r.URL.Path, r.Proto, r.Header.Get("Content-Type"))
 
-	serviceName, ip, found := h.watcher.Resolve(r.URL.Path, r.Proto)
+	serviceName, target, found := h.watcher.Resolve(r.URL.Path, r.Proto)
 	if !found {
 		logger.Infof("[proxy] no route matched for %s", r.URL.Path)
 		http.Error(w, "no route matched", http.StatusNotFound)
 		return
 	}
 
-	logger.Infof("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, serviceName, ip)
+	var transport http.RoundTripper
+	if r.ProtoMajor == 2 {
+		transport = h.h2Transport
+	} else {
+		transport = h.h1Transport
+	}
+
+	logger.Infof("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, serviceName, target)
+
+	proxy := &httputil.ReverseProxy{
+		Director: func(req *http.Request) {
+			req.URL.Scheme = "http"
+			req.URL.Host = target
+			//req.Host = ""
+		},
+		Transport: transport,
+	}
+	proxy.ServeHTTP(w, r)
 }

@@ -162,7 +162,7 @@ func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
 			time.Sleep(2 * time.Second)
 			continue
 		}
-		w.updateServiceIps(service.Name, endpoints)
+		w.updateServiceEndpoints(service.Name, endpoints)
 
 		endpointsWatcher, err := w.clientset.CoreV1().Endpoints(w.namespace).Watch(ctx, metav1.ListOptions{
 			FieldSelector: fmt.Sprintf("metadata.name=%s", service.Name),
@@ -181,18 +181,22 @@ func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
 			switch event.Type {
 			case watch.Added, watch.Modified:
 				if ep, ok := event.Object.(*corev1.Endpoints); ok {
-					w.updateServiceIps(service.Name, ep)
+					w.updateServiceEndpoints(service.Name, ep)
 				}
 			}
 		}
 	}
 }
 
-func (w *Watcher) updateServiceIps(serviceName string, endpoints *corev1.Endpoints) {
+func (w *Watcher) updateServiceEndpoints(serviceName string, endpoints *corev1.Endpoints) {
 	ips := make([]string, 0)
+	ports := make(map[string]int32)
 	for _, subset := range endpoints.Subsets {
 		for _, addr := range subset.Addresses {
 			ips = append(ips, addr.IP)
+		}
+		for _, p := range subset.Ports {
+			ports[p.Name] = p.Port
 		}
 	}
 	w.mu.RLock()
@@ -201,25 +205,28 @@ func (w *Watcher) updateServiceIps(serviceName string, endpoints *corev1.Endpoin
 	if !ok {
 		return
 	}
-	svc.UpdateIPs(ips)
-	logger.Infof("[discovery] %s: %d endpoints %v", serviceName, len(ips), ips)
+	svc.UpdateEndpoints(ips, ports)
+	logger.Infof("[discovery] %s: %d endpoints %v, ports %v", serviceName, len(ips), ips, ports)
 }
 
 // Resolve finds the backend service for a given request path,
-// then round-robins across available pod IPs. Returns (serviceName, ip, found).
+// then round-robins across available pod endpoints. Returns (serviceName, target, found)
+// where target is "ip:port".
 //
 // For HTTP/2.0 (gRPC): parses the service name from the path (/{package}.{Service}/{Method})
-// and does a direct lookup in servicesMap.
-// For HTTP/1.1: uses longest-prefix match against serviceRoutesMap.
+// and does a direct lookup in servicesMap, using the "grpc" port.
+// For HTTP/1.1: uses longest-prefix match against serviceRoutesMap, using the "http" port.
 func (w *Watcher) Resolve(path string, proto string) (string, string, bool) {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	var serviceName string
+	var serviceName, portName string
 	if proto == "HTTP/2.0" {
 		serviceName = resolveGRPCService(path)
+		portName = "grpc"
 	} else {
 		serviceName = w.resolveHTTPService(path)
+		portName = "http"
 	}
 	if serviceName == "" {
 		return "", "", false
@@ -230,11 +237,11 @@ func (w *Watcher) Resolve(path string, proto string) (string, string, bool) {
 		return serviceName, "", false
 	}
 
-	ip, ok := svc.GetTarget()
+	target, ok := svc.GetTarget(portName)
 	if !ok {
 		return serviceName, "", false
 	}
-	return serviceName, ip, true
+	return serviceName, target, true
 }
 
 // resolveGRPCService extracts the k8s service name from a gRPC path.
