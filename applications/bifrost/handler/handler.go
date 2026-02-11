@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
+	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/constants"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/shared/logger"
 	"golang.org/x/net/http2"
@@ -65,9 +66,9 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			req.URL.Scheme = "http"
+			req.URL.Scheme = constants.HTTPScheme
 			req.URL.Host = target
-			//req.Host = ""
+			req.Host = ""
 		},
 		Transport: transport,
 	}
