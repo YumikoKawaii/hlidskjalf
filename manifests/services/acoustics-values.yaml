@@ -4,6 +4,10 @@ image:
 
 host: acoustics.example.com
 
+annotations:
+  bifrost.io/enabled: "true"
+  bifrost.io/http-routes: '["/api/v1/entry"]'
+
 service:
   type: "ClusterIP"
 

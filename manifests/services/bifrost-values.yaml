@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/bifrost
-  tag: "01b0641"
+  tag: "331fc59"
 
 host: bifrost.example.com
 
@@ -21,6 +21,9 @@ resources:
   limits:
     cpu: 500m
     memory: 256Mi
+
+serviceAccount:
+  create: true
 
 config:
   ENVIRONMENT: "production"

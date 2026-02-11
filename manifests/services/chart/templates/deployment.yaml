@@ -24,6 +24,9 @@ spec:
         reloader.stakater.com/auto: "true"
       {{- end }}
     spec:
+      {{- if and .Values.serviceAccount .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Release.Name }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       affinity:
         podAntiAffinity:

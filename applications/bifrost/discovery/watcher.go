@@ -2,12 +2,15 @@ package discovery
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
 	"path/filepath"
 
+	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/constants"
 	"github.com/YumikoKawaii/shared/logger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -23,8 +26,8 @@ type Watcher struct {
 	namespace string
 
 	mu               sync.RWMutex
-	serviceIpsMap    map[string][]string // service name → list of pod IPs
-	serviceCancelMap map[string]context.CancelFunc
+	servicesMap      map[string]*Service // service name → Service
+	serviceRoutesMap map[string]string   // path prefix → service name
 }
 
 func NewWatcher(namespace string) (*Watcher, error) {
@@ -46,8 +49,8 @@ func NewWatcher(namespace string) (*Watcher, error) {
 	return &Watcher{
 		clientset:        clientset,
 		namespace:        namespace,
-		serviceIpsMap:    make(map[string][]string),
-		serviceCancelMap: make(map[string]context.CancelFunc),
+		servicesMap:      make(map[string]*Service),
+		serviceRoutesMap: make(map[string]string),
 	}, nil
 }
 
@@ -92,12 +95,32 @@ func (w *Watcher) DiscoverServices(ctx context.Context) {
 func (w *Watcher) addService(ctx context.Context, service *corev1.Service) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	if _, exists := w.serviceCancelMap[service.Name]; exists {
+	if _, exists := w.servicesMap[service.Name]; exists {
 		logger.Infof("[discovery] service %s already watched, skipping", service.Name)
 		return
 	}
+
+	// Skip services not managed by bifrost
+	if service.Annotations[constants.Enable] != "true" {
+		logger.Infof("[discovery] service %s has no %s annotation, skipping", service.Name, constants.Enable)
+		return
+	}
+
+	// Optionally register HTTP/1.1 routes
+	if routeAnnotation, ok := service.Annotations[constants.HTTPRoutes]; ok {
+		var routes []string
+		if err := json.Unmarshal([]byte(routeAnnotation), &routes); err != nil {
+			logger.Errorf("[discovery] failed to parse %s annotation for %s: %v", constants.HTTPRoutes, service.Name, err)
+		} else {
+			for _, route := range routes {
+				w.serviceRoutesMap[route] = service.Name
+				logger.Infof("[discovery] registered route %s → %s", route, service.Name)
+			}
+		}
+	}
+
 	child, cancel := context.WithCancel(ctx)
-	w.serviceCancelMap[service.Name] = cancel
+	w.servicesMap[service.Name] = NewService(service.Name, cancel)
 	logger.Infof("[discovery] starting endpoint watcher for %s", service.Name)
 	go w.watchEndpoints(child, service)
 }
@@ -105,14 +128,21 @@ func (w *Watcher) addService(ctx context.Context, service *corev1.Service) {
 func (w *Watcher) deleteService(serviceName string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	delete(w.serviceIpsMap, serviceName)
-	if cancel, ok := w.serviceCancelMap[serviceName]; ok {
-		delete(w.serviceCancelMap, serviceName)
-		cancel()
-		logger.Infof("[discovery] stopped endpoint watcher for %s", serviceName)
-	} else {
-		logger.Infof("[discovery] no watcher found for %s, skipping", serviceName)
+	service, f := w.servicesMap[serviceName]
+	if !f {
+		logger.Infof("[discovery] no metadata found for %s, skipping", serviceName)
+		return
 	}
+	delete(w.servicesMap, serviceName)
+	// Remove route entries for this service
+	for route, svc := range w.serviceRoutesMap {
+		if svc == serviceName {
+			delete(w.serviceRoutesMap, route)
+			logger.Infof("[discovery] unregistered route %s → %s", route, serviceName)
+		}
+	}
+	service.Cancel()
+	logger.Infof("[discovery] stopped endpoint watcher for %s", serviceName)
 }
 
 func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
@@ -165,8 +195,42 @@ func (w *Watcher) updateServiceIps(serviceName string, endpoints *corev1.Endpoin
 			ips = append(ips, addr.IP)
 		}
 	}
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.serviceIpsMap[serviceName] = ips
+	w.mu.RLock()
+	svc, ok := w.servicesMap[serviceName]
+	w.mu.RUnlock()
+	if !ok {
+		return
+	}
+	svc.UpdateIPs(ips)
 	logger.Infof("[discovery] %s: %d endpoints %v", serviceName, len(ips), ips)
+}
+
+// Resolve finds the backend service for a given request path using longest-prefix match,
+// then round-robins across available pod IPs. Returns (serviceName, ip, found).
+func (w *Watcher) Resolve(path string) (string, string, bool) {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	// Longest-prefix match
+	var bestPrefix, bestService string
+	for prefix, serviceName := range w.serviceRoutesMap {
+		if strings.HasPrefix(path, prefix) && len(prefix) > len(bestPrefix) {
+			bestPrefix = prefix
+			bestService = serviceName
+		}
+	}
+	if bestService == "" {
+		return "", "", false
+	}
+
+	svc, ok := w.servicesMap[bestService]
+	if !ok {
+		return bestService, "", false
+	}
+
+	ip, ok := svc.GetTarget()
+	if !ok {
+		return bestService, "", false
+	}
+	return bestService, ip, true
 }
