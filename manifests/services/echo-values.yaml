@@ -5,8 +5,8 @@ image:
 host: echo.example.com
 
 annotations:
-  bifrost.io/port: "10443"
-  bifrost.io/prefixes: '["/echo.Echo"]'
+  bifrost.io/port: "10080"
+  bifrost.io/prefixes: '["/api/v1/charge","/api/v1/discharge"]'
 
 service:
   type: "ClusterIP"
@@ -27,9 +27,8 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
-  ACOUSTICS__ENDPOINT: "bifrost:10443"
-  ACOUSTICS__PROTOCOL: "grpc"
-  TRIGGER: "2"
+  ACOUSTICS__ENDPOINT: "http://bifrost:10443"
+  ACOUSTICS__PROTOCOL: "http"
   ERROR_EMITTER__INTERVAL: "5"
   ERROR_RATE: "0.5"
   RANDOM_DELAY__BASE: "200000000"
