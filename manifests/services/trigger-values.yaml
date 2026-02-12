@@ -9,7 +9,7 @@ service:
 
 reloader: true
 
-replicas: 10
+replicas: 5
 
 resources:
   requests:
@@ -22,8 +22,8 @@ resources:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "info"
-  ACOUSTICS__ENDPOINT: "envoy-proxy:10443"
+  ACOUSTICS__ENDPOINT: "bifrost:10443"
   ACOUSTICS__PROTOCOL: "grpc"
-  ECHO__ENDPOINT: "envoy-proxy:10443"
+  ECHO__ENDPOINT: "bifrost:10443"
   ECHO__PROTOCOL: "grpc"
   CHAOS__INTERVAL: "100000" # 0.1ms

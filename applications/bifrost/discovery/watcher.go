@@ -85,6 +85,10 @@ func (w *Watcher) DiscoverServices(ctx context.Context) {
 				case watch.Added:
 					logger.Infof("[discovery] service added: %s", service.Name)
 					w.addService(ctx, service)
+				case watch.Modified:
+					logger.Infof("[discovery] service modified: %s", service.Name)
+					w.deleteService(service.Name)
+					w.addService(ctx, service)
 				case watch.Deleted:
 					logger.Infof("[discovery] service deleted: %s", service.Name)
 					w.deleteService(service.Name)
