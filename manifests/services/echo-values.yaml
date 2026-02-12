@@ -5,8 +5,8 @@ image:
 host: echo.example.com
 
 annotations:
-  bifrost.io/enabled: "true"
-  bifrost.io/http-routes: '["/api/v1/charge","/api/v1/discharge"]'
+  bifrost.io/port: "10080"
+  bifrost.io/prefixes: '["/api/v1/charge","/api/v1/discharge"]'
 
 service:
   type: "ClusterIP"

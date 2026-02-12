@@ -1,8 +1,8 @@
 package constants
 
 const (
-	Enable     = "bifrost.io/enabled"
-	HTTPRoutes = "bifrost.io/http-routes"
+	PrefixesAnnotation = "bifrost.io/prefixes"
+	PortAnnotation     = "bifrost.io/port"
 )
 
 const (

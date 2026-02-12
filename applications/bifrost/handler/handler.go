@@ -48,10 +48,10 @@ func (h *Handler) healthCheck(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 	logger.Infof("received: %s %s proto=%s content-type=%s", r.Method, r.URL.Path, r.Proto, r.Header.Get("Content-Type"))
 
-	serviceName, target, found := h.watcher.Resolve(r.URL.Path, r.Proto)
-	if !found {
-		logger.Infof("[proxy] no route matched for %s", r.URL.Path)
-		http.Error(w, "no route matched", http.StatusNotFound)
+	service, target, err := h.watcher.Resolve(r.URL.Path)
+	if err != nil {
+		logger.Infof("[proxy] resolve failed for %s: %v", r.URL.Path, err)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		transport = h.h1Transport
 	}
 
-	logger.Infof("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, serviceName, target)
+	logger.Infof("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {

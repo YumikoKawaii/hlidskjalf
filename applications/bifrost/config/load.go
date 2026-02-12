@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"strings"
-	"testing"
 
 	"github.com/YumikoKawaii/shared/logger"
-	"github.com/integralist/go-findroot/find"
 	"github.com/spf13/viper"
 )
 
@@ -16,14 +14,6 @@ func Load() (*Application, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
-	if testing.Testing() {
-		root, err := find.Repo()
-		if err != nil {
-			logger.Infof("[config] failed to get repository root: %v", err)
-			return nil, err
-		}
-		viper.AddConfigPath(root.Path)
-	}
 
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))

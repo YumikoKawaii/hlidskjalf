@@ -3,7 +3,9 @@ package discovery
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -27,7 +29,7 @@ type Watcher struct {
 
 	mu               sync.RWMutex
 	servicesMap      map[string]*Service // service name → Service
-	serviceRoutesMap map[string]string   // HTTP path prefix → service name
+	prefixServiceMap map[string]string   // HTTP/GRPC path prefix → service name
 }
 
 func NewWatcher(namespace string) (*Watcher, error) {
@@ -50,7 +52,7 @@ func NewWatcher(namespace string) (*Watcher, error) {
 		clientset:        clientset,
 		namespace:        namespace,
 		servicesMap:      make(map[string]*Service),
-		serviceRoutesMap: make(map[string]string),
+		prefixServiceMap: make(map[string]string),
 	}, nil
 }
 
@@ -100,27 +102,35 @@ func (w *Watcher) addService(ctx context.Context, service *corev1.Service) {
 		return
 	}
 
-	// Skip services not managed by bifrost
-	if service.Annotations[constants.Enable] != "true" {
-		logger.Infof("[discovery] service %s has no %s annotation, skipping", service.Name, constants.Enable)
+	// guaranteed annotations: prefixes and port
+	portValue, f := service.Annotations[constants.PortAnnotation]
+	if !f {
+		logger.Errorf("[discovery] missing %s for service: %s", constants.PortAnnotation, service.Name)
+		return
+	}
+	port, err := strconv.Atoi(portValue)
+	if err != nil {
+		logger.Errorf("[discovery] error parsing port value for service %s: %s", service.Name, err.Error())
 		return
 	}
 
-	// Optionally register HTTP/1.1 routes
-	if routeAnnotation, ok := service.Annotations[constants.HTTPRoutes]; ok {
-		var routes []string
-		if err := json.Unmarshal([]byte(routeAnnotation), &routes); err != nil {
-			logger.Errorf("[discovery] failed to parse %s annotation for %s: %v", constants.HTTPRoutes, service.Name, err)
-		} else {
-			for _, route := range routes {
-				w.serviceRoutesMap[route] = service.Name
-				logger.Infof("[discovery] registered HTTP route %s → %s", route, service.Name)
-			}
-		}
+	prefixesValue, f := service.Annotations[constants.PrefixesAnnotation]
+	if !f {
+		logger.Errorf("[discovery] missing %s for service: %s", constants.PrefixesAnnotation, service.Name)
+		return
+	}
+	prefixes := make([]string, 0)
+	if err := json.Unmarshal([]byte(prefixesValue), &prefixes); err != nil {
+		logger.Errorf("[discovery] error parsing prefixes value for service %s: %s", service.Name, err.Error())
+		return
+	}
+
+	for _, prefix := range prefixes {
+		w.prefixServiceMap[prefix] = service.Name
 	}
 
 	child, cancel := context.WithCancel(ctx)
-	w.servicesMap[service.Name] = NewService(service.Name, cancel)
+	w.servicesMap[service.Name] = NewService(port, cancel)
 	logger.Infof("[discovery] starting endpoint watcher for %s", service.Name)
 	go w.watchEndpoints(child, service)
 }
@@ -135,10 +145,10 @@ func (w *Watcher) deleteService(serviceName string) {
 	}
 	delete(w.servicesMap, serviceName)
 	// Remove route entries for this service
-	for route, svc := range w.serviceRoutesMap {
+	for prefix, svc := range w.prefixServiceMap {
 		if svc == serviceName {
-			delete(w.serviceRoutesMap, route)
-			logger.Infof("[discovery] unregistered HTTP route %s → %s", route, serviceName)
+			delete(w.prefixServiceMap, prefix)
+			logger.Infof("[discovery] unregistered prefix %s → %s", prefix, serviceName)
 		}
 	}
 	service.Cancel()
@@ -190,13 +200,9 @@ func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
 
 func (w *Watcher) updateServiceEndpoints(serviceName string, endpoints *corev1.Endpoints) {
 	ips := make([]string, 0)
-	ports := make(map[string]int32)
 	for _, subset := range endpoints.Subsets {
 		for _, addr := range subset.Addresses {
 			ips = append(ips, addr.IP)
-		}
-		for _, p := range subset.Ports {
-			ports[p.Name] = p.Port
 		}
 	}
 	w.mu.RLock()
@@ -205,68 +211,35 @@ func (w *Watcher) updateServiceEndpoints(serviceName string, endpoints *corev1.E
 	if !ok {
 		return
 	}
-	svc.UpdateEndpoints(ips, ports)
-	logger.Infof("[discovery] %s: %d endpoints %v, ports %v", serviceName, len(ips), ips, ports)
+	svc.UpdateEndpoints(ips)
+	logger.Infof("[discovery] %s: %d endpoints %v", serviceName, len(ips), ips)
 }
 
-// Resolve finds the backend service for a given request path,
+// Resolve finds the backend service for a given request path using longest-prefix match,
 // then round-robins across available pod endpoints. Returns (serviceName, target, found)
 // where target is "ip:port".
-//
-// For HTTP/2.0 (gRPC): parses the service name from the path (/{package}.{Service}/{Method})
-// and does a direct lookup in servicesMap, using the "grpc" port.
-// For HTTP/1.1: uses longest-prefix match against serviceRoutesMap, using the "http" port.
-func (w *Watcher) Resolve(path string, proto string) (string, string, bool) {
+func (w *Watcher) Resolve(path string) (string, string, error) {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
-	var serviceName, portName string
-	if proto == "HTTP/2.0" {
-		serviceName = resolveGRPCService(path)
-		portName = "grpc"
-	} else {
-		serviceName = w.resolveHTTPService(path)
-		portName = "http"
-	}
+	// resolve by prefix
+	serviceName := w.resolveByPrefix(path)
 	if serviceName == "" {
-		return "", "", false
+		return "", "", errors.New("unable to resolve")
 	}
 
 	svc, ok := w.servicesMap[serviceName]
 	if !ok {
-		return serviceName, "", false
+		return "", "", fmt.Errorf("not found service: %s", serviceName)
 	}
 
-	target, ok := svc.GetTarget(portName)
-	if !ok {
-		return serviceName, "", false
-	}
-	return serviceName, target, true
+	return serviceName, svc.GetTarget(), nil
 }
 
-// resolveGRPCService extracts the k8s service name from a gRPC path.
-// Path format: /{package}.{Service}/{Method} → returns {package}.
-func resolveGRPCService(path string) string {
-	// Trim leading "/"
-	trimmed := strings.TrimPrefix(path, "/")
-	// Get the "{package}.{Service}" segment before the method
-	slashIdx := strings.Index(trimmed, "/")
-	if slashIdx < 0 {
-		return ""
-	}
-	fullService := trimmed[:slashIdx]
-	// Extract package name (before the first dot)
-	dotIdx := strings.Index(fullService, ".")
-	if dotIdx < 0 {
-		return ""
-	}
-	return fullService[:dotIdx]
-}
-
-// resolveHTTPService finds the service for an HTTP/1.1 path using longest-prefix match.
-func (w *Watcher) resolveHTTPService(path string) string {
+// resolveByPrefix finds the service using longest-prefix match against prefixServiceMap.
+func (w *Watcher) resolveByPrefix(path string) string {
 	var bestPrefix, bestService string
-	for prefix, serviceName := range w.serviceRoutesMap {
+	for prefix, serviceName := range w.prefixServiceMap {
 		if strings.HasPrefix(path, prefix) && len(prefix) > len(bestPrefix) {
 			bestPrefix = prefix
 			bestService = serviceName
