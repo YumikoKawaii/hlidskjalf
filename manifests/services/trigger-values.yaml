@@ -19,6 +19,19 @@ resources:
     cpu: 500m
     memory: 256Mi
 
+sidecar:
+  enabled: true
+  image:
+    repository: docker.io/yumikokawaii/skidbladnir
+    tag: "latest"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "info"
