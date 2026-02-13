@@ -20,10 +20,10 @@ resources:
     memory: 256Mi
 
 sidecar:
-  enabled: false
+  enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "latest"
+    tag: "a742d69"
   resources:
     requests:
       cpu: 50m

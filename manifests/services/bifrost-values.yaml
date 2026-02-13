@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/bifrost
-  tag: "641ecb7"
+  tag: "a742d69"
 
 host: bifrost.example.com
 
