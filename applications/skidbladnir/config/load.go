@@ -17,6 +17,7 @@ func Load() (*Application, error) {
 
 	viper.AddConfigPath("./")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
+	viper.SetEnvPrefix("SKIDBLADNIR")
 	viper.AutomaticEnv()
 	c := loadDefault()
 	if configBuffer, err := json.Marshal(c); err != nil {

@@ -29,11 +29,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "latest"
-#  init:
-#    image:
-#      repository: docker.io/yumikokawaii/skidbladnir-init
-#      tag: "latest"
+    tag: "46c1a01"
   resources:
     requests:
       cpu: 50m
@@ -45,6 +41,8 @@ sidecar:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "info"
+  SKIDBLADNIR_SERVER__GRPC: "0.0.0.0:15001"
+  SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"
   ERROR_EMITTER__INTERVAL: "1"
   ERROR_RATE: "0.5"
   RANDOM_DELAY__BASE: "200000000"

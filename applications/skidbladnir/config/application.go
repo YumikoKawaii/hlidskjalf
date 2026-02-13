@@ -6,7 +6,7 @@ import (
 )
 
 type Application struct {
-	Server       *server.Config        `json:"server" mapstructure:"server" yaml:"server"`
+	Server       *server.Config        `json:"skidbladnir_server" mapstructure:"skidbladnir_server" yaml:"skidbladnir_server"`
 	TracerConfig *tracer.Configuration `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
 }
 
