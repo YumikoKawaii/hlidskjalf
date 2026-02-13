@@ -12,7 +12,7 @@ reloader: true
 replicas: 1
 
 probes:
-  port: "grpc"
+  port: "http"
 
 resources:
   requests:

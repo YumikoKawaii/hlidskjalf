@@ -28,7 +28,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "5c61219"
+    tag: "44a16dc"
   resources:
     requests:
       cpu: 50m
@@ -40,9 +40,8 @@ sidecar:
 config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
-  SKIDBLADNIR_SERVER__GRPC: "0.0.0.0:15001"
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"
-  ACOUSTICS__ENDPOINT: "http://bifrost:10443"
+  ACOUSTICS__ENDPOINT: "http://bifrost:10080"
   ACOUSTICS__PROTOCOL: "http"
   ERROR_EMITTER__INTERVAL: "5"
   ERROR_RATE: "0.5"

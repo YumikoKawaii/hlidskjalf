@@ -33,11 +33,11 @@ func Server(_ *cobra.Command, _ []string) {
 
 	h2s := &http2.Server{}
 	server := &http.Server{
-		Addr:    cfg.Server.GRPC,
+		Addr:    cfg.Server.HTTP,
 		Handler: h2c.NewHandler(processor.Handler(), h2s),
 	}
 
-	logger.Infof("serving: %s...", cfg.Server.GRPC)
+	logger.Infof("serving: %s...", cfg.Server.HTTP)
 	if err := server.ListenAndServe(); err != nil {
 		logger.Fatalf("server error: %v", err)
 	}
