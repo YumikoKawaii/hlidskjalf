@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/proxy"
 	"github.com/YumikoKawaii/shared/logger"
 	"golang.org/x/net/http2"
 )
@@ -38,14 +37,14 @@ func (h *Handler) Handler() http.Handler {
 	return mux
 }
 
-func (h *Handler) healthCheck(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) healthCheck(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
-	dst, ok := proxy.OriginalDstFromContext(r.Context())
-	if !ok {
-		http.Error(w, "original destination unavailable", http.StatusBadGateway)
+	host := r.Host
+	if host == "" {
+		http.Error(w, "missing Host header", http.StatusBadRequest)
 		return
 	}
 
@@ -56,15 +55,15 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		transport = h.h1Transport
 	}
 
-	logger.Infof("[proxy] %s %s → %s proto=%s", r.Method, r.URL.Path, dst, r.Proto)
+	logger.Infof("[skidbladnir] %s %s → %s proto=%s", r.Method, r.RequestURI, host, r.Proto)
 
-	rp := &httputil.ReverseProxy{
+	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
 			req.URL.Scheme = "http"
-			req.URL.Host = dst
-			req.Host = ""
+			req.URL.Host = host
+			req.Host = host
 		},
 		Transport: transport,
 	}
-	rp.ServeHTTP(w, r)
+	proxy.ServeHTTP(w, r)
 }

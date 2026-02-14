@@ -1,13 +1,10 @@
 package serve
 
 import (
-	"context"
-	"net"
 	"net/http"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler"
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/proxy"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/http2"
@@ -28,17 +25,9 @@ func Server(_ *cobra.Command, _ []string) {
 	server := &http.Server{
 		Addr:    cfg.Server.HTTP,
 		Handler: h2c.NewHandler(processor.Handler(), h2s),
-		ConnContext: func(ctx context.Context, conn net.Conn) context.Context {
-			dst, err := proxy.GetOriginalDst(conn)
-			if err != nil {
-				logger.Warnf("[conn] original dst: %v", err)
-				return ctx
-			}
-			return proxy.WithOriginalDst(ctx, dst)
-		},
 	}
 
-	logger.Infof("serving: %s...", cfg.Server.HTTP)
+	logger.Infof("[skidbladnir] serving: %s...", cfg.Server.HTTP)
 	if err := server.ListenAndServe(); err != nil {
 		logger.Fatalf("server error: %v", err)
 	}
