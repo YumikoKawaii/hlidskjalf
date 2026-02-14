@@ -17,14 +17,15 @@ docker build -f dockerfiles/<service>.dockerfile -t <service>:latest .
 # Deploy all services via helmfile
 helmfile -f manifests/services/helmfile.yaml sync
 
-# Set up local k3d cluster (3 worker nodes)
-scripts/start-hlidskjalf.sh
+# Set up local k3d cluster (1 server + 3 workers, master tainted NoSchedule)
+scripts/start-hlidskjalf.sh    # main cluster
+scripts/start-elysium.sh       # secondary cluster (same topology, resource-constrained)
 
 # Scale observability stack up/down
 scripts/scale-observe.sh up|down
 ```
 
-No Makefile targets or unit tests are currently defined. CI builds are in `.github/workflows/` (Docker build+push on push to master).
+No Makefile targets or unit tests are currently defined. CI builds are in `.github/workflows/` (Docker build+push on push to master, linux/arm64 only).
 
 ## Architecture
 
@@ -34,7 +35,10 @@ Five microservices, all sharing a single Helm chart (`manifests/services/chart/`
 - **Acoustics** — Processes RPC requests with configurable error rate and random delay injection. Runs with Skidbladnir sidecar.
 - **Echo** — Similar to Acoustics (Charge/Discharge RPCs). Calls Acoustics through Bifrost. Runs with Skidbladnir sidecar.
 - **Trigger** — Chaos engineering orchestrator. Periodically invokes Acoustics and Echo endpoints. Scaled to 0 by default.
-- **Skidbladnir** — Network sidecar proxy. Init container sets up iptables rules for traffic interception on port 15001.
+- **Skidbladnir** — Egress-only network sidecar proxy. Init container creates iptables rules (OUTPUT chain only) redirecting outbound TCP to port 15001. Runs as UID 1337 (exempt from its own redirect). Currently a transparent passthrough — no retries, timeouts, mTLS, or metrics.
+
+**Infrastructure:**
+- **Envoy** (`manifests/infrastructure/envoy/`) — Standalone gRPC reverse proxy routing by service prefix (`/echo.Echo/`, `/acoustics.Acoustics/`) to upstream clusters via STRICT_DNS.
 
 **Request flow:** Trigger → Bifrost → Echo → Bifrost → Acoustics
 
@@ -55,11 +59,13 @@ gRPC servers use chained interceptors: logging, prometheus, validation, recovery
 
 ## Kubernetes Layout
 
-- **Namespace `hlidskjalf`** — All application services
+- **Namespace `hlidskjalf`** — All application services + Envoy proxy
 - **Namespace `observe`** — Prometheus, Loki, Promtail, OTel Collector, Grafana
-- Services expose ports 10443 (gRPC) and 10080 (HTTP)
+- Services expose ports 10443 (gRPC) and 10080 (HTTP/metrics)
+- Skidbladnir sidecar on port 15001 (egress-only, transparent proxy)
 - Health endpoints: `/api/v1/health/liveness` and `/api/v1/health/readiness`
 - Stakater Reloader auto-restarts deployments on ConfigMap changes
+- Infrastructure manifests managed via Kustomize (`manifests/infrastructure/`)
 
 ## Key Dependencies
 

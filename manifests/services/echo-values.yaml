@@ -28,7 +28,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "a742d69"
+    tag: "ba54f3d"
   resources:
     requests:
       cpu: 50m
