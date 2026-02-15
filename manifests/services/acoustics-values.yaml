@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/acoustics
-  tag: "a71fb5c"
+  tag: "ad3bd6e"
 
 host: acoustics.example.com
 
@@ -34,7 +34,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "ba54f3d"
+    tag: "ad3bd6e"
   ports:
     outbound: 15001
     inboundGrpc: 15002

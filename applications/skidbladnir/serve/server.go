@@ -51,12 +51,13 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	// Outbound egress proxy on the shared HTTP mux
+	// Outbound egress proxy wraps the shared mux: internal requests (health,
+	// metrics, rate limiter) go to the mux, everything else is proxied.
 	processor := outbound.Initialize()
-	processor.Register(instance.HttpMux())
+	proxyHandler := processor.Register(instance.HttpMux(), cfg.Server.HTTP)
 
 	h2s := &http2.Server{}
-	h2cHandler := h2c.NewHandler(instance.HttpMux(), h2s)
+	h2cHandler := h2c.NewHandler(proxyHandler, h2s)
 	instance.SetHttpHandler(&h2cHandler)
 
 	// Inbound proxy listeners — rate limit inbound traffic before forwarding to local app

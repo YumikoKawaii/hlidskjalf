@@ -31,8 +31,27 @@ func Initialize() *Handler {
 	}
 }
 
-func (h *Handler) Register(mux *http.ServeMux) {
-	mux.HandleFunc("/", h.proxy)
+// Register wraps the given mux so that internal endpoints (health, metrics,
+// rate limiter API) are served by the mux, while all other requests are
+// forwarded by the egress proxy.
+//
+// The shared server registers a catch-all "/" on the mux (grpc-gateway),
+// so we can't distinguish by pattern match alone. Instead we check if the
+// request's Host targets the listener itself (internal) vs an external
+// destination (iptables-redirected egress traffic).
+func (h *Handler) Register(mux *http.ServeMux, listenAddr string) http.Handler {
+	_, listenPort, _ := net.SplitHostPort(listenAddr)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Requests targeting our own listener port are internal (health probes,
+		// metrics scrapes, rate limiter API). Egress-redirected traffic has the
+		// original destination host which won't match our listener.
+		_, reqPort, _ := net.SplitHostPort(r.Host)
+		if reqPort == listenPort {
+			mux.ServeHTTP(w, r)
+			return
+		}
+		h.proxy(w, r)
+	})
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {

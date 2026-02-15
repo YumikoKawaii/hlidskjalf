@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/trigger
-  tag: "eb068f6"
+  tag: "ad3bd6e"
 
 host: trigger.example.com
 
@@ -27,7 +27,7 @@ sidecar:
   enabled: false
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "ba54f3d"
+    tag: "ad3bd6e"
   resources:
     requests:
       cpu: 50m
