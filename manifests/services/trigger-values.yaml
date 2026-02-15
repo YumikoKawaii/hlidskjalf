@@ -13,7 +13,7 @@ networkPolicy:
   enabled: true
   allowedSources: []
 
-replicas: 5
+replicas: 10
 
 resources:
   requests:
@@ -27,7 +27,7 @@ sidecar:
   enabled: false
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "ad3bd6e"
+    tag: "3cc0032"
   resources:
     requests:
       cpu: 50m
@@ -43,5 +43,5 @@ config:
   ACOUSTICS__PROTOCOL: "http"
   ECHO__ENDPOINT: "http://bifrost:10080"
   ECHO__PROTOCOL: "http"
-  CHAOS__INTERVAL: "100000" # 0.1ms
+  CHAOS__INTERVAL: "1000" # 0.001ms
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"

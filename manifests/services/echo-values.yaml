@@ -33,7 +33,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "ad3bd6e"
+    tag: "3cc0032"
   ports:
     outbound: 15001
     inboundGrpc: 15002
@@ -62,13 +62,13 @@ config:
   ACOUSTICS__ENDPOINT: "http://bifrost:10080"
   ACOUSTICS__PROTOCOL: "http"
   ERROR_EMITTER__INTERVAL: "5"
-  ERROR_RATE: "0.5"
+  ERROR_RATE: "0"
   RANDOM_DELAY__BASE: "200000000"
   RANDOM_DELAY__RATE: "0.01"
   RANDOM_DELAY__VALUE: "100000000"
   RATE_LIMIT__ENABLED: "true"
-  RATE_LIMIT__RPS: "100"
-  RATE_LIMIT__BURST: "100"
+  RATE_LIMIT__RPS: "10"
+  RATE_LIMIT__BURST: "10"
   PEER__SERVICE_NAME: "echo"
   PEER__NAMESPACE: "hlidskjalf"
   PEER__LEADER_PORT: "15443"

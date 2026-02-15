@@ -34,12 +34,16 @@ func NewManager(podIP string) *Manager {
 func (m *Manager) Allow() bool {
 	if m.isLeader.Load() {
 		if l := m.leader.Load(); l != nil {
-			return l.Allow()
+			allowed := l.Allow()
+			logger.Debugf("[ratelimit] leader allow=%v tokens=%.1f", allowed, l.limiter.Tokens())
+			return allowed
 		}
 		return true
 	}
 	if m.peer != nil {
-		return m.peer.Allow()
+		allowed := m.peer.Allow()
+		logger.Debugf("[ratelimit] peer allow=%v tokens=%.1f", allowed, m.peer.limiter.Tokens())
+		return allowed
 	}
 	return true
 }
