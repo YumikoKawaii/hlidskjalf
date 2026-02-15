@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/constants"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/ratelimit"
@@ -58,8 +59,8 @@ func (h *Handler) ListenAndServe(addr string) error {
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
-	// Apply rate limiting on inbound traffic
-	if h.rlManager != nil && !h.rlManager.Allow() {
+	// Apply rate limiting on inbound traffic, skip health probes
+	if !strings.HasPrefix(r.URL.Path, "/api/v1/health/") && h.rlManager != nil && !h.rlManager.Allow() {
 		logger.Infof("[skidbladnir] inbound rate limit exceeded: %s %s", r.Method, r.RequestURI)
 		http.Error(w, "rate limit exceeded", http.StatusTooManyRequests)
 		return

@@ -48,11 +48,13 @@ func (c *chaos) Start(ctx context.Context) {
 			case <-ticker.C:
 				idx := rand.IntN(len(c.triggerFunctions))
 				tf := c.triggerFunctions[idx]
-				if err := tf.Function(ctx); err != nil {
-					logger.WithFields(logger.Fields{"function": tf.Name, "error": err}).Error("[とりがー] - とりがーしっぱい")
-				} else {
-					logger.WithFields(logger.Fields{"function": tf.Name}).Info("[とりがー] - とりがーせいこう")
-				}
+				go func() {
+					if err := tf.Function(ctx); err != nil {
+						logger.WithFields(logger.Fields{"function": tf.Name, "error": err}).Error("[とりがー] - とりがーしっぱい")
+					} else {
+						logger.WithFields(logger.Fields{"function": tf.Name}).Info("[とりがー] - とりがーせいこう")
+					}
+				}()
 			}
 		}
 	}()
