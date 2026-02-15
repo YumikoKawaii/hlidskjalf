@@ -9,6 +9,12 @@ service:
 
 reloader: true
 
+networkPolicy:
+  enabled: true
+  allowedSources:
+    - app: trigger
+    - app: echo
+
 replicas: 1
 
 probes:

@@ -1,9 +1,9 @@
 github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=
 github.com/Masterminds/semver/v3 v3.4.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
-github.com/YumikoKawaii/rpc.com v0.0.20260201152708 h1:qKpOm0gFejD0WphgoZKJXQVTOa+i7SrfVbd37uFu01s=
-github.com/YumikoKawaii/rpc.com v0.0.20260201152708/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
-github.com/YumikoKawaii/shared v0.0.20260206091536 h1:2cgG4GT/ARPFFosZZosIQtc619qP87Uc3fCRSzoqhjs=
-github.com/YumikoKawaii/shared v0.0.20260206091536/go.mod h1:mpit3Kpm/NKLRssZ7/kGiutkTPkzvs5jbrm39YinyZE=
+github.com/YumikoKawaii/rpc.com v0.0.20260215134539 h1:6YPQi/i4MR4nxtNoC62NCR2iM4VOmN1fCXSESmg5NcQ=
+github.com/YumikoKawaii/rpc.com v0.0.20260215134539/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
+github.com/YumikoKawaii/shared v0.0.20260215142646 h1:GfDE46hd9lzps9zWqRyrbCgzD7Vnf8GOM6ok/glFIXM=
+github.com/YumikoKawaii/shared v0.0.20260215142646/go.mod h1:ZJBSKHVG7reljDYZkKeyAGllXIbTFYNZCdjV4JdM0/g=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=

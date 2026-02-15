@@ -9,6 +9,10 @@ service:
 
 reloader: true
 
+networkPolicy:
+  enabled: true
+  allowedSources: []
+
 replicas: 5
 
 resources:
@@ -20,7 +24,7 @@ resources:
     memory: 256Mi
 
 sidecar:
-  enabled: true
+  enabled: false
   image:
     repository: docker.io/yumikokawaii/skidbladnir
     tag: "ba54f3d"

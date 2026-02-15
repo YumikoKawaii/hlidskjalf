@@ -1,4 +1,6 @@
-package handler
+// Package outbound implements the outbound egress proxy for Skidbladnir.
+// This handles traffic intercepted by iptables OUTPUT chain rules.
+package outbound
 
 import (
 	"context"
@@ -29,16 +31,8 @@ func Initialize() *Handler {
 	}
 }
 
-func (h *Handler) Handler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/health/liveness", h.healthCheck)
-	mux.HandleFunc("/api/v1/health/readiness", h.healthCheck)
+func (h *Handler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("/", h.proxy)
-	return mux
-}
-
-func (h *Handler) healthCheck(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusOK)
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {

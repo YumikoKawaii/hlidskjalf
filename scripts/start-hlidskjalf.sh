@@ -1,5 +1,7 @@
+set -e
+
 ## remove exists cluster
-k3d cluster delete hlidskjalf
+k3d cluster delete hlidskjalf || true
 
 ## create new cluster
 k3d cluster create hlidskjalf
@@ -15,6 +17,12 @@ docker update --memory=128m --memory-swap=256m --cpu-shares=128 k3d-hlidskjalf-s
 docker update --memory=2048m --memory-swap=4g --cpu-shares=512 k3d-worker-1-0
 docker update --memory=2048m --memory-swap=4g --cpu-shares=512 k3d-worker-2-0
 docker update --memory=2048m --memory-swap=4g --cpu-shares=512 k3d-worker-3-0
+
+## install reloader
+helmfile -f manifests/infrastructure/reloader/helmfile.yaml sync
+
+## install observability stack
+kubectl apply -k manifests/infrastructure/observe/
 
 ## taint master
 kubectl taint nodes k3d-hlidskjalf-server-0 node-role.kubernetes.io/master=:NoSchedule

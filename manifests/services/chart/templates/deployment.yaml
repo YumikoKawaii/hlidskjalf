@@ -24,7 +24,7 @@ spec:
         reloader.stakater.com/auto: "true"
       {{- end }}
     spec:
-      {{- if and .Values.serviceAccount .Values.serviceAccount.create }}
+      {{- if or (and .Values.serviceAccount .Values.serviceAccount.create) (and .Values.sidecar .Values.sidecar.enabled) }}
       serviceAccountName: {{ .Release.Name }}
       {{- end }}
       terminationGracePeriodSeconds: 30
@@ -50,11 +50,18 @@ spec:
             - sh
             - -c
             - |
+              # Outbound: redirect app egress traffic to Skidbladnir
               iptables -t nat -N SKIDBLADNIR_REDIRECT
               iptables -t nat -A SKIDBLADNIR_REDIRECT -m owner --uid-owner 1337 -j RETURN
               iptables -t nat -A SKIDBLADNIR_REDIRECT -d 127.0.0.1/32 -j RETURN
-              iptables -t nat -A SKIDBLADNIR_REDIRECT -p tcp -j REDIRECT --to-ports 15001
+              iptables -t nat -A SKIDBLADNIR_REDIRECT -p tcp -j REDIRECT --to-ports {{ .Values.sidecar.ports.outbound }}
               iptables -t nat -A OUTPUT -p tcp -j SKIDBLADNIR_REDIRECT
+              # Inbound: redirect incoming traffic through Skidbladnir for rate limiting
+              iptables -t nat -N SKIDBLADNIR_INBOUND
+              iptables -t nat -A SKIDBLADNIR_INBOUND -i lo -j RETURN
+              iptables -t nat -A SKIDBLADNIR_INBOUND -p tcp --dport {{ .Values.sidecar.ports.appGrpc }} -j REDIRECT --to-ports {{ .Values.sidecar.ports.inboundGrpc }}
+              iptables -t nat -A SKIDBLADNIR_INBOUND -p tcp --dport {{ .Values.sidecar.ports.appHttp }} -j REDIRECT --to-ports {{ .Values.sidecar.ports.inboundHttp }}
+              iptables -t nat -A PREROUTING -p tcp -j SKIDBLADNIR_INBOUND
       {{- end }}
       containers:
         - name: {{ .Release.Name }}
@@ -112,7 +119,13 @@ spec:
             runAsUser: 1337
           ports:
             - name: sidecar
-              containerPort: 15001
+              containerPort: {{ .Values.sidecar.ports.outbound }}
+              protocol: TCP
+            - name: inbound-grpc
+              containerPort: {{ .Values.sidecar.ports.inboundGrpc }}
+              protocol: TCP
+            - name: inbound-http
+              containerPort: {{ .Values.sidecar.ports.inboundHttp }}
               protocol: TCP
           startupProbe:
             httpGet:
@@ -138,6 +151,11 @@ spec:
             failureThreshold: 3
           resources:
             {{- toYaml .Values.sidecar.resources | nindent 12 }}
+          env:
+            - name: PEER__POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-config

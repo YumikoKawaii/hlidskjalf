@@ -14,6 +14,11 @@ service:
 
 reloader: true
 
+networkPolicy:
+  enabled: true
+  allowedSources:
+    - app: bifrost
+
 replicas: 3
 
 resources:
@@ -29,6 +34,13 @@ sidecar:
   image:
     repository: docker.io/yumikokawaii/skidbladnir
     tag: "ba54f3d"
+  ports:
+    outbound: 15001
+    inboundGrpc: 15002
+    inboundHttp: 15003
+    appGrpc: 10443
+    appHttp: 10080
+    leaderGrpc: 15443
   resources:
     requests:
       cpu: 50m
@@ -41,6 +53,12 @@ config:
   ENVIRONMENT: "production"
   LOG_LEVEL: "debug"
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"
+  SKIDBLADNIR_SERVER__GRPC: "0.0.0.0:15443"
+  OUTBOUND__PORT: "15001"
+  INBOUND__GRPC__ENDPOINT: "0.0.0.0:15002"
+  INBOUND__GRPC__TARGET_PORT: "10443"
+  INBOUND__HTTP__ENDPOINT: "0.0.0.0:15003"
+  INBOUND__HTTP__TARGET_PORT: "10080"
   ACOUSTICS__ENDPOINT: "http://bifrost:10080"
   ACOUSTICS__PROTOCOL: "http"
   ERROR_EMITTER__INTERVAL: "5"
@@ -48,3 +66,9 @@ config:
   RANDOM_DELAY__BASE: "200000000"
   RANDOM_DELAY__RATE: "0.01"
   RANDOM_DELAY__VALUE: "100000000"
+  RATE_LIMIT__ENABLED: "true"
+  RATE_LIMIT__RPS: "100"
+  RATE_LIMIT__BURST: "100"
+  PEER__SERVICE_NAME: "echo"
+  PEER__NAMESPACE: "hlidskjalf"
+  PEER__LEADER_PORT: "15443"
