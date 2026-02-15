@@ -35,14 +35,14 @@ func (m *Manager) Allow() bool {
 	if m.isLeader.Load() {
 		if l := m.leader.Load(); l != nil {
 			allowed := l.Allow()
-			logger.Debugf("[ratelimit] leader allow=%v tokens=%.1f", allowed, l.limiter.Tokens())
+			logger.Infof("[ratelimit] leader allow=%v tokens=%.1f", allowed, l.limiter.Tokens())
 			return allowed
 		}
 		return true
 	}
 	if m.peer != nil {
 		allowed := m.peer.Allow()
-		logger.Debugf("[ratelimit] peer allow=%v tokens=%.1f", allowed, m.peer.limiter.Tokens())
+		logger.Infof("[ratelimit] peer allow=%v tokens=%.1f", allowed, m.peer.limiter.Tokens())
 		return allowed
 	}
 	return true
