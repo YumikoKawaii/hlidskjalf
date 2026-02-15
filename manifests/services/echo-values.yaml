@@ -33,7 +33,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "a39fd61"
+    tag: "6fe78f8"
   ports:
     outbound: 15001
     inboundGrpc: 15002
@@ -51,7 +51,7 @@ sidecar:
 
 config:
   ENVIRONMENT: "production"
-  LOG_LEVEL: "debug"
+  LOG_LEVEL: "info"
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"
   SKIDBLADNIR_SERVER__GRPC: "0.0.0.0:15443"
   OUTBOUND__PORT: "15001"

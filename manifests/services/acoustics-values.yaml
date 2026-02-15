@@ -34,7 +34,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "a39fd61"
+    tag: "6fe78f8"
   ports:
     outbound: 15001
     inboundGrpc: 15002

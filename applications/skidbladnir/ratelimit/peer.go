@@ -28,7 +28,7 @@ type Peer struct {
 
 func NewPeer(rps float64, burst int, podIP string, leaderPort int) *Peer {
 	return &Peer{
-		limiter:    rate.NewLimiter(rate.Limit(rps), burst),
+		limiter:    rate.NewLimiter(0, burst), // start at zero; leader sets fair-share RPS on first refill
 		podIP:      podIP,
 		burst:      burst,
 		leaderPort: leaderPort,
