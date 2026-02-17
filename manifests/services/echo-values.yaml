@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/echo
-  tag: "df9068b"
+  tag: "07f297a"
 
 host: echo.example.com
 
@@ -33,7 +33,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "55fef3d"
+    tag: "07f297a"
   ports:
     outbound: 15001
     inboundGrpc: 15002
