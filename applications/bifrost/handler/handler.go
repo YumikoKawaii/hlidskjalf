@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"time"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/constants"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
@@ -21,8 +22,12 @@ type Handler struct {
 
 func Initialize(watcher *discovery.Watcher) *Handler {
 	return &Handler{
-		watcher:     watcher,
-		h1Transport: http.DefaultTransport,
+		watcher: watcher,
+		h1Transport: &http.Transport{
+			MaxIdleConns:        200,
+			MaxIdleConnsPerHost: 50,
+			IdleConnTimeout:     90 * time.Second,
+		},
 		h2Transport: &http2.Transport{
 			AllowHTTP: true,
 			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {

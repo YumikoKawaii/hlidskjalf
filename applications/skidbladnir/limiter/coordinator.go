@@ -3,8 +3,6 @@ package limiter
 import (
 	"sync"
 	"time"
-
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/constants"
 )
 
 // Coordinator is the leader-side capacity allocator. Only the pod that holds the
@@ -13,25 +11,27 @@ import (
 //
 // Each Operator (including the one on the leader pod) periodically calls
 // Capacity(), which doubles as a heartbeat. Operators that stop calling
-// (crash or scale-down) are evicted after FollowerTTL.
+// (crash or scale-down) are evicted after the configured TTL.
 type Coordinator struct {
 	mu          sync.Mutex
 	globalRPS   float64              // configured service-wide RPS cap
 	globalBurst int                  // configured service-wide burst cap
+	ttl         time.Duration        // evict operators that haven't checked in within this window
 	operators   map[string]time.Time // operatorIP -> last seen timestamp
 }
 
-func NewCoordinator(rps float64, burst int) *Coordinator {
+func NewCoordinator(rps float64, burst int, ttl time.Duration) *Coordinator {
 	return &Coordinator{
 		globalRPS:   rps,
 		globalBurst: burst,
+		ttl:         ttl,
 		operators:   make(map[string]time.Time),
 	}
 }
 
 // Capacity computes the fair-share allocation for a requesting operator.
 // It doubles as a heartbeat: the operator's last-seen timestamp is updated,
-// and stale operators (no heartbeat within FollowerTTL) are evicted.
+// and stale operators (no heartbeat within TTL) are evicted.
 //
 // The global budget is split evenly: rps / operatorCount. Every pod
 // (including the leader) runs an Operator that registers here, so there
@@ -46,7 +46,7 @@ func (c *Coordinator) Capacity(operatorIP string) Capacity {
 
 	// Evict stale operators that haven't checked in within TTL
 	for ip, lastSeen := range c.operators {
-		if now.Sub(lastSeen) > constants.FollowerTTL {
+		if now.Sub(lastSeen) > c.ttl {
 			delete(c.operators, ip)
 		}
 	}

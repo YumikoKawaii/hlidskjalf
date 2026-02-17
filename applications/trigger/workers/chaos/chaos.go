@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Interval int `json:"interval" mapstructure:"interval" yaml:"interval"`
+	RPS int `json:"rps" mapstructure:"rps" yaml:"rps"`
 }
 
 type TriggerFunction struct {
@@ -38,7 +38,8 @@ func (c *chaos) Register(functions ...TriggerFunction) {
 }
 
 func (c *chaos) Start(ctx context.Context) {
-	ticker := time.NewTicker(time.Duration(c.cfg.Interval) * time.Nanosecond)
+	interval := time.Second / time.Duration(c.cfg.RPS)
+	ticker := time.NewTicker(interval)
 	go func() {
 		defer ticker.Stop()
 		for {

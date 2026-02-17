@@ -4,14 +4,13 @@ import (
 	"context"
 	"fmt"
 	"sync/atomic"
+	"time"
 
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/constants"
 	api "github.com/YumikoKawaii/rpc.com/protobuf/limiter"
 	"github.com/YumikoKawaii/shared/logger"
 	"golang.org/x/time/rate"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"time"
 )
 
 // Operator is the per-pod rate limiter. Every Skidbladnir instance (including
@@ -29,14 +28,19 @@ type Operator struct {
 	leaderIP   atomic.Value // current leader IP, updated on election changes
 	leaderPort int          // gRPC port of the leader's shared server
 
+	interval time.Duration // how often to fetch capacity from coordinator
+	ttl      time.Duration // timeout for unregister RPC
+
 	limiterClient api.LimiterClient
 }
 
-func NewOperator(podIP string, leaderPort int) *Operator {
+func NewOperator(podIP string, leaderPort int, interval, ttl time.Duration) *Operator {
 	return &Operator{
 		limiter:    rate.NewLimiter(0, 0), // start at zero; coordinator sets fair-share on first fetch
 		podIP:      podIP,
 		leaderPort: leaderPort,
+		interval:   interval,
+		ttl:        ttl,
 	}
 }
 
@@ -62,10 +66,10 @@ func (o *Operator) SetLeader(ip string) error {
 
 // Fetch periodically queries the Coordinator for this operator's fair-share capacity.
 // Runs an immediate fetch on startup (so the limiter is configured before traffic
-// arrives), then ticks at FollowerInterval. Each fetch also serves as a heartbeat
-// so the Coordinator knows this operator is alive.
+// arrives), then ticks at the configured interval. Each fetch also serves as a
+// heartbeat so the Coordinator knows this operator is alive.
 func (o *Operator) Fetch(ctx context.Context) {
-	ticker := time.NewTicker(constants.FollowerInterval)
+	ticker := time.NewTicker(o.interval)
 	defer ticker.Stop()
 	o.fetch(ctx)
 	for {
@@ -82,7 +86,7 @@ func (o *Operator) Fetch(ctx context.Context) {
 // The Coordinator removes it from the tracking map immediately, allowing
 // rebalancing without waiting for TTL expiry.
 func (o *Operator) Unregister() {
-	ctx, cancel := context.WithTimeout(context.Background(), constants.FollowerTTL)
+	ctx, cancel := context.WithTimeout(context.Background(), o.ttl)
 	defer cancel()
 	_, err := o.limiterClient.Unregister(ctx, &api.UnregisterRequest{
 		Ip: o.podIP,

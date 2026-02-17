@@ -50,9 +50,12 @@ func NewManager(cfg *config.Application) (*Manager, error) {
 		return nil, err
 	}
 
+	ttl := time.Duration(cfg.Limiter.TTL) * time.Millisecond
+	interval := time.Duration(cfg.Limiter.Interval) * time.Millisecond
+
 	return &Manager{
 		cfg:       cfg,
-		operator:  NewOperator(cfg.Ip, cfg.Limiter.LeaderPort),
+		operator:  NewOperator(cfg.Ip, cfg.Limiter.LeaderPort, interval, ttl),
 		k8sClient: k8sClient,
 	}, nil
 }
@@ -105,7 +108,8 @@ func (m *Manager) Election(ctx context.Context) {
 
 func (m *Manager) onStartedLeading(ctx context.Context) {
 	logger.Infof("[limiter] became coordinator (identity=%s)", m.cfg.Ip)
-	m.coordinator.Store(NewCoordinator(m.cfg.Limiter.RPS, m.cfg.Limiter.Burst))
+	ttl := time.Duration(m.cfg.Limiter.TTL) * time.Millisecond
+	m.coordinator.Store(NewCoordinator(m.cfg.Limiter.RPS, m.cfg.Limiter.Burst, ttl))
 	<-ctx.Done() // block until leadership is lost
 }
 

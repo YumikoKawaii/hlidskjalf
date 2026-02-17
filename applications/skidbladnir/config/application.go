@@ -22,10 +22,13 @@ type InboundConfig struct {
 type LimiterConfig struct {
 	Enabled bool `json:"enabled" mapstructure:"enabled" yaml:"enabled"`
 
-	LeaderPort int `json:"leader_port" mapstructure:"leader_port" yaml:"leader_port"` // gRPC port to reach the leader's RateLimiter service
+	LeaderPort int `json:"leader_port" mapstructure:"leader_port" yaml:"leader_port"` // gRPC port to reach the coordinator
 
 	RPS   float64 `json:"rps" mapstructure:"rps" yaml:"rps"`
 	Burst int     `json:"burst" mapstructure:"burst" yaml:"burst"`
+
+	TTL      int `json:"ttl" mapstructure:"ttl" yaml:"ttl"`                // operator eviction TTL in milliseconds
+	Interval int `json:"interval" mapstructure:"interval" yaml:"interval"` // operator fetch interval in milliseconds
 }
 
 type Application struct {
@@ -61,6 +64,13 @@ func loadDefault() *Application {
 			},
 		},
 		TracerConfig: tracer.DefaultConfig(),
-		Limiter:      &LimiterConfig{Enabled: false, RPS: 100, Burst: 100, LeaderPort: 15443},
+		Limiter: &LimiterConfig{
+			Enabled:    false,
+			RPS:        100,
+			Burst:      100,
+			LeaderPort: 15443,
+			TTL:        2000,
+			Interval:   500,
+		},
 	}
 }
