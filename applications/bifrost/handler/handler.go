@@ -39,16 +39,17 @@ func Initialize(watcher *discovery.Watcher, transport *config.TransportConfig) *
 	}
 }
 
-func (h *Handler) Handler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/health/liveness", h.healthCheck)
-	mux.HandleFunc("/api/v1/health/readiness", h.healthCheck)
-	mux.HandleFunc("/", h.proxy)
-	return mux
-}
-
-func (h *Handler) healthCheck(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+// Wrap returns an http.Handler that tries the shared mux first (health, metrics,
+// grpc-gateway) and falls back to the reverse proxy for all other requests.
+func (h *Handler) Wrap(mux *http.ServeMux) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Let the shared mux handle registered paths (health, metrics)
+		if _, pattern := mux.Handler(r); pattern != "/" {
+			mux.ServeHTTP(w, r)
+			return
+		}
+		h.proxy(w, r)
+	})
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
