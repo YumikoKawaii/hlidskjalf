@@ -24,7 +24,7 @@ data:
                 - hlidskjalf
         relabel_configs:
           - source_labels: [__meta_kubernetes_service_name]
-            regex: (echo|acoustics)
+            regex: (echo|acoustics|bifrost)
             action: keep
           - source_labels: [__meta_kubernetes_endpoint_port_name]
             regex: http

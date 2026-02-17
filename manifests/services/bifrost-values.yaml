@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/bifrost
-  tag: "ecb3286"
+  tag: "7ea585f"
 
 host: bifrost.example.com
 
@@ -22,11 +22,11 @@ probes:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 500m
+    cpu: 200m
     memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
 
 serviceAccount:
   create: true
