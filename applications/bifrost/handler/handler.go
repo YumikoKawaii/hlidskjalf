@@ -15,7 +15,17 @@ import (
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/constants"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/shared/logger"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"golang.org/x/net/http2"
+)
+
+var proxyRequestsTotal = promauto.NewCounterVec(
+	prometheus.CounterOpts{
+		Name: "bifrost_proxy_requests_total",
+		Help: "Total number of proxied requests",
+	},
+	[]string{"service", "method"},
 )
 
 type Handler struct {
@@ -67,6 +77,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 
 	logger.Debugf("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
 
+	proxyRequestsTotal.WithLabelValues(service, r.Method).Inc()
 	h.resolveProxy(target, r.ProtoMajor).ServeHTTP(w, r)
 }
 
