@@ -19,12 +19,14 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[あこーすてぃくす] - しょきかちゅう...")
-
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	_ = logger.Initialize(cfg.Logger)
+
+	logger.Info("[あこーすてぃくす] - しょきかちゅう...")
 
 	grpcprometheus.EnableHandlingTimeHistogram(
 		grpcprometheus.WithHistogramBuckets([]float64{

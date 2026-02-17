@@ -22,12 +22,14 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[skidbladnir] starting...")
-
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	_ = logger.Initialize(cfg.Logger)
+
+	logger.Info("[skidbladnir] starting...")
 
 	var rlManager *limiter.Manager
 	if cfg.Limiter.Enabled {

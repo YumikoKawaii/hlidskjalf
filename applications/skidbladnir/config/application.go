@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/server"
 	"github.com/YumikoKawaii/shared/tracer"
 )
@@ -33,6 +34,7 @@ type LimiterConfig struct {
 
 type Application struct {
 	Server *server.Config `json:"skidbladnir_server" mapstructure:"skidbladnir_server" yaml:"skidbladnir_server"`
+	Logger *logger.Configuration `json:"logger" mapstructure:"logger" yaml:"logger"`
 
 	Service   string `json:"service" mapstructure:"service" yaml:"service"`
 	Ip        string `json:"ip" mapstructure:"ip" yaml:"ip"`
@@ -50,6 +52,7 @@ func loadDefault() *Application {
 			HTTP: "0.0.0.0:15001",
 			GRPC: "0.0.0.0:15443",
 		},
+		Logger: logger.DefaultConfig(),
 		Outbound: &OutboundConfig{
 			Port: 15001,
 		},

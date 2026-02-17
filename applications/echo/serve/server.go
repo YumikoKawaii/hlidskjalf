@@ -20,12 +20,14 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[えこー] - しょきかちゅう...")
-
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	_ = logger.Initialize(cfg.Logger)
+
+	logger.Info("[えこー] - しょきかちゅう...")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

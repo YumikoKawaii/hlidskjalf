@@ -10,6 +10,10 @@ github.com/YumikoKawaii/rpc.com v0.0.20260217091748 h1:qf0R7qjSqvnoox6k2u5ZTX5Gz
 github.com/YumikoKawaii/rpc.com v0.0.20260217091748/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
 github.com/YumikoKawaii/shared v0.0.20260215142646 h1:GfDE46hd9lzps9zWqRyrbCgzD7Vnf8GOM6ok/glFIXM=
 github.com/YumikoKawaii/shared v0.0.20260215142646/go.mod h1:ZJBSKHVG7reljDYZkKeyAGllXIbTFYNZCdjV4JdM0/g=
+github.com/YumikoKawaii/shared v0.0.20260217141935 h1:Xd5+8TAH66OPepKhme5Ks/+H03zAriac+0GuYdFXi2o=
+github.com/YumikoKawaii/shared v0.0.20260217141935/go.mod h1:ZJBSKHVG7reljDYZkKeyAGllXIbTFYNZCdjV4JdM0/g=
+github.com/YumikoKawaii/shared v0.0.20260217142840 h1:6hknI/JLRB/pD1/eFzWr7Xm1Pqa1OX8HhBspWliYJek=
+github.com/YumikoKawaii/shared v0.0.20260217142840/go.mod h1:ZJBSKHVG7reljDYZkKeyAGllXIbTFYNZCdjV4JdM0/g=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/cenkalti/backoff/v5 v5.0.3 h1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=

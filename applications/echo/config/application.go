@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/YumikoKawaii/shared/adapters/acoustics"
+	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/metrics"
 	"github.com/YumikoKawaii/shared/server"
 	"github.com/YumikoKawaii/shared/tracer"
@@ -19,6 +20,7 @@ type RandomDelayConfig struct {
 
 type Application struct {
 	Server        *server.Config         `json:"server" mapstructure:"server" yaml:"server"`
+	Logger        *logger.Configuration  `json:"logger" mapstructure:"logger" yaml:"logger"`
 	TracerConfig  *tracer.Configuration  `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
 	MetricsConfig *metrics.Configuration `json:"metrics_config" mapstructure:"metrics_config" yaml:"metrics_config"`
 	Acoustics     *acoustics.Config      `json:"acoustics" mapstructure:"acoustics" yaml:"acoustics"`
@@ -30,6 +32,7 @@ type Application struct {
 func loadDefault() *Application {
 	return &Application{
 		Server:        server.DefaultConfig(),
+		Logger:        logger.DefaultConfig(),
 		TracerConfig:  tracer.DefaultConfig(),
 		MetricsConfig: metrics.DefaultConfig(),
 		Acoustics:     &acoustics.Config{},

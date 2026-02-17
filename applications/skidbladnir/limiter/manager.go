@@ -65,7 +65,7 @@ func NewManager(cfg *config.Application) (*Manager, error) {
 // on every pod regardless of leader/follower role.
 func (m *Manager) Allow() bool {
 	allowed := m.operator.Allow()
-	logger.Infof("[limiter] allow=%v tokens=%.1f", allowed, m.operator.limiter.Tokens())
+	logger.Debugf("[limiter] allow=%v tokens=%.1f", allowed, m.operator.limiter.Tokens())
 	return allowed
 }
 

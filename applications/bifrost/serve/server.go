@@ -15,12 +15,14 @@ import (
 )
 
 func Server(_ *cobra.Command, _ []string) {
-	logger.Info("[bifrost] starting...")
-
 	cfg, err := config.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	_ = logger.Initialize(cfg.Logger)
+
+	logger.Info("[bifrost] starting...")
 
 	watcher, err := discovery.NewWatcher(cfg.Namespace)
 	if err != nil {

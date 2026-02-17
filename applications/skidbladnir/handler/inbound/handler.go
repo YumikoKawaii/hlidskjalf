@@ -61,7 +61,7 @@ func (h *Handler) ListenAndServe(addr string) error {
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 	// Apply rate limiting on inbound traffic, skip health probes
 	if !strings.HasPrefix(r.URL.Path, "/api/v1/health/") && h.rlManager != nil && !h.rlManager.Allow() {
-		logger.Infof("[skidbladnir] inbound rate limit exceeded: %s %s", r.Method, r.RequestURI)
+		logger.Warnf("[skidbladnir] inbound rate limit exceeded: %s %s", r.Method, r.RequestURI)
 		http.Error(w, "rate limit exceeded", http.StatusTooManyRequests)
 		return
 	}
@@ -75,7 +75,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		transport = h.h1Transport
 	}
 
-	logger.Infof("[skidbladnir] inbound %s %s → %s proto=%s", r.Method, r.RequestURI, target, r.Proto)
+	logger.Debugf("[skidbladnir] inbound %s %s → %s proto=%s", r.Method, r.RequestURI, target, r.Proto)
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {

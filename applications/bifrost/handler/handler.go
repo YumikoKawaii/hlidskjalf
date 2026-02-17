@@ -53,11 +53,11 @@ func (h *Handler) Wrap(mux *http.ServeMux) http.Handler {
 }
 
 func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
-	logger.Infof("received: %s %s proto=%s content-type=%s", r.Method, r.URL.Path, r.Proto, r.Header.Get("Content-Type"))
+	logger.Debugf("received: %s %s proto=%s content-type=%s", r.Method, r.URL.Path, r.Proto, r.Header.Get("Content-Type"))
 
 	service, target, err := h.watcher.Resolve(r.URL.Path)
 	if err != nil {
-		logger.Infof("[proxy] resolve failed for %s: %v", r.URL.Path, err)
+		logger.Debugf("[proxy] resolve failed for %s: %v", r.URL.Path, err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -69,7 +69,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		transport = h.h1Transport
 	}
 
-	logger.Infof("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
+	logger.Debugf("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {

@@ -42,7 +42,7 @@ func (h *Handler) simulateDelay() {
 }
 
 func (h *Handler) Charge(ctx context.Context, request *api.ChargeRequest) (*api.ChargeResponse, error) {
-	logger.Info("[えこーはんどらー] - ちゃーじりくえすとをじゅしん")
+	logger.Debug("[えこーはんどらー] - ちゃーじりくえすとをじゅしん")
 
 	h.simulateDelay()
 
@@ -56,12 +56,12 @@ func (h *Handler) Charge(ctx context.Context, request *api.ChargeRequest) (*api.
 		return nil, err
 	}
 
-	logger.Info("[えこーはんどらー] - ちゃーじかんりょう")
+	logger.Debug("[えこーはんどらー] - ちゃーじかんりょう")
 	return &api.ChargeResponse{}, nil
 }
 
 func (h *Handler) Discharge(ctx context.Context, request *api.DischargeRequest) (*api.DischargeResponse, error) {
-	logger.Info("[えこーはんどらー] - でぃすちゃーじりくえすとをじゅしん")
+	logger.Debug("[えこーはんどらー] - でぃすちゃーじりくえすとをじゅしん")
 
 	h.simulateDelay()
 
@@ -70,7 +70,7 @@ func (h *Handler) Discharge(ctx context.Context, request *api.DischargeRequest) 
 		return nil, status.Error(codes.Internal, "simulated error")
 	}
 
-	logger.Info("[えこーはんどらー] - でぃすちゃーじかんりょう")
+	logger.Debug("[えこーはんどらー] - でぃすちゃーじかんりょう")
 	return &api.DischargeResponse{}, nil
 }
 

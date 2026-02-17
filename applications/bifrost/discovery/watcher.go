@@ -162,14 +162,14 @@ func (w *Watcher) deleteService(serviceName string) {
 func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
 	for {
 		if ctx.Err() != nil {
-			logger.Infof("[discovery] endpoint watcher for %s stopped", service.Name)
+			logger.Debugf("[discovery] endpoint watcher for %s stopped", service.Name)
 			return
 		}
 
 		endpoints, err := w.clientset.CoreV1().Endpoints(w.namespace).Get(ctx, service.Name, metav1.GetOptions{})
 		if err != nil {
 			if ctx.Err() != nil {
-				logger.Infof("[discovery] endpoint watcher for %s stopped", service.Name)
+				logger.Debugf("[discovery] endpoint watcher for %s stopped", service.Name)
 				return
 			}
 			logger.Infof("[discovery] endpoints for %s not ready, retrying: %v", service.Name, err)
@@ -183,7 +183,7 @@ func (w *Watcher) watchEndpoints(ctx context.Context, service *corev1.Service) {
 		})
 		if err != nil {
 			if ctx.Err() != nil {
-				logger.Infof("[discovery] endpoint watcher for %s stopped", service.Name)
+				logger.Debugf("[discovery] endpoint watcher for %s stopped", service.Name)
 				return
 			}
 			logger.Infof("[discovery] watch for %s failed, retrying: %v", service.Name, err)

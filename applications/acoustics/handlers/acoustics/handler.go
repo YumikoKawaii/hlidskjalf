@@ -39,7 +39,7 @@ func (h *Handler) simulateDelay() {
 }
 
 func (h *Handler) Entry(ctx context.Context, request *api.EntryRequest) (*api.EntryResponse, error) {
-	logger.Info("[あこーすてぃくすはんどらー] - えんとりーりくえすとをじゅしん")
+	logger.Debug("[あこーすてぃくすはんどらー] - えんとりーりくえすとをじゅしん")
 
 	h.simulateDelay()
 
@@ -48,7 +48,7 @@ func (h *Handler) Entry(ctx context.Context, request *api.EntryRequest) (*api.En
 		return nil, status.Error(codes.Internal, "simulated error")
 	}
 
-	logger.Info("[あこーすてぃくすはんどらー] - えんとりーかんりょう")
+	logger.Debug("[あこーすてぃくすはんどらー] - えんとりーかんりょう")
 	return &api.EntryResponse{}, nil
 }
 

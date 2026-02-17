@@ -5,8 +5,8 @@ image:
 host: echo.example.com
 
 annotations:
-  bifrost.io/port: "10080"
-  bifrost.io/prefixes: '["/api/v1/charge","/api/v1/discharge"]'
+  bifrost.io/port: "10443"
+  bifrost.io/prefixes: '["/echo.Echo"]'
 
 service:
   type: "ClusterIP"
@@ -59,8 +59,8 @@ config:
   INBOUND__GRPC__TARGET_PORT: "10443"
   INBOUND__HTTP__ENDPOINT: "0.0.0.0:15003"
   INBOUND__HTTP__TARGET_PORT: "10080"
-  ACOUSTICS__ENDPOINT: "http://bifrost:10080"
-  ACOUSTICS__PROTOCOL: "http"
+  ACOUSTICS__ENDPOINT: "bifrost:10080"
+  ACOUSTICS__PROTOCOL: "grpc"
   ERROR_EMITTER__INTERVAL: "5"
   ERROR_RATE: "0"
   RANDOM_DELAY__BASE: "200000000"

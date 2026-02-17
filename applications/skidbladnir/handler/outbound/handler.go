@@ -68,7 +68,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		transport = h.h1Transport
 	}
 
-	logger.Infof("[skidbladnir] %s %s → %s proto=%s", r.Method, r.RequestURI, host, r.Proto)
+	logger.Debugf("[skidbladnir] %s %s → %s proto=%s", r.Method, r.RequestURI, host, r.Proto)
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
