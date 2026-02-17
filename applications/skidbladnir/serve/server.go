@@ -10,9 +10,9 @@ import (
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/inbound"
+	limiterHandler "github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/limiter"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/outbound"
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/rate_limiter"
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/ratelimit"
+	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/limiter"
 	"github.com/YumikoKawaii/shared/health"
 	"github.com/YumikoKawaii/shared/logger"
 	"github.com/YumikoKawaii/shared/server"
@@ -29,16 +29,18 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	var rlManager *ratelimit.Manager
-	if cfg.RateLimit != nil && cfg.RateLimit.Enabled {
-		podIP := cfg.Peer.PodIP
-		rlManager = ratelimit.NewManager(podIP)
+	var rlManager *limiter.Manager
+	if cfg.Limiter.Enabled {
+		rlManager, err = limiter.NewManager(cfg)
+		if err != nil {
+			panic(err)
+		}
 		ctx := context.Background()
-		go rlManager.Start(ctx, cfg.Peer.ServiceName, cfg.Peer.Namespace, cfg.RateLimit.RPS, cfg.RateLimit.Burst, cfg.Peer.LeaderPort)
-		logger.Infof("[skidbladnir] rate limiting enabled: rps=%.2f burst=%d", cfg.RateLimit.RPS, cfg.RateLimit.Burst)
+		go rlManager.Start(ctx)
+		logger.Infof("[skidbladnir] rate limiting enabled: rps=%.2f burst=%d", cfg.Limiter.RPS, cfg.Limiter.Burst)
 	}
 
-	// Shared server handles gRPC (rate limiter protocol) + HTTP (egress proxy, health, metrics)
+	// Shared server handles gRPC (limiter protocol) + HTTP (egress proxy, health, metrics)
 	instance := server.Initialize(cfg.Server)
 
 	healthHandler := health.Initialize()
@@ -46,13 +48,13 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	rateLimiterHandler := rate_limiter.Initialize(rlManager)
-	if err := rateLimiterHandler.Register(instance); err != nil {
+	lh := limiterHandler.Initialize(rlManager)
+	if err := lh.Register(instance); err != nil {
 		panic(err)
 	}
 
 	// Outbound egress proxy wraps the shared mux: internal requests (health,
-	// metrics, rate limiter) go to the mux, everything else is proxied.
+	// metrics, limiter) go to the mux, everything else is proxied.
 	processor := outbound.Initialize()
 	proxyHandler := processor.Register(instance.HttpMux(), cfg.Server.HTTP)
 
@@ -61,21 +63,19 @@ func Server(_ *cobra.Command, _ []string) {
 	instance.SetHttpHandler(&h2cHandler)
 
 	// Inbound proxy listeners — rate limit inbound traffic before forwarding to local app
-	if cfg.Inbound != nil {
-		grpcInbound := inbound.NewHandler(cfg.Inbound.GRPC.TargetPort, rlManager)
-		go func() {
-			if err := grpcInbound.ListenAndServe(cfg.Inbound.GRPC.Endpoint); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				logger.Fatalf("[skidbladnir] inbound gRPC proxy error: %v", err)
-			}
-		}()
+	grpcInbound := inbound.NewHandler(cfg.Inbound.GRPC.TargetPort, rlManager)
+	go func() {
+		if err := grpcInbound.ListenAndServe(cfg.Inbound.GRPC.Endpoint); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Fatalf("[skidbladnir] inbound gRPC proxy error: %v", err)
+		}
+	}()
 
-		httpInbound := inbound.NewHandler(cfg.Inbound.HTTP.TargetPort, rlManager)
-		go func() {
-			if err := httpInbound.ListenAndServe(cfg.Inbound.HTTP.Endpoint); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				logger.Fatalf("[skidbladnir] inbound HTTP proxy error: %v", err)
-			}
-		}()
-	}
+	httpInbound := inbound.NewHandler(cfg.Inbound.HTTP.TargetPort, rlManager)
+	go func() {
+		if err := httpInbound.ListenAndServe(cfg.Inbound.HTTP.Endpoint); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Fatalf("[skidbladnir] inbound HTTP proxy error: %v", err)
+		}
+	}()
 
 	// Graceful shutdown: unregister from leader before exiting so
 	// the leader can immediately rebalance fair-share RPS.

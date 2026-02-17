@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/constants"
-	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/ratelimit"
+	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/limiter"
 	"github.com/YumikoKawaii/shared/logger"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -24,11 +24,11 @@ type Handler struct {
 	targetPort  int
 	h1Transport http.RoundTripper
 	h2Transport http.RoundTripper
-	rlManager   *ratelimit.Manager
+	rlManager   *limiter.Manager
 }
 
 // NewHandler creates an inbound proxy handler that forwards to the given local port.
-func NewHandler(targetPort int, rlManager *ratelimit.Manager) *Handler {
+func NewHandler(targetPort int, rlManager *limiter.Manager) *Handler {
 	return &Handler{
 		targetPort:  targetPort,
 		h1Transport: http.DefaultTransport,

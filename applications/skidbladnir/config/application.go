@@ -19,26 +19,26 @@ type InboundConfig struct {
 	HTTP SocketBinding `json:"http" mapstructure:"http" yaml:"http"` // inbound HTTP listener (redirected from app's HTTP port)
 }
 
-type RateLimitConfig struct {
-	Enabled bool    `json:"enabled" mapstructure:"enabled" yaml:"enabled"`
-	RPS     float64 `json:"rps" mapstructure:"rps" yaml:"rps"`
-	Burst   int     `json:"burst" mapstructure:"burst" yaml:"burst"`
-}
+type LimiterConfig struct {
+	Enabled bool `json:"enabled" mapstructure:"enabled" yaml:"enabled"`
 
-type PeerConfig struct {
-	ServiceName string `json:"service_name" mapstructure:"service_name" yaml:"service_name"`
-	PodIP       string `json:"pod_ip" mapstructure:"pod_ip" yaml:"pod_ip"`
-	Namespace   string `json:"namespace" mapstructure:"namespace" yaml:"namespace"`
-	LeaderPort  int    `json:"leader_port" mapstructure:"leader_port" yaml:"leader_port"` // gRPC port to reach the leader's RateLimiter service
+	LeaderPort int `json:"leader_port" mapstructure:"leader_port" yaml:"leader_port"` // gRPC port to reach the leader's RateLimiter service
+
+	RPS   float64 `json:"rps" mapstructure:"rps" yaml:"rps"`
+	Burst int     `json:"burst" mapstructure:"burst" yaml:"burst"`
 }
 
 type Application struct {
-	Server       *server.Config        `json:"skidbladnir_server" mapstructure:"skidbladnir_server" yaml:"skidbladnir_server"`
+	Server *server.Config `json:"skidbladnir_server" mapstructure:"skidbladnir_server" yaml:"skidbladnir_server"`
+
+	Service   string `json:"service" mapstructure:"service" yaml:"service"`
+	Ip        string `json:"ip" mapstructure:"ip" yaml:"ip"`
+	Namespace string `json:"namespace" mapstructure:"namespace" yaml:"namespace"`
+
 	Outbound     *OutboundConfig       `json:"outbound" mapstructure:"outbound" yaml:"outbound"`
 	Inbound      *InboundConfig        `json:"inbound" mapstructure:"inbound" yaml:"inbound"`
 	TracerConfig *tracer.Configuration `json:"tracer_config" mapstructure:"tracer_config" yaml:"tracer_config"`
-	RateLimit    *RateLimitConfig      `json:"rate_limit" mapstructure:"rate_limit" yaml:"rate_limit"`
-	Peer         *PeerConfig           `json:"peer" mapstructure:"peer" yaml:"peer"`
+	Limiter      *LimiterConfig        `json:"limiter" mapstructure:"limiter" yaml:"limiter"`
 }
 
 func loadDefault() *Application {
@@ -61,7 +61,6 @@ func loadDefault() *Application {
 			},
 		},
 		TracerConfig: tracer.DefaultConfig(),
-		RateLimit:    &RateLimitConfig{Enabled: false, RPS: 100, Burst: 100},
-		Peer:         &PeerConfig{LeaderPort: 15443},
+		Limiter:      &LimiterConfig{Enabled: false, RPS: 100, Burst: 100, LeaderPort: 15443},
 	}
 }

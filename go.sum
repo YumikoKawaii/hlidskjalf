@@ -2,6 +2,12 @@ github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1
 github.com/Masterminds/semver/v3 v3.4.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/YumikoKawaii/rpc.com v0.0.20260215134539 h1:6YPQi/i4MR4nxtNoC62NCR2iM4VOmN1fCXSESmg5NcQ=
 github.com/YumikoKawaii/rpc.com v0.0.20260215134539/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
+github.com/YumikoKawaii/rpc.com v0.0.20260217085627 h1:o0LlP73LUR3zFg0nDiK4i+qiYN7+lKOoltQiInp1szo=
+github.com/YumikoKawaii/rpc.com v0.0.20260217085627/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
+github.com/YumikoKawaii/rpc.com v0.0.20260217090948 h1:pRNjK7MtUCQdGiuWGRwA5LOppiXwjaWJfzZ1HPEAX7U=
+github.com/YumikoKawaii/rpc.com v0.0.20260217090948/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
+github.com/YumikoKawaii/rpc.com v0.0.20260217091748 h1:qf0R7qjSqvnoox6k2u5ZTX5GzAxaTXn+l8aaPcr5K9U=
+github.com/YumikoKawaii/rpc.com v0.0.20260217091748/go.mod h1:Ww9tu7055DcsIa+lmOvX/1zYrM0IxOzLJN5j5dThK1o=
 github.com/YumikoKawaii/shared v0.0.20260215142646 h1:GfDE46hd9lzps9zWqRyrbCgzD7Vnf8GOM6ok/glFIXM=
 github.com/YumikoKawaii/shared v0.0.20260215142646/go.mod h1:ZJBSKHVG7reljDYZkKeyAGllXIbTFYNZCdjV4JdM0/g=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
