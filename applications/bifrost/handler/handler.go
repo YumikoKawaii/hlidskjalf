@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"strings"
 	"time"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/config"
@@ -39,12 +40,11 @@ func Initialize(watcher *discovery.Watcher, transport *config.TransportConfig) *
 	}
 }
 
-// Wrap returns an http.Handler that tries the shared mux first (health, metrics,
-// grpc-gateway) and falls back to the reverse proxy for all other requests.
+// Wrap returns an http.Handler that routes health and metrics to the shared mux,
+// and everything else to the reverse proxy.
 func (h *Handler) Wrap(mux *http.ServeMux) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Let the shared mux handle registered paths (health, metrics)
-		if _, pattern := mux.Handler(r); pattern != "/" {
+		if strings.HasPrefix(r.URL.Path, "/api/v1/health/") || r.URL.Path == "/metrics" {
 			mux.ServeHTTP(w, r)
 			return
 		}
