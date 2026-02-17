@@ -24,7 +24,13 @@ It speaks both HTTP/1.1 and HTTP/2 cleartext (h2c), choosing the right tongue fo
 
 ## How It Works
 
-Bifrost discovers backend services via annotations on Kubernetes Service objects. It watches for changes in real time, resolves requests by longest prefix match, and load-balances across pod IPs with round-robin.
+Bifrost discovers backend services via annotations on Kubernetes Service objects (headless services). It watches for changes in real time, resolves requests by longest prefix match, and load-balances across individual pod IPs with round-robin.
+
+Supported annotations:
+- `bifrost.io/port` — the port to forward traffic to
+- `bifrost.io/prefixes` — JSON array of URL path prefixes to match
+
+Bifrost selects the transport based on the incoming protocol: HTTP/1.1 requests use a pooled `http.Transport`, while HTTP/2 (gRPC) requests use `http2.Transport` with h2c. The HTTP/1.1 transport maintains a configurable pool of idle connections to reduce TCP handshake overhead.
 
 ---
 
@@ -34,6 +40,8 @@ Bifrost discovers backend services via annotations on Kubernetes Service objects
 |---|---|---|
 | `SERVER__HTTP` | `0.0.0.0:10080` | Listen address |
 | `NAMESPACE` | `hlidskjalf` | Kubernetes namespace to watch |
+| `TRANSPORT__MAX_IDLE_CONNS` | `200` | Max idle connections (all hosts) |
+| `TRANSPORT__MAX_IDLE_CONNS_PER_HOST` | `50` | Max idle connections per backend pod |
 
 ---
 

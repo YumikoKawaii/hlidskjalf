@@ -29,7 +29,7 @@ func Server(_ *cobra.Command, _ []string) {
 	ctx := context.Background()
 	go watcher.DiscoverServices(ctx)
 
-	processor := handler.Initialize(watcher)
+	processor := handler.Initialize(watcher, cfg.Transport)
 
 	h2s := &http2.Server{}
 	server := &http.Server{

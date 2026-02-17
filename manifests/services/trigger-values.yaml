@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yumikokawaii/trigger
-  tag: "df9068b"
+  tag: "d5e9237"
 
 host: trigger.example.com
 
@@ -27,7 +27,7 @@ sidecar:
   enabled: false
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "df9068b"
+    tag: "d5e9237"
   resources:
     requests:
       cpu: 50m
@@ -43,5 +43,5 @@ config:
   ACOUSTICS__PROTOCOL: "http"
   ECHO__ENDPOINT: "http://bifrost:10080"
   ECHO__PROTOCOL: "http"
-  CHAOS__RPS: "100" # 100 rps/instance × 10 instances = ~1000 rps
+  CHAOS__RPS: "170" # 100 rps/instance × 10 instances = ~1000 rps
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"

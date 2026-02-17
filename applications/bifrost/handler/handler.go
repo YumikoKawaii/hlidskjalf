@@ -8,6 +8,7 @@ import (
 	"net/http/httputil"
 	"time"
 
+	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/constants"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
 	"github.com/YumikoKawaii/shared/logger"
@@ -20,12 +21,12 @@ type Handler struct {
 	h2Transport http.RoundTripper
 }
 
-func Initialize(watcher *discovery.Watcher) *Handler {
+func Initialize(watcher *discovery.Watcher, transport *config.TransportConfig) *Handler {
 	return &Handler{
 		watcher: watcher,
 		h1Transport: &http.Transport{
-			MaxIdleConns:        200,
-			MaxIdleConnsPerHost: 50,
+			MaxIdleConns:        transport.MaxIdleConns,
+			MaxIdleConnsPerHost: transport.MaxIdleConnsPerHost,
 			IdleConnTimeout:     90 * time.Second,
 		},
 		h2Transport: &http2.Transport{
