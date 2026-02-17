@@ -3,10 +3,12 @@ package handler
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/config"
@@ -20,6 +22,7 @@ type Handler struct {
 	watcher     *discovery.Watcher
 	h1Transport http.RoundTripper
 	h2Transport http.RoundTripper
+	proxies     sync.Map // "h1:ip:port" or "h2:ip:port" → *httputil.ReverseProxy
 }
 
 func Initialize(watcher *discovery.Watcher, transport *config.TransportConfig) *Handler {
@@ -62,14 +65,27 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger.Debugf("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
+
+	h.resolveProxy(target, r.ProtoMajor).ServeHTTP(w, r)
+}
+
+// resolveProxy returns a cached ReverseProxy for the given target and protocol,
+// creating one on first access. Uses sync.Map for lock-free reads on the hot path.
+func (h *Handler) resolveProxy(target string, protoMajor int) *httputil.ReverseProxy {
+	var key string
 	var transport http.RoundTripper
-	if r.ProtoMajor == 2 {
+	if protoMajor == 2 {
+		key = fmt.Sprintf("h2:%s", target)
 		transport = h.h2Transport
 	} else {
+		key = fmt.Sprintf("h1:%s", target)
 		transport = h.h1Transport
 	}
 
-	logger.Debugf("[proxy] %s %s → %s (%s)", r.Method, r.URL.Path, service, target)
+	if v, ok := h.proxies.Load(key); ok {
+		return v.(*httputil.ReverseProxy)
+	}
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
@@ -79,5 +95,7 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		},
 		Transport: transport,
 	}
-	proxy.ServeHTTP(w, r)
+
+	actual, _ := h.proxies.LoadOrStore(key, proxy)
+	return actual.(*httputil.ReverseProxy)
 }
