@@ -5,21 +5,27 @@ package outbound
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
+	"sync"
 
+	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/discovery"
 	"github.com/YumikoKawaii/shared/logger"
 	"golang.org/x/net/http2"
 )
 
 type Handler struct {
+	resolver    *discovery.Resolver
 	h1Transport http.RoundTripper
 	h2Transport http.RoundTripper
+	proxies     sync.Map // "h1:ip:port" or "h2:ip:port" → *httputil.ReverseProxy
 }
 
-func Initialize() *Handler {
+func Initialize(resolver *discovery.Resolver) *Handler {
 	return &Handler{
+		resolver: resolver,
 		h1Transport: http.DefaultTransport,
 		h2Transport: &http2.Transport{
 			AllowHTTP: true,
@@ -61,22 +67,45 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Resolve to pod IP if balancer is configured for this service
+	target := host
+	if h.resolver != nil {
+		if resolved, ok := h.resolver.Resolve(host); ok {
+			target = resolved
+		}
+	}
+
+	logger.Debugf("[skidbladnir] %s %s → %s (host=%s) proto=%s", r.Method, r.RequestURI, target, host, r.Proto)
+
+	h.resolveProxy(target, host, r.ProtoMajor).ServeHTTP(w, r)
+}
+
+// resolveProxy returns a cached ReverseProxy for the given target and protocol,
+// creating one on first access. Uses sync.Map for lock-free reads on the hot path.
+func (h *Handler) resolveProxy(target, originalHost string, protoMajor int) *httputil.ReverseProxy {
+	var key string
 	var transport http.RoundTripper
-	if r.ProtoMajor == 2 {
+	if protoMajor == 2 {
+		key = fmt.Sprintf("h2:%s", target)
 		transport = h.h2Transport
 	} else {
+		key = fmt.Sprintf("h1:%s", target)
 		transport = h.h1Transport
 	}
 
-	logger.Debugf("[skidbladnir] %s %s → %s proto=%s", r.Method, r.RequestURI, host, r.Proto)
+	if v, ok := h.proxies.Load(key); ok {
+		return v.(*httputil.ReverseProxy)
+	}
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
 			req.URL.Scheme = "http"
-			req.URL.Host = host
-			req.Host = host
+			req.URL.Host = target
+			req.Host = originalHost
 		},
 		Transport: transport,
 	}
-	proxy.ServeHTTP(w, r)
+
+	actual, _ := h.proxies.LoadOrStore(key, proxy)
+	return actual.(*httputil.ReverseProxy)
 }

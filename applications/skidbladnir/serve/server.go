@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/config"
+	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/discovery"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/inbound"
 	limiterHandler "github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/limiter"
 	"github.com/YumikoKawaii/hlidskjalf/applications/skidbladnir/handler/outbound"
@@ -55,9 +56,16 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
+	// Outbound load balancer: lazily resolves pod IPs for upstream services
+	resolver, err := discovery.NewResolver(cfg.Namespace)
+	if err != nil {
+		panic(err)
+	}
+	resolver.Start(context.Background())
+
 	// Outbound egress proxy wraps the shared mux: internal requests (health,
 	// metrics, limiter) go to the mux, everything else is proxied.
-	processor := outbound.Initialize()
+	processor := outbound.Initialize(resolver)
 	proxyHandler := processor.Register(instance.HttpMux(), cfg.Server.HTTP)
 
 	h2s := &http2.Server{}
