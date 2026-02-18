@@ -15,7 +15,7 @@ networkPolicy:
     - app: trigger
     - app: echo
 
-replicas: 1
+replicas: 0
 
 probes:
   port: "http"

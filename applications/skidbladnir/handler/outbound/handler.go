@@ -67,7 +67,9 @@ func (h *Handler) proxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Resolve to pod IP if balancer is configured for this service
+	// Resolve service hostname to a pod IP via round-robin.
+	// Falls back to the original host (passthrough via kube-proxy)
+	// if no endpoints are available yet.
 	target := host
 	if h.resolver != nil {
 		if resolved, ok := h.resolver.Resolve(host); ok {

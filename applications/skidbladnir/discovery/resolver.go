@@ -1,3 +1,8 @@
+// Package discovery implements lazy, watch-based service discovery for
+// Skidbladnir's outbound load balancer. On first request to an unknown
+// hostname, the Resolver starts a Kubernetes Endpoints watch for that
+// service and maintains a live set of pod IPs. Subsequent requests are
+// routed to pod IPs directly via round-robin, bypassing kube-proxy.
 package discovery
 
 import (
@@ -18,13 +23,17 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
+// Resolver provides client-side load balancing by watching Kubernetes Endpoints.
+// Services are discovered lazily: the first request to an unknown hostname
+// triggers an Endpoints watch. The watch runs for the lifetime of the process,
+// keeping the pod IP list up to date as pods scale up/down or restart.
 type Resolver struct {
 	clientset *kubernetes.Clientset
 	namespace string
 	ctx       context.Context
 
 	mu       sync.RWMutex
-	services map[string]*Service
+	services map[string]*Service // hostname → Service (lazily populated)
 }
 
 func NewResolver(namespace string) (*Resolver, error) {

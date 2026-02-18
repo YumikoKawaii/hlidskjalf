@@ -9,6 +9,8 @@ import (
 
 var ErrNoEndpoints = errors.New("no endpoints available")
 
+// Service tracks the set of pod IPs for a single upstream service
+// and round-robins across them using an atomic counter.
 type Service struct {
 	mu sync.RWMutex
 
@@ -20,7 +22,8 @@ func NewService() *Service {
 	return &Service{}
 }
 
-// GetTarget returns an address (ip:port) using round-robin.
+// GetTarget returns a "podIP:port" address using round-robin selection.
+// Returns ErrNoEndpoints if no pod IPs have been discovered yet.
 func (s *Service) GetTarget(port string) (string, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -34,6 +37,8 @@ func (s *Service) GetTarget(port string) (string, error) {
 	return fmt.Sprintf("%s:%s", ip, port), nil
 }
 
+// UpdateEndpoints replaces the current pod IP list. Called by the Resolver
+// when the Kubernetes Endpoints watch detects changes (scale up/down, pod restarts).
 func (s *Service) UpdateEndpoints(ips []string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

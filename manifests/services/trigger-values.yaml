@@ -24,10 +24,17 @@ resources:
     memory: 256Mi
 
 sidecar:
-  enabled: false
+  enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "07f297a"
+    tag: "ba3b72c"
+  ports:
+    outbound: 15001
+    inboundGrpc: 15002
+    inboundHttp: 15003
+    appGrpc: 10443
+    appHttp: 10080
+    leaderGrpc: 15443
   resources:
     requests:
       cpu: 50m
@@ -45,3 +52,11 @@ config:
   ECHO__PROTOCOL: "grpc"
   CHAOS__RPS: "100" # 100 rps/instance × 10 instances = ~1000 rps
   SKIDBLADNIR_SERVER__HTTP: "0.0.0.0:15001"
+  SKIDBLADNIR_SERVER__GRPC: "0.0.0.0:15443"
+  OUTBOUND__PORT: "15001"
+  INBOUND__GRPC__ENDPOINT: "0.0.0.0:15002"
+  INBOUND__GRPC__TARGET_PORT: "10443"
+  INBOUND__HTTP__ENDPOINT: "0.0.0.0:15003"
+  INBOUND__HTTP__TARGET_PORT: "10080"
+  SERVICE: "trigger"
+  NAMESPACE: "hlidskjalf"

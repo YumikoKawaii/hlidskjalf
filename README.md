@@ -36,6 +36,20 @@ Think of it as your own little world to orchestrate containers!
 
 ---
 
+### Bifrost — The Rainbow Bridge
+
+API gateway that routes HTTP/gRPC requests to backend services by URL path prefix. Discovers services dynamically via Kubernetes API annotations (`bifrost.io/port`, `bifrost.io/prefixes`) and load-balances across pod endpoints using round-robin. Supports HTTP/2 (h2c).
+
+### Skidbladnir — The Ship That Always Finds Favorable Wind
+
+Egress-only network sidecar proxy deployed alongside every service. Intercepts all outbound TCP traffic via iptables OUTPUT chain redirect (port 15001, UID 1337 exempt).
+
+**Client-side load balancing:** HTTP/2 clients multiplex all requests over a single long-lived connection, which kube-proxy pins to one backend pod — making replica scaling useless. Skidbladnir solves this by resolving service hostnames to pod IPs directly via the Kubernetes Endpoints API and round-robining each request across all available pods. Services are discovered lazily on first request, and endpoint watches keep the pod list in sync as pods scale up, down, or restart.
+
+Also provides inbound rate limiting via a distributed fair-share protocol between sidecar instances.
+
+---
+
 ## Author
 
 <div align="center">

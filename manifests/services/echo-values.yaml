@@ -19,7 +19,7 @@ networkPolicy:
   allowedSources:
     - app: bifrost
 
-replicas: 3
+replicas: 4
 
 resources:
   requests:
@@ -33,7 +33,7 @@ sidecar:
   enabled: true
   image:
     repository: docker.io/yumikokawaii/skidbladnir
-    tag: "07f297a"
+    tag: "ba3b72c"
   ports:
     outbound: 15001
     inboundGrpc: 15002
