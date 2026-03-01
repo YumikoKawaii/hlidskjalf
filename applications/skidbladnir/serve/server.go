@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -62,6 +63,13 @@ func Server(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 	resolver.Start(context.Background())
+
+	httpMux := instance.HttpMux()
+	httpMux.HandleFunc("/debug/pprof/", pprof.Index)
+	httpMux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	httpMux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	httpMux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	httpMux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	// Outbound egress proxy wraps the shared mux: internal requests (health,
 	// metrics, limiter) go to the mux, everything else is proxied.

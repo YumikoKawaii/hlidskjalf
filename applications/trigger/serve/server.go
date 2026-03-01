@@ -2,6 +2,7 @@ package serve
 
 import (
 	"context"
+	"net/http/pprof"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/trigger/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/trigger/workers/chaos"
@@ -71,6 +72,13 @@ func Server(_ *cobra.Command, _ []string) {
 	}
 
 	chaosWorker.Start(ctx)
+
+	httpMux := instance.HttpMux()
+	httpMux.HandleFunc("/debug/pprof/", pprof.Index)
+	httpMux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	httpMux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	httpMux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	httpMux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	logger.Info("[とりがー] - せつぞくをまっています...")
 

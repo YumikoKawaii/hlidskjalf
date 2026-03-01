@@ -2,6 +2,7 @@ package serve
 
 import (
 	"context"
+	"net/http/pprof"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/acoustics/handlers/acoustics"
@@ -67,6 +68,13 @@ func Server(_ *cobra.Command, _ []string) {
 
 	errorEmitter := &workers.ErrorEmitter{Interval: cfg.ErrorEmitter.Interval}
 	errorEmitter.Start(ctx)
+
+	httpMux := instance.HttpMux()
+	httpMux.HandleFunc("/debug/pprof/", pprof.Index)
+	httpMux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	httpMux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	httpMux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	httpMux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	logger.Info("[あこーすてぃくす] - せつぞくをまっています...")
 

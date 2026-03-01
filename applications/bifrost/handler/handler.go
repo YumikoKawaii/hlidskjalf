@@ -57,7 +57,7 @@ func Initialize(watcher *discovery.Watcher, transport *config.TransportConfig) *
 // and everything else to the reverse proxy.
 func (h *Handler) Wrap(mux *http.ServeMux) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/api/v1/health/") || r.URL.Path == "/metrics" {
+		if strings.HasPrefix(r.URL.Path, "/api/v1/health/") || r.URL.Path == "/metrics" || strings.HasPrefix(r.URL.Path, "/debug/pprof/") {
 			mux.ServeHTTP(w, r)
 			return
 		}

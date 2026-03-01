@@ -2,6 +2,7 @@ package serve
 
 import (
 	"context"
+	"net/http/pprof"
 
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/bifrost/discovery"
@@ -38,6 +39,13 @@ func Server(_ *cobra.Command, _ []string) {
 	if err := healthHandler.Register(instance); err != nil {
 		panic(err)
 	}
+
+	httpMux := instance.HttpMux()
+	httpMux.HandleFunc("/debug/pprof/", pprof.Index)
+	httpMux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	httpMux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	httpMux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	httpMux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	processor := handler.Initialize(watcher, cfg.Transport)
 
