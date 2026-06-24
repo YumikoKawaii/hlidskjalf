@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+  namespace: hlidskjalf
+  labels:
+    app: kafka
+spec:
+  serviceName: kafka-headless
+  replicas: 2
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: kafka
+          image: apache/kafka:3.9.0
+          ports:
+            - name: client
+              containerPort: 9092
+            - name: controller
+              containerPort: 9093
+          env:
+            # KRaft (no Zookeeper). Both nodes are combined broker+controller so
+            # a 2-node cluster forms a quorum on its own.
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: CLUSTER_ID
+              value: "hlidskjalf-kafka-cluster"
+            - name: KAFKA_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "0@kafka-0.kafka-headless.hlidskjalf.svc.cluster.local:9093,1@kafka-1.kafka-headless.hlidskjalf.svc.cluster.local:9093"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+            # advertised.listeners must resolve to THIS pod from clients.
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "2"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "2"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "1"
+            - name: KAFKA_DEFAULT_REPLICATION_FACTOR
+              value: "2"
+            - name: KAFKA_MIN_INSYNC_REPLICAS
+              value: "1"
+            - name: KAFKA_LOG_DIRS
+              value: "/var/lib/kafka/data"
+          # node.id and advertised.listeners are per-pod; derive them from the
+          # ordinal in the pod name (kafka-0 / kafka-1) before starting.
+          command:
+            - /bin/sh
+            - -c
+            - |
+              ORDINAL="${POD_NAME##*-}"
+              export KAFKA_NODE_ID="${ORDINAL}"
+              export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${POD_NAME}.kafka-headless.hlidskjalf.svc.cluster.local:9092"
+              echo "starting node.id=${KAFKA_NODE_ID} advertised=${KAFKA_ADVERTISED_LISTENERS}"
+              exec /etc/kafka/docker/run
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/kafka/data
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 15
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

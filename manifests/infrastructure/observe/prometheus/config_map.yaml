@@ -24,7 +24,7 @@ data:
                 - hlidskjalf
         relabel_configs:
           - source_labels: [__meta_kubernetes_service_name]
-            regex: (echo|acoustics|bifrost)
+            regex: (echo|acoustics|bifrost|consumer)
             action: keep
           - source_labels: [__meta_kubernetes_endpoint_port_name]
             regex: http
@@ -35,6 +35,31 @@ data:
             target_label: service
           - source_labels: [__meta_kubernetes_pod_name]
             target_label: pod
+
+      # cAdvisor (via kubelet) exposes container_cpu_usage_seconds_total — the
+      # metric we graph to prove CPU scales with consumer CONCURRENCY.
+      - job_name: "kubernetes-cadvisor"
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+        metric_relabel_configs:
+          # Keep only the pods we care about to limit cardinality.
+          - source_labels: [namespace]
+            regex: hlidskjalf
+            action: keep
 
 #      - job_name: "otel-collector"
 #        static_configs:

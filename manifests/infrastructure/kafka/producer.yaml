@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer
+  namespace: hlidskjalf
+  labels:
+    app: kafka-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      containers:
+        - name: producer
+          image: apache/kafka:3.9.0
+          # Continuously flood 'events' so the consumer is never starved — the
+          # consumer's throughput/CPU must be limited by ITS config, not by lag.
+          # Random keys spread load across all partitions evenly.
+          command:
+            - /bin/sh
+            - -c
+            - |
+              BROKER="kafka.hlidskjalf.svc.cluster.local:9092"
+              echo "waiting for topic 'events'..."
+              until /opt/kafka/bin/kafka-topics.sh --bootstrap-server "${BROKER}" --describe --topic events >/dev/null 2>&1; do
+                sleep 3
+              done
+              echo "producing..."
+              while true; do
+                # 200k records per burst, keyed randomly, then loop.
+                awk 'BEGIN{srand(); for(i=0;i<200000;i++){print int(rand()*1000000)":"i"-payload-"int(rand()*1e9)}}' \
+                  | /opt/kafka/bin/kafka-console-producer.sh \
+                      --bootstrap-server "${BROKER}" \
+                      --topic events \
+                      --property "parse.key=true" \
+                      --property "key.separator=:"
+              done
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
