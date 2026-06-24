@@ -1,0 +1,71 @@
+# Bitnami Kafka (KRaft) — lab broker for the consumer CPU-scaling experiment.
+# PLAINTEXT only, no auth: this is a throwaway in-cluster broker.
+
+# Bitnami moved their free Docker Hub images to the `bitnamilegacy` org in
+# Aug 2025; `docker.io/bitnami/kafka:*` tags 404. Pull from bitnamilegacy.
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: docker.io
+  repository: bitnamilegacy/kafka
+defaultInitContainers:
+  prepareConfig:
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/os-shell
+
+listeners:
+  client:
+    protocol: PLAINTEXT
+  controller:
+    protocol: PLAINTEXT
+  interbroker:
+    protocol: PLAINTEXT
+  external:
+    protocol: PLAINTEXT
+
+# Disable SASL/TLS entirely for the lab.
+sasl:
+  enabledMechanisms: ""
+  interBrokerMechanism: ""
+  controllerMechanism: ""
+
+# 2 combined controller+broker nodes (matches the earlier 2-node intent).
+controller:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  persistence:
+    size: 2Gi
+# No separate broker-only pods; controllers also serve as brokers.
+broker:
+  replicaCount: 0
+
+# Replication factors must fit a 2-node cluster.
+extraConfig: |
+  offsets.topic.replication.factor=2
+  transaction.state.log.replication.factor=2
+  transaction.state.log.min.isr=1
+  default.replication.factor=2
+  min.insync.replicas=1
+  auto.create.topics.enable=false
+
+# Provision the experiment topic with 12 partitions so partition count is not
+# the limiting factor — the experiment varies consumer CONCURRENCY instead.
+provisioning:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/kafka
+  numPartitions: 12
+  replicationFactor: 2
+  topics:
+    - name: events
+      partitions: 12
+      replicationFactor: 2

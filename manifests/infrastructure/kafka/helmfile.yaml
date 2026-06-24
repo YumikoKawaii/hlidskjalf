@@ -1,0 +1,16 @@
+repositories:
+  # Bitnami chart served from the OCI registry (artifacthub.io/packages/helm/bitnami/kafka).
+  - name: bitnamicharts
+    url: registry-1.docker.io/bitnamicharts
+    oci: true
+
+releases:
+  - name: kafka
+    namespace: hlidskjalf
+    createNamespace: true
+    chart: bitnamicharts/kafka
+    version: 32.4.3
+    wait: true
+    timeout: 600
+    values:
+      - values.yaml

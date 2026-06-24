@@ -12,6 +12,7 @@ import (
 	"github.com/YumikoKawaii/hlidskjalf/applications/consumer/config"
 	"github.com/YumikoKawaii/hlidskjalf/applications/consumer/handlers"
 	"github.com/YumikoKawaii/shared/logger"
+	"github.com/Shopify/sarama"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-kafka/v2/pkg/kafka"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -56,6 +57,10 @@ func Server(_ *cobra.Command, _ []string) {
 // pool), not here.
 func newSubscriber(cfg *config.KafkaConfig) (*kafka.Subscriber, error) {
 	saramaCfg := kafka.DefaultSaramaSubscriberConfig()
+	// Pin the protocol version to one this Sarama (Shopify v1.38) actually
+	// supports AND the broker speaks. Sarama 1.38 predates Kafka 4.0 and cannot
+	// negotiate its group-coordinator APIs, so the broker is pinned to 3.x.
+	saramaCfg.Version = sarama.V3_3_0_0
 	if cfg.ChannelBufferSize > 0 {
 		saramaCfg.ChannelBufferSize = cfg.ChannelBufferSize
 	}

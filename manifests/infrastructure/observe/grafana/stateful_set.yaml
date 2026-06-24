@@ -54,12 +54,25 @@ spec:
           volumeMounts:
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
+            - name: dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: dashboards
+              mountPath: /etc/grafana/dashboards
             - name: storage
               mountPath: /var/lib/grafana
       volumes:
         - name: datasources
           configMap:
             name: grafana-datasources
+        - name: dashboard-provider
+          configMap:
+            name: grafana-dashboard-provider
+            items:
+              - key: provider.yaml
+                path: provider.yaml
+        - name: dashboards
+          configMap:
+            name: grafana-dashboard-consumer
   volumeClaimTemplates:
     - metadata:
         name: storage

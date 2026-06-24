@@ -27,5 +27,6 @@ resources:
 
   # Visualization
   - grafana/config_map.yaml
+  - grafana/dashboard_config_map.yaml
   - grafana/stateful_set.yaml
   - grafana/service.yaml

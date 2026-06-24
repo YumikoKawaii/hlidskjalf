@@ -17,6 +17,7 @@ data:
         editable: false
       - name: Prometheus
         type: prometheus
+        uid: consumer-cpu-prom
         access: proxy
         url: http://prometheus.observe.svc.cluster.local:9090
         isDefault: false

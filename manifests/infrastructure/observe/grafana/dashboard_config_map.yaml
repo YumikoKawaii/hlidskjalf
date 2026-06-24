@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider
+  namespace: observe
+  labels:
+    app.kubernetes.io/name: grafana
+data:
+  provider.yaml: |
+    apiVersion: 1
+    providers:
+      - name: hlidskjalf
+        orgId: 1
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /etc/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-consumer
+  namespace: observe
+  labels:
+    app.kubernetes.io/name: grafana
+data:
+  consumer-cpu.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "panels": [
+        {
+          "title": "Consumer CPU usage (cores)",
+          "type": "timeseries",
+          "datasource": { "type": "prometheus", "uid": "consumer-cpu-prom" },
+          "gridPos": { "h": 10, "w": 18, "x": 0, "y": 0 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max", "lastNotNull"] },
+            "tooltip": { "mode": "multi" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "consumer-cpu-prom" },
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"hlidskjalf\", pod=~\"consumer.*\", container=\"consumer\"}[1m]))",
+              "legendFormat": "consumer cpu cores",
+              "refId": "A"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "consumer-cpu-prom" },
+              "expr": "max(kube_pod_container_resource_limits{namespace=\"hlidskjalf\", pod=~\"consumer.*\", resource=\"cpu\"}) or vector(2)",
+              "legendFormat": "cpu limit",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "title": "Consumer throughput (msg/s, from logs is separate) — CPU per pod",
+          "type": "stat",
+          "datasource": { "type": "prometheus", "uid": "consumer-cpu-prom" },
+          "gridPos": { "h": 10, "w": 6, "x": 18, "y": 0 },
+          "fieldConfig": {
+            "defaults": { "unit": "none", "decimals": 2 },
+            "overrides": []
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "consumer-cpu-prom" },
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"hlidskjalf\", pod=~\"consumer.*\", container=\"consumer\"}[1m]))",
+              "legendFormat": "cores",
+              "refId": "A"
+            }
+          ]
+        }
+      ],
+      "refresh": "5s",
+      "schemaVersion": 39,
+      "time": { "from": "now-15m", "to": "now" },
+      "title": "Consumer CPU",
+      "uid": "consumer-cpu",
+      "tags": ["hlidskjalf", "kafka"]
+    }
