@@ -9,7 +9,9 @@ releases:
     namespace: hlidskjalf
     createNamespace: true
     chart: bitnamicharts/kafka
-    version: 32.4.3
+    # Kafka 3.9 (not 4.0): Shopify sarama 1.38 caps at protocol 3.3 and cannot
+    # negotiate Kafka 4.0's group-coordinator APIs. 3.9 still serves them.
+    version: 31.5.0
     wait: true
     timeout: 600
     values:

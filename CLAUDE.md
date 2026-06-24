@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication
+- Be terse. No preamble, no summary at the end.
+- Don't explain what you're about to do, just do it.
+- No "I'll now...", "Let me...", "Here's what I did..."
+- Only output what was asked for.
+
+## Shell behavior
+- Never run background shell processes or jobs
+- Never use & to background commands
+- Never start monitoring loops or watchers
+- Run commands synchronously, wait for output, done
+
 ## Project Overview
 
 **Hlidskjalf** is a Kubernetes laboratory monorepo with mock microservices for experimentation. Uses k3d for local Kubernetes and is named after Odin's throne in Norse mythology.
