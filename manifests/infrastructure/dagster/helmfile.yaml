@@ -1,0 +1,14 @@
+repositories:
+  - name: dagster
+    url: https://dagster-io.github.io/helm
+
+releases:
+  - name: dagster
+    namespace: dagster
+    createNamespace: true
+    chart: dagster/dagster
+    version: 1.13.10
+    wait: true
+    timeout: 600
+    values:
+      - values.yaml

@@ -1,0 +1,4 @@
+dagster==1.13.10
+dagster-k8s==0.29.10
+dagster-celery==0.29.10
+dagster-celery-k8s==0.29.10

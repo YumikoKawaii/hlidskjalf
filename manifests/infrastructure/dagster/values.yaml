@@ -1,0 +1,36 @@
+# Dagster + Celery (CeleryK8sRunLauncher) on k3d.
+# Flow: webserver/daemon -> run-worker Job -> submits steps to RabbitMQ queues
+#       -> celery-worker pods pick up steps -> each step runs as its own K8s Job.
+
+# Use Celery so that job steps are dispatched as Celery tasks instead of running
+# inline. The chart provisions the Celery workers when this launcher is set.
+runLauncher:
+  type: CeleryK8sRunLauncher
+  config:
+    celeryK8sRunLauncher:
+      # One worker on the default "dagster" queue is plenty for a learning lab.
+      workerQueues:
+        - name: dagster
+          replicaCount: 1
+
+# Built-in broker. RabbitMQ is the chart default for Celery.
+rabbitmq:
+  enabled: true
+
+# Not needed when rabbitmq is the broker.
+redis:
+  enabled: false
+
+# Our pipeline code, built+pushed by .github/workflows/dagster-lab.yaml.
+dagster-user-deployments:
+  enabled: true
+  deployments:
+    - name: dagster-lab
+      image:
+        repository: docker.io/yumikokawaii/dagster-lab
+        tag: latest
+        pullPolicy: Always
+      dagsterApiGrpcArgs:
+        - "-f"
+        - "repo.py"
+      port: 3030
