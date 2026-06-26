@@ -9,8 +9,24 @@ via a concurrency_key tag. Execution is distributed over Celery -> K8s Jobs.
 import random
 import time
 
+import os
+
 import dagster as dg
-from dagster_celery_k8s import celery_k8s_job_executor
+from dagster_celery import celery_executor
+
+# Celery executor (broker/backend from env), mirroring integration-ingress.
+# Run launcher (K8sRunLauncher) gives one pod per run; this executor dispatches
+# the run's steps as Celery tasks to the worker pool over Redis.
+configured_celery_executor = celery_executor.configured(
+    {
+        "broker": os.getenv("DAGSTER_CELERY_BROKER_URL", "redis://redis:6379/0"),
+        "backend": os.getenv("DAGSTER_CELERY_BACKEND_URL", "redis://redis:6379/1"),
+        "config_source": {
+            "task_create_missing_queues": True,
+            "task_default_queue": "dagster",
+        },
+    }
+)
 
 # One partition per "shop" — partitions are added at runtime by the sensor,
 # exactly like integration-ingress's tenant_partitions.
@@ -40,11 +56,12 @@ def shop_sync(context: dg.AssetExecutionContext) -> dict:
     return {"shop_id": shop_id, "total": total}
 
 
-# Job that materializes the partitioned asset, dispatched via Celery -> K8s.
+# One K8s pod per run (K8sRunLauncher); steps dispatched as Celery tasks to the
+# worker pool over Redis — mirrors integration-ingress.
 shop_sync_job = dg.define_asset_job(
     name="shop_sync_job",
     selection=dg.AssetSelection.assets(shop_sync),
-    executor_def=celery_k8s_job_executor,
+    executor_def=configured_celery_executor,
 )
 
 

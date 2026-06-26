@@ -2,4 +2,5 @@ dagster==1.13.10
 dagster-postgres==0.29.10
 dagster-k8s==0.29.10
 dagster-celery==0.29.10
-dagster-celery-k8s==0.29.10
+celery[redis]==5.5.3
+redis==5.2.1

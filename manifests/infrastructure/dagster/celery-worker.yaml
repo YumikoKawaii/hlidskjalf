@@ -1,0 +1,75 @@
+# Standalone Celery worker for the dagster_celery executor.
+# The dagster Helm chart only provisions workers under CeleryK8sRunLauncher;
+# with K8sRunLauncher we run our own, mirroring integration-ingress's
+# `dagster-celery worker start -A dagster_celery.app -q dagster`.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dagster-celery-config
+  namespace: hlidskjalf
+data:
+  celery.yaml: |
+    execution:
+      celery:
+        broker:
+          env: DAGSTER_CELERY_BROKER_URL
+        backend:
+          env: DAGSTER_CELERY_BACKEND_URL
+        config_source:
+          task_default_queue: dagster
+          task_create_missing_queues: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dagster-celery-worker
+  namespace: hlidskjalf
+  labels:
+    app: dagster-celery-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dagster-celery-worker
+  template:
+    metadata:
+      labels:
+        app: dagster-celery-worker
+    spec:
+      containers:
+        - name: worker
+          image: docker.io/yumikokawaii/dagster-lab:efdeb8b
+          imagePullPolicy: Always
+          workingDir: /opt/dagster/app
+          command: ["dagster-celery"]
+          args:
+            - "worker"
+            - "start"
+            - "-y"
+            - "/etc/dagster-celery/celery.yaml"
+            - "-A"
+            - "dagster_celery.app"
+            - "-q"
+            - "dagster"
+            - "--loglevel=info"
+          env:
+            - name: DAGSTER_CELERY_BROKER_URL
+              value: redis://redis:6379/0
+            - name: DAGSTER_CELERY_BACKEND_URL
+              value: redis://redis:6379/1
+            - name: DAGSTER_HOME
+              value: /opt/dagster/dagster_home
+          volumeMounts:
+            - name: celery-config
+              mountPath: /etc/dagster-celery
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: celery-config
+          configMap:
+            name: dagster-celery-config

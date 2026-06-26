@@ -1,27 +1,15 @@
-# Dagster + Celery (CeleryK8sRunLauncher), Redis broker, in the hlidskjalf ns.
-# Flow: webserver/daemon -> run-worker Job -> submits steps to Redis queues
-#       -> celery-worker pods pick up steps -> each step runs as its own K8s Job.
-
-# Use Celery so that job steps are dispatched as Celery tasks instead of running
-# inline. The chart provisions the Celery workers when this launcher is set.
+# Dagster with K8sRunLauncher + celery_executor, mirroring integration-ingress.
+# Flow: webserver/daemon -> one K8s Job pod PER RUN (per partition); that run's
+#       steps are dispatched as Celery tasks over Redis to the celery worker
+#       Deployment (manifests/infrastructure/dagster/celery-worker.yaml).
 runLauncher:
-  type: CeleryK8sRunLauncher
+  type: K8sRunLauncher
   config:
-    celeryK8sRunLauncher:
-      # One worker on the default "dagster" queue is plenty for a learning lab.
-      workerQueues:
-        - name: dagster
-          replicaCount: 1
-
-# External Redis broker — provisioned by our own `redis` chart/release in the
-# same namespace. internal:false => chart won't create a Redis pod; it just
-# wires Celery's broker + result backend at redis://redis:6379.
-redis:
-  enabled: true
-  internal: false
-  usePassword: false
-  host: redis
-  port: 6379
+    k8sRunLauncher:
+      # Run pods need the broker/backend env so celery_executor can submit steps.
+      envVars:
+        - DAGSTER_CELERY_BROKER_URL=redis://redis:6379/0
+        - DAGSTER_CELERY_BACKEND_URL=redis://redis:6379/1
 
 # Use an existing external PostgreSQL instead of the chart's bundled one
 # (the bundled Postgres needs a PVC the review cluster can't attach).
@@ -39,9 +27,15 @@ dagster-user-deployments:
     - name: dagster-lab
       image:
         repository: docker.io/yumikokawaii/dagster-lab
-        tag: latest
+        tag: efdeb8b
         pullPolicy: Always
       dagsterApiGrpcArgs:
         - "-f"
         - "repo.py"
       port: 3030
+      # Code-location process needs the broker env too (executor config reads it).
+      env:
+        - name: DAGSTER_CELERY_BROKER_URL
+          value: redis://redis:6379/0
+        - name: DAGSTER_CELERY_BACKEND_URL
+          value: redis://redis:6379/1
