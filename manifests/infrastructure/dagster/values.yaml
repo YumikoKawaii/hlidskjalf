@@ -1,5 +1,5 @@
-# Dagster + Celery (CeleryK8sRunLauncher) on k3d.
-# Flow: webserver/daemon -> run-worker Job -> submits steps to RabbitMQ queues
+# Dagster + Celery (CeleryK8sRunLauncher), Redis broker, in the hlidskjalf ns.
+# Flow: webserver/daemon -> run-worker Job -> submits steps to Redis queues
 #       -> celery-worker pods pick up steps -> each step runs as its own K8s Job.
 
 # Use Celery so that job steps are dispatched as Celery tasks instead of running
@@ -13,13 +13,24 @@ runLauncher:
         - name: dagster
           replicaCount: 1
 
-# Built-in broker. RabbitMQ is the chart default for Celery.
-rabbitmq:
-  enabled: true
-
-# Not needed when rabbitmq is the broker.
+# External Redis broker — provisioned by our own `redis` chart/release in the
+# same namespace. internal:false => chart won't create a Redis pod; it just
+# wires Celery's broker + result backend at redis://redis:6379.
 redis:
+  enabled: true
+  internal: false
+  usePassword: false
+  host: redis
+  port: 6379
+
+# Use an existing external PostgreSQL instead of the chart's bundled one
+# (the bundled Postgres needs a PVC the review cluster can't attach).
+# Connection creds (host/user/password/db) live in the gitignored
+# values.secret.yaml, layered after this file in the helmfile.
+postgresql:
   enabled: false
+  service:
+    port: 5432
 
 # Our pipeline code, built+pushed by .github/workflows/dagster-lab.yaml.
 dagster-user-deployments:
