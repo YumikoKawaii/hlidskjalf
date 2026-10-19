@@ -1,5 +1,0 @@
-apiVersion: v2
-name: hlidskjalf-service
-description: Shared chart for hlidskjalf microservices
-version: 0.1.0
-type: application
