@@ -3,6 +3,8 @@
 **Domain:** Cluster Architecture, Installation & Configuration
 **Planted faults:** none
 
+> 🔁 **Redo:** first pass done on a freshly built cluster. Do it again on a cluster with real workloads running.
+
 ## Setup
 
 ```bash

@@ -15,7 +15,7 @@ limactl shell cp1
 | #  | Assignment | Domain | Faults |
 |----|------------|--------|--------|
 | 01 | [etcd backup & restore](01-etcd-backup-restore/) | Cluster Architecture | none |
-| 02 | [Cluster upgrade](02-cluster-upgrade/) | Cluster Architecture | none |
+| 02 | [Cluster upgrade](02-cluster-upgrade/) 🔁 redo on a cluster with running workloads | Cluster Architecture | none |
 | 03 | [RBAC](03-rbac/) | Cluster Architecture | none |
 | 04 | [Helm](04-helm/) | Cluster Architecture | none |
 | 05 | [Kustomize](05-kustomize/) | Cluster Architecture | none |
