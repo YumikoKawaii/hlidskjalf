@@ -32,3 +32,4 @@ Three Lima VMs (vz, Ubuntu 24.04 arm64) on the `lima:user-v2` network:
 - `K8S_MINOR` (default `1.36`) selects the pkgs.k8s.io repo; one minor behind stable to leave room for `kubeadm upgrade` practice.
 - Nodes get containerd (SystemdCgroup), kubeadm/kubelet/kubectl (held), crictl, etcdctl. Cluster bootstrap (`kubeadm init`/`join`, CNI) is done by hand as exam practice.
 - `limactl start|stop` take one instance per call.
+- `cka/assignments/NN-name/`: `setup.sh` (run from the Mac, drives VMs via `limactl shell`, may plant faults), `README.md` (the task), `solution/` (the user's own work; don't fill it in). Shared helpers live in `cka/assignments/lib.sh`.

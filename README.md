@@ -19,6 +19,8 @@ limactl shell cp1
 | worker1 | 192.168.104.3 | 2   | 3 GB |
 | worker2 | 192.168.104.4 | 2   | 3 GB |
 
+Practice assignments: [`cka/assignments/`](cka/assignments/).
+
 Stop:
 
 ```bash
