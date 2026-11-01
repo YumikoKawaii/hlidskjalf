@@ -1,0 +1,21 @@
+resources:
+- ../../base
+- namespace.yaml
+namespace: prod
+namePrefix: prod-
+labels:
+- pairs:
+    env: prod
+  includeSelectors: true
+replicas:
+- name: web
+  count: 3
+images:
+- name: nginx
+  newTag: 1.27-alpine
+configMapGenerator:
+- name: app-config
+  files:
+  - app.properties
+patches:
+- path: mount.yaml
